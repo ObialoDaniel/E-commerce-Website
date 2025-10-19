@@ -1,0 +1,125 @@
+{
+  "newArrivals": [
+    {
+      "id": 1,
+      "name": "T-shirt with Tape Details",
+      "price": 120,
+      "originalPrice": null,
+      "discount": null,
+      "rating": 4.5,
+      "image": "T-shirt.png",
+      "category": "casual",
+      "colors": ["black", "white", "gray"],
+      "sizes": ["S", "M", "L", "XL"]
+    },
+    {
+      "id": 2,
+      "name": "Skinny Fit Jeans",
+      "price": 240,
+      "originalPrice": 260,
+      "discount": 20,
+      "rating": 3.5,
+      "image": "Jeans.png",
+      "category": "casual",
+      "colors": ["blue", "black"],
+      "sizes": ["S", "M", "L", "XL"]
+    },
+    {
+      "id": 3,
+      "name": "Checkered Shirt",
+      "price": 180,
+      "originalPrice": null,
+      "discount": null,
+      "rating": 4.5,
+      "image": "checkered.jpg",
+      "category": "formal",
+      "colors": ["red", "blue", "green"],
+      "sizes": ["S", "M", "L", "XL"]
+    },
+    {
+      "id": 4,
+      "name": "Sleeve Striped T-shirt",
+      "price": 130,
+      "originalPrice": 160,
+      "discount": 30,
+      "rating": 4.5,
+      "image": "Sleeve.png",
+      "category": "casual",
+      "colors": ["orange", "yellow", "red"],
+      "sizes": ["S", "M", "L", "XL"]
+    }
+    
+  ],
+  "topSelling": [
+    {
+      "id": 5,
+      "name": "Vertical Striped Shirt",
+      "price": 212,
+      "originalPrice": 232,
+      "discount": 20,
+      "rating": 5.0,
+      "image": "Vertical.png",
+      "category": "formal",
+      "colors": ["blue", "white"],
+      "sizes": ["S", "M", "L", "XL"]
+    },
+    {
+      "id": 6,
+      "name": "Courage Graphic T-shirt",
+      "price": 145,
+      "originalPrice": null,
+      "discount": null,
+      "rating": 4.0,
+      "image": "Courage.png",
+      "category": "casual",
+      "colors": ["white", "black"],
+      "sizes": ["S", "M", "L", "XL"]
+    },
+    {
+      "id": 7,
+      "name": "Loose Fit Bermuda Shorts",
+      "price": 80,
+      "originalPrice": null,
+      "discount": null,
+      "rating": 3.0,
+      "image": "Loose.png",
+      "category": "casual",
+      "colors": ["khaki", "navy", "black"],
+      "sizes": ["S", "M", "L", "XL"]
+    },
+    {
+      "id": 8,
+      "name": "Faded Skinny Jeans",
+      "price": 210,
+      "originalPrice": null,
+      "discount": null,
+      "rating": 4.5,
+      "image": "Faded.png",
+      "category": "casual",
+      "colors": ["blue", "black"],
+      "sizes": ["S", "M", "L", "XL"]
+    }
+  ],
+  "browseByCategory": [
+    {
+      "id": 1,
+      "name": "Casaul",
+      "image": "Casual.png"
+    },
+    {
+      "id": 2,
+      "name": "Formal",
+      "image": "Formal.png"
+    },
+    {
+      "id": 3,
+      "name": "Party",
+      "image": "Party.png"
+    },
+    {
+      "id": 4,
+      "name": "Gym.png",
+      "image": "Gym.png"
+    }
+  ]
+}

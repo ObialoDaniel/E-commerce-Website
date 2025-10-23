@@ -1,7 +1,7 @@
 <template>
   <section class="browse-style-section">
     <div class="browse-style-container">
-      <h2 class="section-title">BROWSE BY DRESS STYLE</h2>
+      <h1 class="section-title">BROWSE BY DRESS STYLE</h1>
 
       <div class="categories-grid">
         <router-link
@@ -63,183 +63,248 @@ export default {
 
 <style scoped>
 .browse-style-section {
-  padding: var(--space-5xl) 0;
-  background-color: var(--color-bg-secondary);
-  border-radius: var(--radius-2xl);
-  margin: 0 var(--container-padding);
+  padding: 80px 0;
+  background-color: #F0F0F0;
+  border-radius: 40px;
+  margin: 80px var(--container-padding) 0;
 }
 
 .browse-style-container {
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 0 var(--container-padding);
+  padding: 0 64px;
 }
 
 .section-title {
   font-family: var(--font-primary);
-  font-size: var(--font-size-category);
+  font-size: 48px;
   font-weight: var(--font-weight-bold);
   text-align: center;
   color: var(--color-text-primary);
-  margin-bottom: var(--space-3xl);
+  margin-bottom: 64px;
   text-transform: uppercase;
   letter-spacing: -0.02em;
 }
 
+/* THE FIX: 3-column grid for diagonal alternating pattern */
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: var(--space-lg);
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  height: 600px;
 }
 
 .category-card {
   position: relative;
-  background-color: var(--color-bg-primary);
-  border-radius: var(--radius-xl);
+  background-color: #FFFFFF;
+  border-radius: 20px;
   overflow: hidden;
   text-decoration: none;
-  transition: transform var(--transition-normal);
-  min-height: 280px;
+  transition: all 0.3s ease;
   display: flex;
+  align-items: flex-start;
+  padding: 0;
 }
 
 .category-card:hover {
   transform: translateY(-4px);
-}
-
-/* Grid layout positioning */
-.category-1 {
-  grid-column: 1 / 2;
-  grid-row: 1 / 2;
-}
-
-.category-2 {
-  grid-column: 2 / 4;
-  grid-row: 1 / 2;
-}
-
-.category-3 {
-  grid-column: 1 / 3;
-  grid-row: 2 / 3;
-}
-
-.category-4 {
-  grid-column: 3 / 4;
-  grid-row: 2 / 3;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .category-content {
   position: relative;
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: flex-start;
-  padding: var(--space-xl);
 }
 
 .category-name {
+  position: absolute;
+  top: 25px;
+  left: 36px;
   font-family: var(--font-secondary);
-  font-size: var(--font-size-2xl);
+  font-size: 36px;
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
-  z-index: 2;
-  position: relative;
+  z-index: 10;
+  margin: 0;
 }
 
 .category-image-container {
   position: absolute;
-  right: 0;
   top: 0;
+  right: 0;
   bottom: 0;
-  width: 60%;
+  left: 40%;
+  height: 100%;
   overflow: hidden;
-  height: 400px;
 }
 
 .category-image {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
-  object-position: center;
-  max-height: none;
+  object-position: center center;
+}
+
+/* Specific grid positions - THE KEY FIX */
+.category-1 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.category-2 {
+  grid-column: 2 / 4;
+  grid-row: 1;
+}
+
+.category-3 {
+  grid-column: 1 / 3;
+  grid-row: 2;
+}
+
+.category-4 {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+
+/* Custom image positioning per card */
+/* Casual - Image on the right side */
+.category-1 .category-image-container {
+  left: auto;
+  right: 0;
+  width: 60%;
+}
+
+.category-1 .category-image {
+  object-position: center center;
+}
+
+/* Formal - Image on the right side, takes more space */
+.category-2 .category-image-container {
+  left: auto;
+  right: 0;
+  width: 55%;
+}
+
+.category-2 .category-image {
+  object-position: center center;
+}
+
+/* Party - Image on the right side */
+.category-3 .category-image-container {
+  left: auto;
+  right: 0;
+  width: 55%;
+}
+
+.category-3 .category-image {
+  object-position: center center;
+}
+
+/* Gym - Image on the right side */
+.category-4 .category-image-container {
+  left: auto;
+  right: 0;
+  width: 60%;
+}
+
+.category-4 .category-image {
+  object-position: center center;
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) {
-  .section-title {
-    font-size: var(--font-size-3xl);
+@media (max-width: 1280px) {
+  .browse-style-container {
+    padding: 0 48px;
   }
 
   .categories-grid {
-    gap: var(--space-md);
+    height: 550px;
+    gap: 16px;
   }
 
-  .category-card {
-    min-height: 240px;
+  .section-title {
+    font-size: 40px;
+    margin-bottom: 48px;
   }
 
   .category-name {
-    font-size: var(--font-size-xl);
+    font-size: 32px;
+    top: 20px;
+    left: 28px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .browse-style-section {
+    padding: 60px 0;
+    margin: 60px var(--container-padding) 0;
+  }
+
+  .browse-style-container {
+    padding: 0 32px;
+  }
+
+  .section-title {
+    font-size: 36px;
+    margin-bottom: 40px;
+  }
+
+  .categories-grid {
+    height: 500px;
+    gap: 16px;
+  }
+
+  .category-name {
+    font-size: 28px;
+    top: 18px;
+    left: 24px;
   }
 }
 
 @media (max-width: 768px) {
   .browse-style-section {
-    padding: var(--space-3xl) 0;
-    margin: 0 var(--space-md);
+    padding: 48px 0;
+    margin: 48px 16px 0;
+    border-radius: 30px;
+  }
+
+  .browse-style-container {
+    padding: 0 24px;
   }
 
   .section-title {
-    font-size: var(--font-size-2xl);
-    margin-bottom: var(--space-2xl);
+    font-size: 32px;
+    margin-bottom: 32px;
   }
 
   .categories-grid {
     grid-template-columns: 1fr;
-    grid-template-rows: auto;
+    grid-template-rows: repeat(4, 200px);
+    height: auto;
+    gap: 12px;
   }
 
   .category-1,
   .category-2,
   .category-3,
   .category-4 {
-    grid-column: 1 / 2;
-    grid-row: auto;
-  }
-
-  .category-card {
-    min-height: 200px;
+    grid-column: 1 !important;
+    grid-row: auto !important;
   }
 
   .category-name {
-    font-size: var(--font-size-lg);
-  }
-
-  .category-content {
-    padding: var(--space-lg);
-  }
-}
-
-@media (max-width: 480px) {
-  .section-title {
-    font-size: var(--font-size-xl);
-  }
-
-  .category-card {
-    min-height: 180px;
-  }
-
-  .category-name {
-    font-size: var(--font-size-base);
-  }
-
-  .category-content {
-    padding: var(--space-md);
+    font-size: 24px;
+    top: 16px;
+    left: 20px;
   }
 
   .category-image-container {
-    width: 50%;
+    left: auto !important;
+    right: 0 !important;
+    width: 65% !important;
   }
 }
 </style>

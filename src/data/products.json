@@ -103,7 +103,7 @@
   "browseByCategory": [
     {
       "id": 1,
-      "name": "Casaul",
+      "name": "Casual",
       "image": "Casual.png"
     },
     {
@@ -118,7 +118,7 @@
     },
     {
       "id": 4,
-      "name": "Gym.png",
+      "name": "Gym",
       "image": "Gym.png"
     }
   ]

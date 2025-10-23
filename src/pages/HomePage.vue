@@ -6,6 +6,7 @@
       <NewArrivals />
       <TopSelling />
       <BrowseByStyle />
+      <HappyCustomers />
     </main>
   </div>
 </template>
@@ -16,6 +17,7 @@ import BrandsSection from '@/components/BrandLogo.vue';
 import NewArrivals  from '@/template/home/NewArrivals.vue';
 import TopSelling from '@/template/home/TopSelling.vue';
 import BrowseByStyle from '@/template/home/BrowseByStyle.vue';
+import HappyCustomers from '@/template/home/HappyCustomers.vue';
 
 export default{
   name: 'HomePage',
@@ -24,7 +26,8 @@ export default{
     BrandsSection,
     NewArrivals,
     TopSelling,
-    BrowseByStyle
+    BrowseByStyle,
+    HappyCustomers
   }
 }
 </script>

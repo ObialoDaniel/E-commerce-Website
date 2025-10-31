@@ -10,12 +10,6 @@ const routes = [
     path: '/',
     name: 'Home',
     component: HomePage,
-
-
-
-
-
-    
     meta: {
         title: 'SHOP.CO - Home',
     }

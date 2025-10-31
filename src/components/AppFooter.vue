@@ -10,9 +10,9 @@
               <svg class="email-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M2.5 6.66669L9.0755 11.0504C9.63533 11.4236 10.3647 11.4236 10.9245 11.0504L17.5 6.66669M4.16667 15.8334H15.8333C16.7538 15.8334 17.5 15.0872 17.5 14.1667V5.83335C17.5 4.91288 16.7538 4.16669 15.8333 4.16669H4.16667C3.24619 4.16669 2.5 4.91288 2.5 5.83335V14.1667C2.5 15.0872 3.24619 15.8334 4.16667 15.8334Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
               </svg>
-              <input 
-                type="email" 
-                class="email-input" 
+              <input
+                type="email"
+                class="email-input"
                 placeholder="Enter your email address"
                 v-model="email"
               >
@@ -107,13 +107,13 @@
         <!-- Footer Bottom -->
         <div class="footer-bottom">
           <p class="copyright">Shop.co © 2000-2023, All Rights Reserved</p>
-          <!-- <div class="payment-methods">
-            <img src="/images/visa.png" alt="Visa" class="payment-icon">
-            <img src="/images/mastercard.png" alt="Mastercard" class="payment-icon">
-            <img src="/images/paypal.png" alt="PayPal" class="payment-icon">
-            <img src="/images/applepay.png" alt="Apple Pay" class="payment-icon">
-            <img src="/images/googlepay.png" alt="Google Pay" class="payment-icon">
-          </div> -->
+         <div class="payment-methods">
+             <VisaIcon class="payment-icon" />
+              <masterCardIcon class="payment-icon" />
+              <payPalIcon class="payment-icon" />
+              <applePayIcon class="payment-icon" />
+              <googlePayIcon class="payment-icon" />
+          </div>
         </div>
       </div>
     </div>
@@ -121,13 +121,28 @@
 </template>
 
 <script>
+import visaIcon from '@/components/visa.vue';
+import masterCardIcon from '@/components/masterCard.vue';
+import payPalIcon from '@/components/payPal.vue';
+import applePayIcon from '@/components/applePay.vue';
+import googlePayIcon from '@/components/gPay.vue';
+
 export default {
   name: 'AppFooter',
+  components: {
+    visaIcon,
+    masterCardIcon,
+    payPalIcon,
+    applePayIcon,
+    googlePayIcon
+  },
+
   data() {
     return {
       email: ''
     }
   },
+
   methods: {
     handleSubscribe() {
       if (this.email) {
@@ -148,69 +163,72 @@ export default {
 
 /* Newsletter Section */
 .newsletter-section {
-  background-color: var(--color-bg-dark);
-  padding: var(--space-2xl) 0;
+  background: var(--color-bg-secondary);
+  padding: 0; /* remove extra padding so it hugs the section nicely */
   position: relative;
 }
 
 .newsletter-content {
-  background-color: var(--color-bg-dark);
-  border-radius: var(--radius-xl);
-  padding: var(--space-2xl);
+  background-color: #000; /* solid black background */
+  border-radius: 16px;
+  padding: 3rem 2rem;
   max-width: 1000px;
-  margin: 0 auto;
+  margin: -100px auto 0; /* gives that “floating” overlap look above the footer */
+  text-align: center;
 }
 
 .newsletter-title {
-  color: var(--color-text-light);
-  font-size: var(--font-size-3xl);
-  font-family: var(--font-primary);
-  text-align: center;
-  margin-bottom: var(--space-xl);
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 800;
+  text-transform: uppercase;
   line-height: 1.2;
+  margin-bottom: 2rem;
 }
 
+/* Newsletter Form */
 .newsletter-form {
   display: flex;
-  gap: var(--space-md);
-  max-width: 600px;
-  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .email-input-wrapper {
-  flex: 1;
   position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.email-icon {
-  position: absolute;
-  left: var(--space-md);
-  color: var(--color-text-muted);
+  flex: 1;
+  max-width: 400px;
 }
 
 .email-input {
   width: 100%;
-  padding: var(--space-md) var(--space-md) var(--space-md) 3rem;
-  background-color: var(--color-bg-primary);
+  padding: 1rem 1rem 1rem 3rem;
+  border-radius: 50px;
   border: none;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-base);
+  font-size: 1rem;
+  color: #000;
+}
+
+.email-icon {
+  position: absolute;
+  left: 1rem;
+  color: #888;
 }
 
 .subscribe-btn {
-  padding: var(--space-md) var(--space-xl);
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
-  border-radius: var(--radius-full);
-  font-weight: var(--font-weight-medium);
-  white-space: nowrap;
-  transition: all var(--transition-normal);
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .subscribe-btn:hover {
-  background-color: var(--color-bg-secondary);
+  background: #f1f1f1;
+  transform: translateY(-2px);
 }
 
 /* Footer Main */
@@ -311,21 +329,28 @@ export default {
   margin: 0;
 }
 
-/* .payment-methods {
+.payment-methods {
   display: flex;
-  gap: var(--space-sm);
+  gap: 12px;
   align-items: center;
 }
 
 .payment-icon {
-  height: 30px;
+  height: 32px;
   width: auto;
-  object-fit: contain;
+  min-width: 50px;
   background-color: var(--color-bg-primary);
-  padding: var(--space-xs);
-  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  border-radius: 8px;
   border: 1px solid var(--color-border);
-} */
+  transition: all var(--transition-fast);
+  object-fit: contain;
+}
+
+.payment-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
 /* Responsive */
 @media (max-width: 1024px) {
@@ -361,6 +386,13 @@ export default {
   .payment-methods {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 10px;
+  }
+
+  .payment-icon {
+    height: 28px;
+    min-width: 45px;
+    padding: 6px 10px;
   }
 }
 
@@ -371,6 +403,12 @@ export default {
 
   .newsletter-content {
     padding: var(--space-xl);
+  }
+
+  .payment-icon {
+    height: 26px;
+    min-width: 42px;
+    padding: 5px 8px;
   }
 }
 </style>

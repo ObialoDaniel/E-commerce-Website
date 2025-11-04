@@ -32,10 +32,10 @@
 
           <!--Main Image-->
           <div class="main-image">
-            <img 
+            <img
               v-if="selectedImage"
-              :src="getImagePath(selectedImage)" 
-              :alt="productData.name" 
+              :src="getImagePath(selectedImage)"
+              :alt="productData.name"
             />
           </div>
         </div>
@@ -104,7 +104,7 @@
             <button class="add-to-cart-btn" @click="addToCart">Add to Cart</button>
           </div>
         </div>
-      </section>  
+      </section>
       <!--Tabs Section (Product Details, Review, FAQS)-->
       <section class="product-tabs">
         <div class="tabs-header">
@@ -149,9 +149,9 @@
                 >
                   <div class="review-top">
                     <div class="stars">
-                       <span v-for="star in 5" 
+                       <span v-for="star in 5"
                           :key="star" class="star"
-                          :class="{ 
+                          :class="{
                             filled: star <= Math.floor(review.rating),
                             half: star === Math.ceil(review.rating) && review.rating % 1 !== 0
                           }">
@@ -160,16 +160,16 @@
                     </div>
                     <button class="menu-btn">⋯</button>
                   </div>
-      
+
                   <div class="review-author">
                     <span class="name">{{ review.name }}</span>
                     <Check v-if="review.verified" class="verified-icon" />
                   </div>
-      
+
                   <p class="review-text">"{{ review.text }}"</p>
                   <p class="review-date">Posted on {{ review.date }}</p>
                 </div>
-      
+
               </div>
               <!-- Load more button -->
               <div class="load-more-container" v-if="visibleCount < reviews.length">
@@ -189,16 +189,16 @@
       </section>
       <section class="you-might-like-section">
         <h2 class="you-might-like-title">YOU MIGHT ALSO LIKE</h2>
-        
+
         <div class="similar-products-grid">
           <div v-for="product in products" :key="product.id" class="similar-product-card">
             <div class="similar-product-image">
               <img :src="product.image" :alt="product.name">
             </div>
-            
+
             <div class="similar-product-info">
               <h3 class="similar-product-name">{{ product.name }}</h3>
-              
+
               <div class="rating">
                 <div class="stars">
                   <span v-for="star in 5" :key="star" class="star" :class="{
@@ -210,7 +210,7 @@
                 </div>
                 <span class="rating-value">{{ product.rating }}/5</span>
               </div>
-              
+
               <div class="price-section">
                 <span class="current-price">${{ product.price }}</span>
                 <span v-if="product.originalPrice" class="original-price">${{ product.originalPrice }}</span>
@@ -219,19 +219,18 @@
             </div>
           </div>
         </div>
-     </section> 
+     </section>
     </main>
     <AppFooter />
   </div>
 </template>
 
 <script>
-import Star from "@/components/star.vue";
-import Check from "@/components/check.vue";     
+import Check from "@/components/check.vue";
 
 export default {
   name: 'CategoryPage',
-  components: {Star, Check}, 
+  components: {Check},
   props: {
     id: {
       String,
@@ -320,7 +319,7 @@ export default {
           date: "August 19, 2023",
         },
       ],
-      
+
       products: [
         {
           id: 1,
@@ -400,7 +399,7 @@ export default {
         return ''
       }
     },
-  
+
     increaseQuantity() {
       this.quantity++
     },
@@ -425,7 +424,7 @@ export default {
     },
 
     loadMore() {
-      this.visibleCount += 2; 
+      this.visibleCount += 2;
     }
   }
 }
@@ -798,7 +797,7 @@ export default {
 .review-count {
   color: #666;
   font-weight: 400;
-  font-size: 14px;  
+  font-size: 14px;
 }
 
 .actions {
@@ -864,12 +863,12 @@ export default {
 }
 
 .star {
-  color: #ddd; 
+  color: #ddd;
   font-size: 20px;
 }
 
 .star.filled {
-  color: #ffc107; 
+  color: #ffc107;
 }
 
 
@@ -1028,12 +1027,12 @@ export default {
     font-size: 32px;
     margin-bottom: 40px;
   }
-  
+
   .similar-products-grid {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 16px;
   }
-  
+
   .similar-product-name {
     font-size: 16px;
   }

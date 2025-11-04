@@ -56,7 +56,7 @@
           <!--Price-->
           <div class="price-section">
             <span class="current-price">${{ productData.price }}</span>
-            <span v-if="productData.originalPrice" class="original-price">${{ productData.originaPrice }}</span>
+            <span v-if="productData.originalPrice" class="original-price">${{ productData.originalPrice }}</span>
             <span v-if="productData.discount" class="discount"> {{ productData.discount }} %</span>
           </div>
 
@@ -64,7 +64,7 @@
           <p class="description">{{ productData.description }}</p>
 
           <!--Color Selection-->
-          <div class="opetion-group">
+          <div class="option-group">
             <label class="option-label"> Select Colors</label>
             <div class="color-options">
               <button
@@ -101,10 +101,10 @@
               <input v-model.number="quantity" type="number" min="1" readonly />
               <button @click="increaseQuantity" aria-label="Increase quantity">+</button>
             </div>
-            <button class="add-to-cart-button" @click="addToCart">Add to Cart</button>
+            <button class="add-to-cart-btn" @click="addToCart">Add to Cart</button>
           </div>
         </div>
-      </section>
+      </section>  
       <!--Tabs Section (Product Details, Review, FAQS)-->
       <section class="product-tabs">
         <div class="tabs-header">
@@ -123,36 +123,115 @@
           <div v-if="activeTab === 'Product Details'" class="tab-content">
             <slot name="product-details">
               <h2>Product Details</h2>
-              <p>{{ productData.Description }}</p>
+              <p>{{ productData.description }}</p>
             </slot>
           </div>
           <!--Rating & Reviews Tab-->
-          <div v-if="activeTab === 'rating & Reviews'" class="tab-content">
-            <slot name="rebiews">
+          <div v-if="activeTab === 'Rating & Reviews'" class="tab-content">
+            <slot name="reviews">
               <div class="reviews-header">
                 <h2> All Reviews <span class="review-count">{{ productData.reviewCount }}</span></h2>
+                <div class="reviews-controls">
+                  <select v-model="sortOption" class="sort-dropdown">
+                    <option value="latest">Latest</option>
+                    <option value="highest">Highest Rated</option>
+                    <option value="lowest">Lowest Rated</option>
+                  </select>
+              </div>
                 <button class="write-review-btn">Write a Review</button>
+              </div>
+              <!-- Reviews Grid -->
+              <div class="reviews-grid">
+                <div
+                  v-for="(review, index) in visibleReviews"
+                  :key="index"
+                  class="review-card"
+                >
+                  <div class="review-top">
+                    <div class="stars">
+                       <span v-for="star in 5" 
+                          :key="star" class="star"
+                          :class="{ 
+                            filled: star <= Math.floor(review.rating),
+                            half: star === Math.ceil(review.rating) && review.rating % 1 !== 0
+                          }">
+                         ★
+                        </span>
+                    </div>
+                    <button class="menu-btn">⋯</button>
+                  </div>
+      
+                  <div class="review-author">
+                    <span class="name">{{ review.name }}</span>
+                    <Check v-if="review.verified" class="verified-icon" />
+                  </div>
+      
+                  <p class="review-text">"{{ review.text }}"</p>
+                  <p class="review-date">Posted on {{ review.date }}</p>
+                </div>
+      
+              </div>
+              <!-- Load more button -->
+              <div class="load-more-container" v-if="visibleCount < reviews.length">
+                <button class="load-more-btn" @click="loadMoreReviews">
+                  Load More Reviews
+                </button>
               </div>
             </slot>
           </div>
           <!--FAQS Tab-->
           <div v-if="activeTab === 'FAQs'" class="tab-content">
             <slot name="faqs">
-              <h2> Frequently Asked Questons</h2>
+              <h2> Frequently Asked Questions </h2>
             </slot>
           </div>
         </div>
       </section>
+      <section class="you-might-like-section">
+        <h2 class="you-might-like-title">YOU MIGHT ALSO LIKE</h2>
+        
+        <div class="similar-products-grid">
+          <div v-for="product in products" :key="product.id" class="similar-product-card">
+            <div class="similar-product-image">
+              <img :src="product.image" :alt="product.name">
+            </div>
+            
+            <div class="similar-product-info">
+              <h3 class="similar-product-name">{{ product.name }}</h3>
+              
+              <div class="rating">
+                <div class="stars">
+                  <span v-for="star in 5" :key="star" class="star" :class="{
+                    filled: star <= Math.floor(product.rating),
+                    half: star === Math.ceil(product.rating) && product.rating % 1 !== 0
+                  }">
+                    ★
+                  </span>
+                </div>
+                <span class="rating-value">{{ product.rating }}/5</span>
+              </div>
+              
+              <div class="price-section">
+                <span class="current-price">${{ product.price }}</span>
+                <span v-if="product.originalPrice" class="original-price">${{ product.originalPrice }}</span>
+                <span v-if="product.discount" class="discount">-{{ product.discount }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+     </section> 
     </main>
-
     <AppFooter />
   </div>
 </template>
 
 <script>
+import Star from "@/components/star.vue";
+import Check from "@/components/check.vue";     
+
 export default {
   name: 'CategoryPage',
-
+  components: {Star, Check}, 
   props: {
     id: {
       String,
@@ -193,7 +272,93 @@ export default {
       category: 'T-shirts',
       gender: 'Men',
       categorySlug: 'men'
-      }
+      },
+
+      selectedSort: "latest",
+      visibleCount: 4,
+      reviews: [
+        {
+          name: "Samantha D.",
+          verified: true,
+          rating: 4.5,
+          text: "I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt.",
+          date: "August 14, 2023",
+        },
+        {
+          name: "Alex M.",
+          verified: true,
+          rating: 4,
+          text:"The t-shirt exceeded my expectations! The colors are vibrant and the print quality is top-notch. Being a UI/UX designer myself, I'm quite picky about aesthetics, and this t-shirt definitely gets a thumbs up from me.",
+          date: "August 15, 2023",
+        },
+        {
+          name: "Ethan R.",
+          verified: true,
+          rating: 3.5,
+          text: "This t-shirt is a must-have for anyone who appreciates good design. The minimalistic yet stylish pattern caught my eye, and the fit is perfect. I can see the designer's touch in every aspect of this shirt.",
+          date: "August 16, 2023",
+        },
+        {
+          name: "Olivia P.",
+          verified: true,
+          rating: 4,
+          text: "As a UI/UX enthusiast, I value simplicity and functionality. This t-shirt not only represents those principles but also feels great to wear. It's evident that the designer poured their creativity into making this t-shirt stand out.",
+          date: "August 17, 2023",
+        },
+        {
+          name: "Liam K.",
+          verified: true,
+          rating: 4,
+          text: "This t-shirt is a fusion of comfort and creativity. The fabric is soft, and the design speaks volumes about the designer's skill. It's like wearing a piece of art that reflects my passion for both design and fashion.",
+          date: "August 18, 2023",
+        },
+        {
+          name: "Ava H.",
+          verified: true,
+          rating: 4.5,
+          text: "I'm not just wearing a t-shirt; I'm wearing a piece of design philosophy. The intricate details and thoughtful layout of the design make this shirt a conversation starter.",
+          date: "August 19, 2023",
+        },
+      ],
+      
+      products: [
+        {
+          id: 1,
+          name: "Polo with Contrast Trims",
+          image:'/src/assets/img/polo-contrast.png',
+          rating: 4.0,
+          price: 212,
+          originalPrice: 242,
+          discount: 20
+        },
+        {
+          id: 2,
+          name: "Gradient Graphic T-shirt",
+          image: '/src/assets/img/gradient-tshirt.png',
+          rating: 3.5,
+          price: 145,
+          originalPrice: null,
+          discount: null
+        },
+        {
+          id: 3,
+          name: "Polo with Tipping Details",
+          image: '/src/assets/img/polo-tipping.png',
+          rating: 4.5,
+          price: 180,
+          originalPrice: null,
+          discount: null
+        },
+        {
+          id: 4,
+          name: "Black Striped T-shirt",
+          image: '/src/assets/img/stripped-tshirt.png',
+          rating: 5.0,
+          price: 120,
+          originalPrice: 160,
+          discount: 30
+        }
+      ]
     }
   },
 
@@ -205,6 +370,18 @@ export default {
         { label: this.productData.gender, path: `/category/${this.productData.categorySlug}` },
         { label: this.productData.category, path: this.$route.path }
       ]
+    },
+
+    sortedReviews() {
+      const sorted = [...this.reviews];
+      if (this.selectedSort === "latest") return sorted.reverse();
+      if (this.selectedSort === "oldest") return sorted;
+      if (this.selectedSort === "high") return sorted.sort((a, b) => b.rating - a.rating);
+      if (this.selectedSort === "low") return sorted.sort((a, b) => a.rating - b.rating);
+      return sorted;
+    },
+    visibleReviews() {
+      return this.sortedReviews.slice(0, this.visibleCount);
     }
   },
 
@@ -241,15 +418,14 @@ export default {
         size: this.selectedSize,
         quantity: this.quantity
       }
-
-      // Emit event to parent or dispatch to store
       this.$emit('add-to-cart', cartItem)
-
-      // If using Vuex/Pinia:
-      // this.$store.dispatch('cart/addItem', cartItem)
 
       console.log('Added to cart:', cartItem)
       alert(`Added ${this.quantity} ${this.productData.name} to cart!`)
+    },
+
+    loadMore() {
+      this.visibleCount += 2; 
     }
   }
 }
@@ -485,6 +661,7 @@ export default {
   font-weight: 500;
   transition: all 0.2s;
   font-size: 14px;
+  margin-right: 8px;
 }
 
 .size-option:hover,
@@ -505,7 +682,7 @@ export default {
   display: flex;
   align-items: center;
   background: #f5f5f5;
-  border-radius: 24px;
+  border-radius: 32px;
   padding: 4px;
 }
 
@@ -541,7 +718,7 @@ export default {
   background: #000;
   color: white;
   border: none;
-  border-radius: 24px;
+  border-radius: 32px;
   padding: 16px 32px;
   font-size: 16px;
   font-weight: 600;
@@ -612,10 +789,30 @@ export default {
   align-items: center;
   margin-bottom: 32px;
 }
+.rewiews-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
 
 .review-count {
   color: #666;
   font-weight: 400;
+  font-size: 14px;  
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sort-dropdown select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-weight: 500;
+  background: white;
 }
 
 .write-review-btn {
@@ -632,6 +829,167 @@ export default {
 
 .write-review-btn:hover {
   background: #333;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 24px;
+  margin-bottom: 2rem;
+}
+
+.review-card {
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 0.2s;
+}
+
+.review-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.review-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stars {
+  display: flex;
+  color: #ffd700;
+}
+
+.star {
+  color: #ddd; 
+  font-size: 20px;
+}
+
+.star.filled {
+  color: #ffc107; 
+}
+
+
+.star.half {
+  background: linear-gradient(90deg, #ffc107 50%, #ddd 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.menu-btn:hover {
+  color: #000;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.verified-icon {
+  color: #4caf50;
+  width: 18px;
+  height: 18px;
+}
+
+.review-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+}
+
+.review-date {
+  font-size: 13px;
+  color: #777;
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0 8rem 0;
+  width: 100%;
+}
+
+.load-more-btn {
+  background: none;
+  border: 2px solid #eee;
+  border-radius: 24px;
+  padding: 12px 48px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.load-more-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+.you-might-like-title {
+  text-align: center;
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 60px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.similar-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin: 2rem 0;
+}
+
+.similar-product-card {
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.similar-product-card:hover {
+  transform: translateY(-4px);
+}
+
+.similar-product-image {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f5f5f5;
+  border-radius: 16px;
+}
+
+.similar-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.similar-product-info {
+  padding: 16px 0;
+}
+
+.similar-product-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #000;
 }
 
 /* Responsive */
@@ -664,6 +1022,20 @@ export default {
   .tabs-header {
     overflow-x: auto;
     white-space: nowrap;
+  }
+
+  .you-might-like-title {
+    font-size: 32px;
+    margin-bottom: 40px;
+  }
+  
+  .similar-products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+  }
+  
+  .similar-product-name {
+    font-size: 16px;
   }
 }
 </style>

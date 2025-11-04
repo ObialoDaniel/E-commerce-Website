@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import visaIcon from '@/components/visa.vue';
+import VisaIcon from '@/components/visaIcon.vue';
 import masterCardIcon from '@/components/masterCard.vue';
 import payPalIcon from '@/components/payPal.vue';
 import applePayIcon from '@/components/applePay.vue';
@@ -130,7 +130,7 @@ import googlePayIcon from '@/components/gPay.vue';
 export default {
   name: 'AppFooter',
   components: {
-    visaIcon,
+    VisaIcon,
     masterCardIcon,
     payPalIcon,
     applePayIcon,
@@ -163,18 +163,24 @@ export default {
 
 /* Newsletter Section */
 .newsletter-section {
-  background: var(--color-bg-secondary);
-  padding: 0; /* remove extra padding so it hugs the section nicely */
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(25%);
+  width: 90%;
+  max-width: 1200px;
+  z-index: 10;
 }
 
 .newsletter-content {
-  background-color: #000; /* solid black background */
-  border-radius: 16px;
-  padding: 3rem 2rem;
-  max-width: 1000px;
-  margin: -100px auto 0; /* gives that “floating” overlap look above the footer */
-  text-align: center;
+ background-color: #000;
+  border-radius: 20px;
+  padding: 3rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
 }
 
 .newsletter-title {
@@ -184,21 +190,23 @@ export default {
   text-transform: uppercase;
   line-height: 1.2;
   margin-bottom: 2rem;
+  max-width: 450px;
+  flex: 0 1 45%;
 }
 
 /* Newsletter Form */
 .newsletter-form {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: 1rem;
-  flex-wrap: wrap;
+  width: 45%;
+  padding: 0 5rem 0 0;
 }
 
 .email-input-wrapper {
   position: relative;
-  flex: 1;
-  max-width: 400px;
+  width: 100%;
 }
 
 .email-input {
@@ -206,13 +214,20 @@ export default {
   padding: 1rem 1rem 1rem 3rem;
   border-radius: 50px;
   border: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #000;
+  background: #fff;
+}
+
+.email-input::placeholder {
+  color: #999;
 }
 
 .email-icon {
   position: absolute;
   left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: #888;
 }
 
@@ -221,9 +236,12 @@ export default {
   color: #000;
   border: none;
   border-radius: 50px;
-  padding: 1rem 1.5rem;
+  padding: 1rem 2rem;
   font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
   transition: all 0.3s ease;
+  width: 100%;
 }
 
 .subscribe-btn:hover {
@@ -231,10 +249,21 @@ export default {
   transform: translateY(-2px);
 }
 
+.section-before-footer {
+  position: relative;
+  padding-bottom: 150px; 
+}
+
 /* Footer Main */
+.footer {
+  margin-top: auto;
+  position: relative;
+  padding-top: 150px; 
+}
+
 .footer-main {
   background-color: var(--color-bg-secondary);
-  padding: var(--space-3xl) 0 var(--space-xl);
+  padding: 200px 0 var(--space-xl); 
 }
 
 .footer-grid {

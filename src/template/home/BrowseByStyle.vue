@@ -86,13 +86,13 @@ export default {
   letter-spacing: -0.02em;
 }
 
-/* THE FIX: 3-column grid for diagonal alternating pattern */
+
 .categories-grid {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   grid-template-rows: 1fr 1fr;
   gap: 20px;
-  height: 600px;
+  height: 100vh;
 }
 
 .category-card {
@@ -135,22 +135,23 @@ export default {
   top: 0;
   right: 0;
   bottom: 0;
-  left: 40%;
+  left: 10;
   height: 100%;
   overflow: hidden;
 }
 
 .category-image {
   width: 100%;
-  height: 100%;
   object-fit: cover;
   object-position: center center;
+  display:block;
+
 }
 
 /* Specific grid positions - THE KEY FIX */
 .category-1 {
-  grid-column: 1;
-  grid-row: 1;
+  grid-column:1/2 ;
+  grid-row:1 ;
 }
 
 .category-2 {
@@ -168,50 +169,53 @@ export default {
   grid-row: 2;
 }
 
-
-/* Custom image positioning per card */
-/* Casual - Image on the right side */
 .category-1 .category-image-container {
-  left: auto;
-  right: 0;
-  width: 60%;
+  left: 50%;
+  width: 100%;
+  right:0;
+  padding: 15px;
+  overflow: visible;
+  box-sizing: border-box;
 }
 
 .category-1 .category-image {
-  object-position: center center;
+  transform: scale(2.0);
 }
 
 /* Formal - Image on the right side, takes more space */
 .category-2 .category-image-container {
-  left: auto;
+  left: 0;
   right: 0;
-  width: 55%;
+  width: 100%;
 }
 
 .category-2 .category-image {
-  object-position: center center;
+  /* object-position: 100% 30% ; */
+  transform: scale(1.8);
+  margin-left: auto;
+  width: 60%;
 }
 
 /* Party - Image on the right side */
 .category-3 .category-image-container {
-  left: auto;
+  left: 40%;
   right: 0;
-  width: 55%;
 }
 
 .category-3 .category-image {
-  object-position: center center;
+  object-position: 80% 0% ;
+  transform: scale(1.8);
 }
 
 /* Gym - Image on the right side */
 .category-4 .category-image-container {
-  left: auto;
-  right: 0;
-  width: 60%;
+  left: 0;
+  right: -5px;
 }
 
 .category-4 .category-image {
-  object-position: center center;
+  object-position: 70% 25%;
+  transform: scale(1.6);
 }
 
 /* ===== RESPONSIVE ===== */

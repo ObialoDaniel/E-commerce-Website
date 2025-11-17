@@ -130,15 +130,24 @@
           <div v-if="activeTab === 'Rating & Reviews'" class="tab-content">
             <slot name="reviews">
               <div class="reviews-header">
-                <h2> All Reviews <span class="review-count">{{ productData.reviewCount }}</span></h2>
+                <h2> All Reviews <span class="review-count">({{ productData.reviewCount }})</span></h2>
                 <div class="reviews-controls">
+                  <button class="filter-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="4" y1="6" x2="16" y2="6"></line>
+                      <line x1="4" y1="12" x2="20" y2="12"></line>
+                      <line x1="4" y1="18" x2="12" y2="18"></line>
+                      <circle cx="18" cy="6" r="2"></circle>
+                      <circle cx="8" cy="18" r="2"></circle>
+                    </svg>
+                  </button>
                   <select v-model="sortOption" class="sort-dropdown">
                     <option value="latest">Latest</option>
                     <option value="highest">Highest Rated</option>
                     <option value="lowest">Lowest Rated</option>
                   </select>
-              </div>
-                <button class="write-review-btn">Write a Review</button>
+                  <button class="write-review-btn">Write a Review</button>
+                </div>
               </div>
               <!-- Reviews Grid -->
               <div class="reviews-grid">
@@ -655,7 +664,7 @@ export default {
   padding: 12px 24px;
   border: 1px solid #e5e5e5;
   border-radius: 24px;
-  background: white;
+  background: #e5e5e5;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s;
@@ -729,37 +738,38 @@ export default {
   background: #333;
 }
 
-/* Tabs */
 .product-tabs {
-  margin-bottom: 60px;
+  margin-top: 3rem;
 }
 
 .tabs-header {
   display: flex;
-  gap: 24px;
-  border-bottom: 1px solid #e5e5e5;
-  margin-bottom: 32px;
+  gap: 0;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 2rem;
+  justify-content: center;
 }
 
 .tab-button {
-  padding: 16px 0;
+  padding: 1.25rem 10rem;
+  background: none;
   border: none;
-  background: transparent;
-  font-size: 16px;
-  font-weight: 500;
-  color: #666;
   cursor: pointer;
+  font-size: 1.25rem;
+  color: rgba(0, 0, 0, 0.6);
   position: relative;
-  transition: color 0.2s;
+  transition: all 0.3s ease;
+  font-weight: 400;
+  white-space: nowrap;
 }
 
 .tab-button:hover {
-  color: #000;
+  color: #111;
 }
 
 .tab-button.active {
-  color: #000;
-  font-weight: 600;
+  color: #111;
+  font-weight: 500;
 }
 
 .tab-button.active::after {
@@ -769,65 +779,126 @@ export default {
   left: 0;
   right: 0;
   height: 2px;
-  background: #000;
+  background-color: #111;
 }
 
 .tab-content {
-  min-height: 300px;
+  animation: fadeIn 0.3s ease-in;
 }
 
-.tab-panel h2 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 24px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+/* ==================== REVIEWS SECTION ==================== */
 .reviews-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
-}
-.rewiews-header h2 {
-  font-size: 24px;
-  font-weight: 700;
-  margin: 0;
-}
-
-.review-count {
-  color: #666;
-  font-weight: 400;
-  font-size: 14px;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
   gap: 1rem;
 }
 
-.sort-dropdown select {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-weight: 500;
-  background: white;
+.reviews-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #111;
 }
 
+.review-count {
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 1.5rem;
+}
+
+.reviews-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.filter-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.filter-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.filter-btn svg {
+  width: 20px;
+  height: 20px;
+  color: #111;
+}
+
+/* Sort Dropdown */
+.sort-dropdown {
+  padding: 0.875rem 2.5rem 0.875rem 1.25rem;
+  border: none;
+  border-radius: 62px;
+  background-color: #f0f0f0;
+  font-size: 1rem;
+  color: #111;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23000000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  transition: all 0.3s ease;
+  font-weight: 400;
+  min-width: 130px;
+}
+
+.sort-dropdown:hover {
+  background-color: #e0e0e0;
+}
+
+.sort-dropdown:focus {
+  outline: none;
+}
+
+/* Write Review Button */
 .write-review-btn {
-  background: #000;
+  padding: 0.875rem 3.5rem;
+  background-color: #000;
   color: white;
   border: none;
-  border-radius: 24px;
-  padding: 12px 24px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 62px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .write-review-btn:hover {
-  background: #333;
+  background-color: #333;
+  transform: scale(1.02);
+}
+
+.write-review-btn:active {
+  transform: scale(0.98);
 }
 
 .reviews-grid {

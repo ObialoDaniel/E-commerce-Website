@@ -234,4 +234,57 @@ import arrowRight from '@/components/arrowRight.vue';
     padding: 24px;
   }
 }
+
+@media (min-width: 320px) and (max-width: 425px) {
+
+  .testimonials {
+    padding: 2rem 0;
+  }
+
+  .testimonials-container {
+    padding: 0 16px; 
+  }
+
+  .testimonials-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .testimonials-title {
+    font-size: 22px;
+    line-height: 1.15;
+    margin: 0;
+  }
+  
+  .testimonials-grid {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 16px;
+
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+
+    padding-bottom: 10px;
+
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .testimonials-grid::-webkit-scrollbar {
+    display: none; /* Chrome */
+  }
+
+  .testimonial-card {
+    min-width: 280px; 
+    max-width: 280px;
+
+    scroll-snap-align: start;
+
+    border-radius: 14px;
+    padding: 24px;
+  }
+}
+
 </style>

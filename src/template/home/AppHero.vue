@@ -74,11 +74,13 @@ export default {
 }
 
 .hero-title {
-  font-size: 64px;
-  font-weight: bold;
+  font-size:var(--font-size-hero);
+  font-weight: var(--font-weight-bold);
   margin-bottom: 20px;
   color: #222;
-  line-height: 64px;
+  line-height: 1.1;
+  font-family: var(--font-primary);
+  letter-spacing: -0.1em;
 }
 
 .hero-description {
@@ -155,6 +157,126 @@ export default {
   object-position: top center;
   border-radius: 10px;
 }
+/* Tablet */
+@media (max-width: 1024px) {
+  .hero-title {
+    font-size: 48px;
+  }
 
+  .stat-number {
+    font-size: 32px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 20px 16px 0;
+    min-height: auto;
+  }
+
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding-bottom: 0;
+  }
+
+  .hero-content {
+    padding: 0;
+    z-index: 2;
+    position: relative;
+  }
+
+  .hero-title {
+    font-size: 36px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .hero-description {
+    font-size: 14px;
+    margin-bottom: 20px;
+    max-width: 100%;
+    line-height: 1.5;
+  }
+
+  .shop-now-btn {
+    width: 100%;
+    text-align: center;
+    padding: 16px 20px;
+    border-radius: 62px;
+    margin-bottom: 24px;
+  }
+
+  .stats-section {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-item {
+    min-width: auto;
+    flex: 1;
+  }
+
+  .stat-number {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .stat-divider {
+    height: 40px;
+    opacity: 0.5;
+  }
+
+  .image-container {
+    height: 450px;
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    margin-right: -16px;
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+
+  .model-image {
+    border-radius: 0;
+    object-position: top center;
+  }
+}
+
+/* Small mobile */
+@media (min-width: 320px) and (max-width: 480px) {
+  .hero-title {
+    font-size: 32px;
+  }
+
+  .hero-description {
+    font-size: 13px;
+  }
+
+  .stat-number {
+    font-size: 20px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .image-container {
+    height: 400px;
+  }
+
+ .shop-now-btn {
+    width: 80%;
+    text-align: center;
+    padding: 16px 30px;
+    border-radius: 62px;
+    margin-bottom: 24px;
+  }
+}
 
 </style>

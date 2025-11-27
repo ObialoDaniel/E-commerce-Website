@@ -330,18 +330,105 @@ export default {
   }
 }
 
-@media (max-width: 480px) {
-  .products-grid {
-    grid-template-columns: 1fr;
+/* ===== MOBILE SWIPER (320px - 425px) ===== */
+@media (min-width: 320px) and (max-width: 425px) {
+  .new-arrivals-section {
+    padding: 40px 0;
+  }
+
+  .new-arrivals-container {
+    padding: 0;
   }
 
   .section-title {
-    font-size: var(--font-size-xl);
+    font-size: 32px;
+    margin-bottom: 32px;
+    padding: 0 16px;
+  }
+
+  .products-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    grid-template-columns: unset;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 0 16px 20px 16px;
+    margin-bottom: 24px;
+    -webkit-overflow-scrolling: touch;
+
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+  }
+
+  .products-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-card {
+    flex: 0 0 auto;
+    width: 198px;
+    scroll-snap-align: start;
+  }
+
+  .product-image-container {
+    width: 198px;
+    height: 200px;
+    aspect-ratio: unset;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .product-name {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .product-rating {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .rating-stars {
+    gap: 4px;
+  }
+
+  .star svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .rating-value {
+    font-size: 14px;
+  }
+
+  .price-current {
+    font-size: 24px;
+  }
+
+  .price-original {
+    font-size: 24px;
+  }
+
+  .price-discount {
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+
+  .view-all-container {
+    padding: 0 16px;
+    margin-top: 0;
   }
 
   .view-all-btn {
     width: 100%;
     text-align: center;
+    padding: 16px;
+    border-radius: 62px;
   }
 }
 </style>

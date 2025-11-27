@@ -425,19 +425,72 @@ export default {
   }
 }
 
-@media (max-width: 480px) {
-  .footer-grid {
-    grid-template-columns: 1fr;
+@media (min-width: 320px) and (max-width: 425px) {
+  /* Fix container layout */
+  .newsletter-section {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    padding: 0 8px;
+    z-index: 10;
+    margin-bottom: -200px;
   }
 
   .newsletter-content {
-    padding: var(--space-xl);
+    padding: 2rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    border-radius: 18px;
+  }
+  .newsletter-title {
+    font-size: 1.6rem;
+    line-height: 1.2;
+    max-width: 100%;
+    margin-bottom: 0;
   }
 
-  .payment-icon {
-    height: 26px;
-    min-width: 42px;
-    padding: 5px 8px;
+  .newsletter-form {
+    width: 100%;
+    padding: 0;
+    gap: 1rem;
+  }
+
+  .email-input-wrapper {
+    width: 100%;
+  }
+
+  .email-input {
+    padding: 1rem 1rem 1rem 3rem;
+    font-size: 1rem;
+  }
+
+  .subscribe-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  /* Footer grid */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    text-align: left;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+ 
+ 
+  .payment-methods {
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 4px;
   }
 }
 </style>

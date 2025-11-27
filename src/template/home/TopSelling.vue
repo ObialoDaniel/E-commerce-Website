@@ -331,7 +331,40 @@ export default {
 
 @media (max-width: 480px) {
   .products-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-wrap: nowrap;
+    grid-template-columns: unset;
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 0 16px 20px 16px;
+    margin-bottom: 24px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    animation: autoScroll 15s linear infinite;
+  }
+
+  .products-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-card {
+    flex: 0 0 auto;
+    width: 198px;
+    scroll-snap-align: start;
+  }
+
+  .product-image-container {
+    width: 198px;
+    height: 200px;
+    aspect-ratio: unset;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
   }
 
   .section-title {
@@ -342,5 +375,5 @@ export default {
     width: 100%;
     text-align: center;
   }
-}
+ 
 </style>

@@ -311,4 +311,64 @@ export default {
     width: 65% !important;
   }
 }
+
+@media (min-width: 320px) and (max-width: 425px) {
+  .browse-style-section {
+    margin: 0 2px;
+  }
+  .browse-style-container {
+    padding: 0 20px;
+  }
+  .categories-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 180px);
+    gap: 14px;
+  }
+
+  .category-card {
+    border-radius: 16px;
+  }
+
+  .category-name {
+    font-size: 22px;
+    top: 14px;
+    left: 18px;
+  }
+
+  /* IMAGE CONTAINER FIX */
+  .category-image-container {
+    position: absolute;
+    right: 0;
+    width: 60% !important;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ---- INDIVIDUAL IMAGE FIXES ---- */
+
+  /* Casual */
+  .category-1 .category-image {
+    transform: scale(2.55);
+  }
+
+  /* Formal */
+  .category-2 .category-image {
+    transform: scale(1.75);
+    object-position: 75% center; 
+    width: 100%;
+  }
+
+  /* Party */
+  .category-3 .category-image {
+    transform: scale(1.55);
+    object-position: 80% 10%;
+  }
+
+  /* Gym */
+  .category-4 .category-image {
+    transform: scale(1.45);
+    object-position: 70% center;
+  }
+}
+
 </style>

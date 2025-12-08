@@ -157,10 +157,6 @@ export default {
 </script>
 
 <style scoped>
-.footer {
-  margin-top: auto;
-}
-
 /* Newsletter Section */
 .newsletter-section {
   position: absolute;
@@ -251,19 +247,19 @@ export default {
 
 .section-before-footer {
   position: relative;
-  padding-bottom: 150px; 
+  padding-bottom: 150px;
 }
 
 /* Footer Main */
 .footer {
   margin-top: auto;
   position: relative;
-  padding-top: 150px; 
+  padding-top: 150px;
 }
 
 .footer-main {
   background-color: var(--color-bg-secondary);
-  padding: 200px 0 var(--space-xl); 
+  padding: 200px 0 var(--space-xl);
 }
 
 .footer-grid {
@@ -485,8 +481,8 @@ export default {
     gap: 1.5rem;
     text-align: center;
   }
- 
- 
+
+
   .payment-methods {
     flex-wrap: nowrap;
     justify-content: center;

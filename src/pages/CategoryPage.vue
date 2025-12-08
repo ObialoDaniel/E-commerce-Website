@@ -2,347 +2,245 @@
   <div class="category-page">
     <AppHeader />
     <main class="container">
-     <!-- Breadcrumb Navigation -->
+      <!-- Breadcrumb -->
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <ol>
-          <li v-for="(crumb, index) in computedBreadcrumbs" :key="index">
-            <router-link v-if="index < computedBreadcrumbs.length - 1" :to="crumb.path">
-              {{ crumb.label }}
-            </router-link>
-            <span v-else class="current">{{ crumb.label }}</span>
-          </li>
+          <li><router-link to="/">Home</router-link></li>
+          <li><span class="current">Casual</span></li>
         </ol>
       </nav>
 
-      <!--Product Detail Section-->
-      <section class="product-detail">
-        <div class="product-gallery">
-          <!--Thumbnail Images-->
-          <div class="thumbnails">
-            <button
-              v-for="(image, index)  in productData.images"
-              :key="index"
-              @click="selectedImage = image"
-              :class="{ active : selectedImage === image}"
-              class="thumbnail"
-             >
-              <img :src="getImagePath(image)" :alt="`${productData.name} view ${index + 1}`" />
+      <div class="category-content">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar">
+          <div class="filters-header">
+            <h2>Filters</h2>
+            <button class="filter-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="4" y1="6" x2="16" y2="6"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="18" x2="12" y2="18"></line>
+                <circle cx="18" cy="6" r="2"></circle>
+                <circle cx="8" cy="18" r="2"></circle>
+              </svg>
             </button>
           </div>
 
-          <!--Main Image-->
-          <div class="main-image">
-            <img
-              v-if="selectedImage"
-              :src="getImagePath(selectedImage)"
-              :alt="productData.name"
-            />
-          </div>
-        </div>
-
-        <!--Product Info-->
-        <div class="product-info">
-          <h1 class="product-title">{{ productData.name }}</h1>
-
-           <!-- Rating -->
-          <div class="rating">
-            <div class="stars">
-              <span v-for="star in 5" :key="star" class="star" :class="{ filled: star <= Math.floor(productData.rating) }">
-                ★
-              </span>
+          <!-- Categories Filter -->
+          <div class="filter-section">
+            <div
+              v-for="category in categories"
+              :key="category"
+              class="filter-item"
+            >
+              <label>
+                <input type="checkbox" :value="category" v-model="selectedCategories">
+                <span>{{ category }}</span>
+              </label>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
             </div>
-            <span class="rating-value">{{ productData.rating }}/5</span>
-          </div>
-          <!--Price-->
-          <div class="price-section">
-            <span class="current-price">${{ productData.price }}</span>
-            <span v-if="productData.originalPrice" class="original-price">${{ productData.originalPrice }}</span>
-            <span v-if="productData.discount" class="discount"> {{ productData.discount }} %</span>
           </div>
 
-          <!--Description-->
-          <p class="description">{{ productData.description }}</p>
+          <hr>
 
-          <!--Color Selection-->
-          <div class="option-group"> <hr>
-            <label class="option-label"> Select Colors</label>
-            <div class="color-options">
+          <!-- Price Filter -->
+          <div class="filter-section">
+            <h3 class="filter-title">Price</h3>
+            <div class="price-range">
+              <input type="range" min="0" max="500" v-model="priceRange" class="range-slider">
+              <div class="price-labels">
+                <span>${{ priceRange }}</span>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Colors Filter -->
+          <div class="filter-section">
+            <h3 class="filter-title">Colors</h3>
+            <div class="color-grid">
               <button
-                v-for="color in productData.colors"
+                v-for="color in colors"
                 :key="color.name"
-                :class="{ active: selectedColor === color}"
                 :style="{ backgroundColor: color.hex }"
-                :aria-label="color.name"
+                :class="{ active: selectedColors.includes(color.name) }"
+                @click="toggleColor(color.name)"
                 class="color-option"
-                >
-                <span v-if="selectedColor === color" class="checkmark">✓</span>
-             </button>
+                :aria-label="color.name"
+              >
+                <svg v-if="selectedColors.includes(color.name)" width="16" height="16" viewBox="0 0 16 16" fill="white">
+                  <path d="M13.5 4L6 11.5L2.5 8"/>
+                </svg>
+              </button>
             </div>
           </div>
-          <!--Size Selection-->
-          <div class="option-group"> <hr>
-            <label class="option-label">Choose Size</label>
-            <div class="size options">
+
+          <hr>
+
+          <!-- Size Filter -->
+          <div class="filter-section">
+            <h3 class="filter-title">Size</h3>
+            <div class="size-grid">
               <button
-                v-for="size in productData.sizes"
+                v-for="size in sizes"
                 :key="size"
-                @click="selectedSize = size"
-                :class="{ active: selectedSize === size }"
+                @click="toggleSize(size)"
+                :class="{ active: selectedSizes.includes(size) }"
                 class="size-option"
               >
                 {{ size }}
               </button>
             </div>
-          </div><hr>
+          </div>
 
-          <!--Add to Cart Button-->
-          <div class="cart-actions">
-            <div class="quantity-selector">
-              <button @click="decreaseQuantity" aria-label="Decrease quantity">-</button>
-              <input v-model.number="quantity" type="number" min="1" readonly />
-              <button @click="increaseQuantity" aria-label="Increase quantity">+</button>
+          <hr>
+
+          <!-- Dress Style Filter -->
+          <div class="filter-section">
+            <h3 class="filter-title">Dress Style</h3>
+            <div
+              v-for="style in dressStyles"
+              :key="style"
+              class="filter-item"
+            >
+              <label>
+                <input type="checkbox" :value="style" v-model="selectedStyles">
+                <span>{{ style }}</span>
+              </label>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
             </div>
-            <button class="add-to-cart-btn" @click="addToCart">Add to Cart</button>
           </div>
-        </div>
-      </section>
-      <!--Tabs Section (Product Details, Review, FAQS)-->
-      <section class="product-tabs">
-        <div class="tabs-header">
-          <button
-            v-for="tab in tabs"
-            :key="tab"
-            @click="activeTab = tab"
-            :class="{ active: activeTab === tab }"
-            class="tab-button"
-          >
-            {{ tab }}
-          </button>
-        </div>
-        <div class="tab-current">
-          <!--Product Details tab-->
-          <div v-if="activeTab === 'Product Details'" class="tab-content">
-            <slot name="product-details">
-              <h2>Product Details</h2>
-              <p>{{ productData.description }}</p>
-            </slot>
-          </div>
-          <!--Rating & Reviews Tab-->
-          <div v-if="activeTab === 'Rating & Reviews'" class="tab-content">
-            <slot name="reviews">
-              <div class="reviews-header">
-                <h2> All Reviews <span class="review-count">({{ productData.reviewCount }})</span></h2>
-                <div class="reviews-controls">
-                  <button class="filter-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <line x1="4" y1="6" x2="16" y2="6"></line>
-                      <line x1="4" y1="12" x2="20" y2="12"></line>
-                      <line x1="4" y1="18" x2="12" y2="18"></line>
-                      <circle cx="18" cy="6" r="2"></circle>
-                      <circle cx="8" cy="18" r="2"></circle>
-                    </svg>
-                  </button>
-                  <select v-model="sortOption" class="sort-dropdown">
-                    <option value="latest">Latest</option>
-                    <option value="highest">Highest Rated</option>
-                    <option value="lowest">Lowest Rated</option>
-                  </select>
-                  <button class="write-review-btn">Write a Review</button>
-                </div>
+
+          <button class="apply-filters-btn">Apply Filter</button>
+        </aside>
+
+        <!-- Products Section -->
+        <section class="products-section">
+          <!-- Products Header -->
+          <div class="products-header">
+            <h1 class="page-title">Casual</h1>
+            <div class="products-info">
+              <span class="products-count">Showing 1-{{ filteredProducts.length }} of {{ totalProducts }} Products</span>
+              <div class="sort-controls">
+                <label for="sort">Sort by:</label>
+                <select id="sort" v-model="sortOption" class="sort-dropdown">
+                  <option value="popular">Most Popular</option>
+                  <option value="newest">Newest</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                </select>
               </div>
-              <!-- Reviews Grid -->
-              <div class="reviews-grid">
-                <div
-                  v-for="(review, index) in visibleReviews"
-                  :key="index"
-                  class="review-card"
-                >
-                  <div class="review-top">
-                    <div class="stars">
-                       <span v-for="star in 5"
-                          :key="star" class="star"
-                          :class="{
-                            filled: star <= Math.floor(review.rating),
-                            half: star === Math.ceil(review.rating) && review.rating % 1 !== 0
-                          }">
-                         ★
-                        </span>
-                    </div>
-                    <button class="menu-btn">⋯</button>
+            </div>
+          </div>
+
+          <!-- Products Grid -->
+          <div class="products-grid">
+            <router-link
+              v-for="product in filteredProducts"
+              :key="product.id"
+              :to="`/product/${product.id}`"
+              class="product-card"
+            >
+              <div class="product-image">
+                <img :src="product.image" :alt="product.name">
+              </div>
+              <div class="product-info">
+                <h3 class="product-name">{{ product.name }}</h3>
+                <div class="rating">
+                  <div class="stars">
+                    <span v-for="star in 5" :key="star" class="star" :class="{
+                      filled: star <= Math.floor(product.rating)
+                    }">★</span>
                   </div>
-
-                  <div class="review-author">
-                    <span class="name">{{ review.name }}</span>
-                    <Check v-if="review.verified" class="verified-icon" />
-                  </div>
-
-                  <p class="review-text">"{{ review.text }}"</p>
-                  <p class="review-date">Posted on {{ review.date }}</p>
+                  <span class="rating-value">{{ product.rating }}/5</span>
                 </div>
-
+                <div class="price-section">
+                  <span class="current-price">${{ product.price }}</span>
+                  <span v-if="product.originalPrice" class="original-price">${{ product.originalPrice }}</span>
+                  <span v-if="product.discount" class="discount">-{{ product.discount }}%</span>
+                </div>
               </div>
-              <!-- Load more button -->
-              <div class="load-more-container" v-if="visibleCount < reviews.length">
-                <button class="load-more-btn" @click="loadMoreReviews">
-                  Load More Reviews
-                </button>
-              </div>
-            </slot>
+            </router-link>
           </div>
-          <!--FAQS Tab-->
-          <div v-if="activeTab === 'FAQs'" class="tab-content">
-            <slot name="faqs">
-              <h2> Frequently Asked Questions </h2>
-            </slot>
-          </div>
-        </div>
-      </section>
-      <section class="you-might-like-section">
-        <h2 class="you-might-like-title">YOU MIGHT ALSO LIKE</h2>
 
-        <div class="similar-products-grid">
-          <div v-for="product in products" :key="product.id" class="similar-product-card">
-            <div class="similar-product-image">
-              <img :src="product.image" :alt="product.name">
+          <!-- Pagination -->
+          <div class="pagination">
+            <button class="pagination-btn prev" :disabled="currentPage === 1">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Previous
+            </button>
+
+            <div class="page-numbers">
+              <button
+                v-for="page in totalPages"
+                :key="page"
+                @click="currentPage = page"
+                :class="{ active: currentPage === page }"
+                class="page-btn"
+              >
+                {{ page }}
+              </button>
             </div>
 
-            <div class="similar-product-info">
-              <h3 class="similar-product-name">{{ product.name }}</h3>
-
-              <div class="rating">
-                <div class="stars">
-                  <span v-for="star in 5" :key="star" class="star" :class="{
-                    filled: star <= Math.floor(product.rating),
-                    half: star === Math.ceil(product.rating) && product.rating % 1 !== 0
-                  }">
-                    ★
-                  </span>
-                </div>
-                <span class="rating-value">{{ product.rating }}/5</span>
-              </div>
-
-              <div class="price-section">
-                <span class="current-price">${{ product.price }}</span>
-                <span v-if="product.originalPrice" class="original-price">${{ product.originalPrice }}</span>
-                <span v-if="product.discount" class="discount">-{{ product.discount }}%</span>
-              </div>
-            </div>
+            <button class="pagination-btn next">
+              Next
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </button>
           </div>
-        </div>
-     </section>
+        </section>
+      </div>
     </main>
     <AppFooter />
   </div>
 </template>
 
 <script>
-import Check from "@/components/check.vue";
-
 export default {
   name: 'CategoryPage',
-  components: {Check},
-  props: {
-    id: {
-      String,
-      required: true
-    }
-  },
-
   data() {
     return {
-      selectedImage: '',
-      selectedColor: null,
-      selectedSize: 'Large',
-      quantity: 1,
-      activeTab: 'Rating & Reviews',
-      tabs: ['Product Details', 'Rating & Reviews', ' FAQs'],
+      categories: ['T-shirts', 'Shorts', 'Shirts', 'Hoodie', 'Jeans'],
+      selectedCategories: [],
 
-      productData: {
-      id: this.id,
-      name: 'ONE LIFE GRAPHIC T-SHIRT',
-      rating: 4.5,
-      price: 260,
-      originalPrice: 300,
-      discount: 40,
-      description: 'This graphic t-shirt which is perfect for any occasion. Crafted from a soft and breathable fabric, it offers superior comfort and style.',
-      image: 'graphic-tee.png',
-      images: [
-        "graphic-tee1.png",
-        "graphic-tee2.png",
-        "graphic-tee3.png",
-      ],
+      priceRange: 250,
+
       colors: [
-        { name: 'Olive', hex: '#4A4A3A' },
-        { name: 'Dark Green', hex: '#2D4A3E' },
-        { name: 'Navy', hex: '#2B3A4A' },
+        { name: 'Green', hex: '#00C12B' },
+        { name: 'Red', hex: '#F50606' },
+        { name: 'Yellow', hex: '#F5DD06' },
+        { name: 'Orange', hex: '#F57906' },
+        { name: 'Cyan', hex: '#06CAF5' },
+        { name: 'Blue', hex: '#063AF5' },
+        { name: 'Purple', hex: '#7D06F5' },
+        { name: 'Pink', hex: '#F506A4' },
+        { name: 'White', hex: '#FFFFFF' },
+        { name: 'Black', hex: '#000000' }
       ],
-      sizes: ['Small', 'Medium', 'Large', 'X-Large'],
-      reviewCount: 451,
-      category: 'T-shirts',
-      gender: 'Men',
-      categorySlug: 'men'
-      },
+      selectedColors: [],
 
-      selectedSort: "latest",
-      visibleCount: 4,
-      reviews: [
-        {
-          name: "Samantha D.",
-          verified: true,
-          rating: 4.5,
-          text: "I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt.",
-          date: "August 14, 2023",
-        },
-        {
-          name: "Alex M.",
-          verified: true,
-          rating: 4,
-          text:"The t-shirt exceeded my expectations! The colors are vibrant and the print quality is top-notch. Being a UI/UX designer myself, I'm quite picky about aesthetics, and this t-shirt definitely gets a thumbs up from me.",
-          date: "August 15, 2023",
-        },
-        {
-          name: "Ethan R.",
-          verified: true,
-          rating: 3.5,
-          text: "This t-shirt is a must-have for anyone who appreciates good design. The minimalistic yet stylish pattern caught my eye, and the fit is perfect. I can see the designer's touch in every aspect of this shirt.",
-          date: "August 16, 2023",
-        },
-        {
-          name: "Olivia P.",
-          verified: true,
-          rating: 4,
-          text: "As a UI/UX enthusiast, I value simplicity and functionality. This t-shirt not only represents those principles but also feels great to wear. It's evident that the designer poured their creativity into making this t-shirt stand out.",
-          date: "August 17, 2023",
-        },
-        {
-          name: "Liam K.",
-          verified: true,
-          rating: 4,
-          text: "This t-shirt is a fusion of comfort and creativity. The fabric is soft, and the design speaks volumes about the designer's skill. It's like wearing a piece of art that reflects my passion for both design and fashion.",
-          date: "August 18, 2023",
-        },
-        {
-          name: "Ava H.",
-          verified: true,
-          rating: 4.5,
-          text: "I'm not just wearing a t-shirt; I'm wearing a piece of design philosophy. The intricate details and thoughtful layout of the design make this shirt a conversation starter.",
-          date: "August 19, 2023",
-        },
-      ],
+      sizes: ['XX-Small', 'X-Small', 'Small', 'Medium', 'Large', 'X-Large', 'XX-Large', '3X-Large', '4X-Large'],
+      selectedSizes: [],
+
+      dressStyles: ['Casual', 'Formal', 'Party', 'Gym'],
+      selectedStyles: [],
+
+      sortOption: 'popular',
+      currentPage: 1,
+      totalPages: 10,
 
       products: [
         {
           id: 1,
-          name: "Polo with Contrast Trims",
-          image:'/src/assets/img/polo-contrast.png',
-          rating: 4.0,
-          price: 212,
-          originalPrice: 242,
-          discount: 20
-        },
-        {
-          id: 2,
-          name: "Gradient Graphic T-shirt",
+          name: 'Gradient Graphic T-shirt',
           image: '/src/assets/img/gradient-tshirt.png',
           rating: 3.5,
           price: 145,
@@ -350,8 +248,8 @@ export default {
           discount: null
         },
         {
-          id: 3,
-          name: "Polo with Tipping Details",
+          id: 2,
+          name: 'Polo with Tipping Details',
           image: '/src/assets/img/polo-tipping.png',
           rating: 4.5,
           price: 180,
@@ -359,217 +257,463 @@ export default {
           discount: null
         },
         {
-          id: 4,
-          name: "Black Striped T-shirt",
+          id: 3,
+          name: 'Black Striped T-shirt',
           image: '/src/assets/img/stripped-tshirt.png',
           rating: 5.0,
           price: 120,
           originalPrice: 160,
           discount: 30
+        },
+        {
+          id: 4,
+          name: 'Skinny Fit Jeans',
+          image: '/src/assets/img/Jeans.png',
+          rating: 3.5,
+          price: 240,
+          originalPrice: 260,
+          discount: 20
+        },
+        {
+          id: 5,
+          name: 'Checkered Shirt',
+          image: '/src/assets/img/checkered.png',
+          rating: 4.5,
+          price: 180,
+          originalPrice: null,
+          discount: null
+        },
+        {
+          id: 6,
+          name: 'Sleeve Striped T-shirt',
+          image: '/src/assets/img/Sleeve.png',
+          rating: 4.5,
+          price: 130,
+          originalPrice: 160,
+          discount: 30
+        },
+        {
+          id: 7,
+          name: 'Vertical Striped Shirt',
+          image: '/src/assets/img/polo-contrast.png',
+          rating: 5.0,
+          price: 212,
+          originalPrice: 232,
+          discount: 20
+        },
+        {
+          id: 8,
+          name: 'Courage Graphic T-shirt',
+          image: '/src/assets/img/T-shirt.png',
+          rating: 4.0,
+          price: 145,
+          originalPrice: null,
+          discount: null
+        },
+        {
+          id: 9,
+          name: 'Loose Fit Bermuda Shorts',
+          image: '/src/assets/img/polo-contrast.png',
+          rating: 3.0,
+          price: 80,
+          originalPrice: null,
+          discount: null
         }
       ]
     }
   },
-
   computed: {
-    computedBreadcrumbs() {
-      return [
-        { label: 'Home', path: '/' },
-        { label: 'Shop', path: '/category' },
-        { label: this.productData.gender, path: `/category/${this.productData.categorySlug}` },
-        { label: this.productData.category, path: this.$route.path }
-      ]
+    filteredProducts() {
+      return this.products
     },
-
-    sortedReviews() {
-      const sorted = [...this.reviews];
-      if (this.selectedSort === "latest") return sorted.reverse();
-      if (this.selectedSort === "oldest") return sorted;
-      if (this.selectedSort === "high") return sorted.sort((a, b) => b.rating - a.rating);
-      if (this.selectedSort === "low") return sorted.sort((a, b) => a.rating - b.rating);
-      return sorted;
-    },
-    visibleReviews() {
-      return this.sortedReviews.slice(0, this.visibleCount);
+    totalProducts() {
+      return this.products.length
     }
   },
-
-
-  mounted() {
-    this.selectedImage = this.productData.image
-    this.selectedColor = this.productData.colors[0]
-  },
-
   methods: {
-    getImagePath(image) {
-      try {
-        return new URL(`../assets/img/${image}`, import.meta.url).href
-      } catch (error) {
-        console.error('error Loading image: ${image}', error)
-        return ''
+    toggleColor(colorName) {
+      const index = this.selectedColors.indexOf(colorName)
+      if (index > -1) {
+        this.selectedColors.splice(index, 1)
+      } else {
+        this.selectedColors.push(colorName)
       }
     },
-
-    increaseQuantity() {
-      this.quantity++
-    },
-
-    decreaseQuantity() {
-      if (this.quantity > 1) {
-        this.quantity--
+    toggleSize(size) {
+      const index = this.selectedSizes.indexOf(size)
+      if (index > -1) {
+        this.selectedSizes.splice(index, 1)
+      } else {
+        this.selectedSizes.push(size)
       }
-    },
-
-    addToCart() {
-      const cartItem = {
-        product: this.productData,
-        color: this.selectedColor,
-        size: this.selectedSize,
-        quantity: this.quantity
-      }
-      this.$emit('add-to-cart', cartItem)
-
-      console.log('Added to cart:', cartItem)
-      alert(`Added ${this.quantity} ${this.productData.name} to cart!`)
-    },
-
-    loadMore() {
-      this.visibleCount += 2;
     }
   }
 }
 </script>
 
 <style scoped>
-.product-detail-page {
+.category-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .container {
-  max-width: 1280px;
+  max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 20px;
+  padding: var(--space-lg);
   flex: 1;
 }
 
 /* Breadcrumb */
 .breadcrumb {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-xl);
 }
 
 .breadcrumb ol {
   display: flex;
-  gap: 8px;
+  gap: var(--space-sm);
   list-style: none;
   padding: 0;
   margin: 0;
-  font-size: 14px;
-  color: #666;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
 .breadcrumb li:not(:last-child)::after {
   content: '>';
-  margin-left: 8px;
+  margin-left: var(--space-sm);
 }
 
 .breadcrumb a {
-  color: #666;
+  color: var(--color-text-secondary);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 .breadcrumb a:hover {
-  color: #000;
+  color: var(--color-text-primary);
 }
 
 .breadcrumb .current {
-  color: #000;
-  font-weight: 500;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
 }
 
-/* Product Detail Section */
-.product-detail {
+/* Layout */
+.category-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  margin-bottom: 60px;
+  grid-template-columns: 260px 1fr;
+  gap: var(--space-xl);
 }
 
-/* Product Gallery */
-.product-gallery {
+/* Filters Sidebar */
+.filters-sidebar {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  height: fit-content;
+  position: sticky;
+  top: var(--space-lg);
+  background-color: var(--color-bg-primary);
+}
+
+.filters-header {
   display: flex;
-  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xl);
 }
 
-.thumbnails {
+.filters-header h2 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.filter-icon {
+  background: var(--color-bg-secondary);
+  border: none;
+  border-radius: var(--radius-full);
+  width: 36px;
+  height: 36px;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.thumbnail {
-  width: 100px;
-  height: 100px;
-  border: 2px solid #e5e5e5;
-  border-radius: 12px;
-  overflow: hidden;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  background: white;
-  padding: 0;
-  transition: border-color 0.2s;
+  transition: background var(--transition-fast);
 }
 
-.thumbnail:hover,
-.thumbnail.active {
-  border-color: #000;
+.filter-icon:hover {
+  background: var(--color-border);
 }
 
-.thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.filter-section {
+  margin-bottom: var(--space-xl);
 }
 
-.main-image {
+.filter-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-md);
+  color: var(--color-text-primary);
+}
+
+.filter-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) 0;
+}
+
+.filter-item label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
   flex: 1;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #f5f5f5;
-  max-height: 530px;
 }
 
-.main-image img {
+.filter-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.filter-item span {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.filter-item svg {
+  color: var(--color-text-muted);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-lg) 0;
+}
+
+/* Price Range */
+.price-range {
+  padding: var(--space-sm) 0;
+}
+
+.range-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.price-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-md);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+/* Colors Grid */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-md);
+}
+
+.color-option {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+}
+
+.color-option.active {
+  border: 2px solid var(--color-text-primary);
+}
+
+/* Size Grid */
+.size-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+}
+
+.size-option {
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-secondary);
+  border: none;
+  border-radius: var(--radius-xl);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.size-option:hover {
+  background: var(--color-border);
+}
+
+.size-option.active {
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+}
+
+/* Apply Filters Button */
+.apply-filters-btn {
+  width: 100%;
+  padding: var(--space-md);
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  margin-top: var(--space-xl);
+  transition: background var(--transition-fast);
+}
+
+.apply-filters-btn:hover {
+  opacity: 0.9;
+}
+
+/* Products Section */
+.products-section {
+  flex: 1;
+}
+
+.products-header {
+  margin-bottom: var(--space-xl);
+}
+
+.page-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-category);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-md);
+  color: var(--color-text-primary);
+}
+
+.products-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.sort-dropdown {
+  padding: var(--space-sm) var(--space-2xl) var(--space-sm) var(--space-md);
+  border: none;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-xl);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23000000' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-md) center;
+}
+
+/* Products Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+  margin-bottom: var(--space-2xl);
+}
+
+.product-card {
+  text-decoration: none;
+  transition: transform var(--transition-normal);
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+}
+
+.product-image {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+}
+
+.product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Product Info */
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-sm);
 }
 
-.product-title {
-  font-size: 38px;
-  font-weight: 900;
-  margin: 0;
-  line-height: 1.2;
+.product-name {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
 }
 
 .rating {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-sm);
 }
 
 .stars {
   display: flex;
-  gap: 4px;
-  color: #ddd;
-  font-size: 20px;
+  gap: 2px;
+  font-size: var(--font-size-base);
+}
+
+.star {
+  color: var(--color-border);
 }
 
 .star.filled {
@@ -577,615 +721,141 @@ export default {
 }
 
 .rating-value {
-  font-size: 14px;
-  color: #666;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
 .price-section {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-sm);
 }
 
 .current-price {
-  font-size: 32px;
-  font-weight: 700;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
 }
 
 .original-price {
-  font-size: 24px;
-  color: #999;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 
 .discount {
-  background: #FFE8E8;
-  color: #FF3333;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.description {
-  color: #666;
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* Options */
-.option-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.option-label {
-  color: #666;
-  font-size: 14px;
+  background: rgba(255, 51, 51, 0.1);
+  color: #ff3333;
+  padding: 4px 10px;
+  border-radius: var(--radius-xl);
   font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
 }
 
-.color-options,
-.size-options {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 5px;
-}
-
-.color-option {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #e5e5e5;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s;
-  padding: 0;
-}
-
-.color-option:hover,
-.color-option.active {
-  border-color: #000;
-  transform: scale(1.1);
-}
-
-.checkmark {
-  color: white;
-  font-size: 20px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-shadow: 0 0 2px rgba(0,0,0,0.5);
-}
-
-.size-option {
-  padding: 12px 24px;
-  border: 1px solid #e5e5e5;
-  border-radius: 24px;
-  background: #e5e5e5;
-  cursor: pointer;
-  /* font-weight: 500; */
-  transition: all 0.2s;
-  font-size: 14px;
-  margin-right: 8px;
-}
-
-.size-option:hover,
-.size-option.active {
-  background: #000;
-  color: white;
-  border-color: #000;
-}
-
-/* Cart Actions */
-.cart-actions {
-  display: flex;
-  gap: 16px;
-  margin-top: 12px;
-}
-
-.quantity-selector {
-  display: flex;
-  align-items: center;
-  background: #f5f5f5;
-  border-radius: 32px;
-  padding: 4px;
-}
-
-.quantity-selector button {
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 20px;
-  border-radius: 50%;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.quantity-selector button:hover {
-  background: #e5e5e5;
-}
-
-.quantity-selector input {
-  width: 60px;
-  text-align: center;
-  border: none;
-  background: transparent;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.add-to-cart-btn {
-  flex: 1;
-  background: #000;
-  color: white;
-  border: none;
-  border-radius: 32px;
-  padding: 16px 32px;
-  font-size: 16px;
-  font-weight: 400;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.add-to-cart-btn:hover {
-  background: #333;
-}
-
-.product-tabs {
-  margin-top: 3rem;
-}
-
-.tabs-header {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 2rem;
-  justify-content: center;
-}
-
-.tab-button {
-  padding: 1.25rem 10rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.25rem;
-  color: rgba(0, 0, 0, 0.6);
-  position: relative;
-  transition: all 0.3s ease;
-  font-weight: 400;
-  white-space: nowrap;
-}
-
-.tab-button:hover {
-  color: #111;
-}
-
-.tab-button.active {
-  color: #111;
-  font-weight: 500;
-}
-
-.tab-button.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #111;
-}
-
-.tab-content {
-  animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ==================== REVIEWS SECTION ==================== */
-.reviews-header {
+/* Pagination */
+.pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  margin-top: var(--space-3xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-border);
 }
 
-.reviews-header h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
+.pagination-btn {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  color: #111;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-.review-count {
-  font-weight: 400;
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 1.5rem;
+.pagination-btn:hover:not(:disabled) {
+  background: var(--color-bg-secondary);
 }
 
-.reviews-controls {
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-numbers {
   display: flex;
-  gap: 0.75rem;
-  align-items: center;
+  gap: 4px;
 }
 
-.filter-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+.page-btn {
+  width: 36px;
+  height: 36px;
   border: none;
-  background-color: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
+  transition: all var(--transition-fast);
 }
 
-.filter-btn:hover {
-  background-color: #e0e0e0;
+.page-btn:hover {
+  background: var(--color-bg-secondary);
 }
 
-.filter-btn svg {
-  width: 20px;
-  height: 20px;
-  color: #111;
+.page-btn.active {
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
 }
 
-/* Sort Dropdown */
-.sort-dropdown {
-  padding: 0.875rem 2.5rem 0.875rem 1.25rem;
-  border: none;
-  border-radius: 62px;
-  background-color: #f0f0f0;
-  font-size: 1rem;
-  color: #111;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23000000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  transition: all 0.3s ease;
-  font-weight: 400;
-  min-width: 130px;
-}
-
-.sort-dropdown:hover {
-  background-color: #e0e0e0;
-}
-
-.sort-dropdown:focus {
-  outline: none;
-}
-
-/* Write Review Button */
-.write-review-btn {
-  padding: 0.875rem 3.5rem;
-  background-color: #000;
-  color: white;
-  border: none;
-  border-radius: 62px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.write-review-btn:hover {
-  background-color: #333;
-  transform: scale(1.02);
-}
-
-.write-review-btn:active {
-  transform: scale(0.98);
-}
-
-.reviews-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-  gap: 24px;
-  margin-bottom: 2rem;
-}
-
-.review-card {
-  border: 1px solid #eee;
-  border-radius: 16px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  transition: box-shadow 0.2s;
-}
-
-.review-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.review-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.stars {
-  display: flex;
-  color: #ffd700;
-}
-
-.star {
-  color: #ddd;
-  font-size: 20px;
-}
-
-.star.filled {
-  color: #ffc107;
-}
-
-
-.star.half {
-  background: linear-gradient(90deg, #ffc107 50%, #ddd 50%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.menu-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: #999;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.menu-btn:hover {
-  color: #000;
-}
-
-.review-author {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-}
-
-.verified-icon {
-  color: #4caf50;
-  width: 18px;
-  height: 18px;
-}
-
-.review-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #444;
-}
-
-.review-date {
-  font-size: 13px;
-  color: #777;
-}
-
-.load-more-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 2rem 0 8rem 0;
-  width: 100%;
-}
-
-.load-more-btn {
-  background: none;
-  border: 2px solid #eee;
-  border-radius: 24px;
-  padding: 12px 48px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.load-more-btn:hover {
-  background: #000;
-  color: #fff;
-}
-
-.you-might-like-title {
-  text-align: center;
-  font-size: 48px;
-  font-weight: 900;
-  margin-bottom: 60px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family:(var(--font-primary));
-}
-
-.similar-products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-  margin: 2rem 0;
-}
-
-.similar-product-card {
-  border-radius: 16px;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-  cursor: pointer;
-}
-
-.similar-product-card:hover {
-  transform: translateY(-4px);
-}
-
-.similar-product-image {
-  width: 100%;
-  aspect-ratio: 1;
-  overflow: hidden;
-  background: #f5f5f5;
-  border-radius: 16px;
-}
-
-.similar-product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.similar-product-info {
-  padding: 16px 0;
-}
-
-.similar-product-name {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #000;
-}
-/* Responsive - Works from 320px to 768px */
-@media (max-width: 768px) {
-  .product-title {
-    font-size: clamp(24px, 7vw, 34px); /* Scales between 24px-34px */
-    line-height: 1.0;
-  }
-
-  .product-detail {
+/* Responsive */
+@media (max-width: 1024px) {
+  .category-content {
     grid-template-columns: 1fr;
   }
 
-  .product-gallery {
-    flex-direction: column-reverse;
+  .filters-sidebar {
+    position: static;
   }
 
-  .thumbnails {
-    flex-direction: row;
-    overflow-x: auto;
-    gap: clamp(16px, 4vw, 32px); /* Scales gap */
-    padding: 0 clamp(12px, 3vw, 16px); /* Add padding for smaller screens */
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--space-md);
   }
 
-  .thumbnail {
-    flex-shrink: 0;
-    width: clamp(60px, 15vw, 80px); /* Thumbnail size scales */
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
   }
 
-  .description {
-    font-size: clamp(13px, 3.5vw, 14px);
+  .page-title {
+    font-size: var(--font-size-2xl);
   }
 
-  .size-option {
-    padding: clamp(8px, 2vw, 10px) clamp(14px, 4vw, 18px);
-    font-size: clamp(12px, 3vw, 14px);
-  }
-
-  .cart-actions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: clamp(8px, 2.5vw, 12px);
-    margin-right: clamp(8px, 2.5vw, 12px);
-  }
-
-  .quantity-selector {
-    flex: 0 0 auto;
-    width: auto;
-    min-width: clamp(100px, 25vw, 140px); /* Prevents too small */
-  }
-
-  .add-to-cart-btn {
-    flex: 1;
-    padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 24px);
-    font-size: clamp(13px, 3.5vw, 15px);
-  }
-
-  .product-tabs {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    margin: 0 clamp(-12px, -3vw, -16px); /* Extend to edges on small screens */
-  }
-
-  .tabs-header {
-    overflow-x: auto;
-    white-space: nowrap;
-    display: flex;
-    flex-direction: row;
-    gap: 0;
-    width: max-content;
-    padding: 0 clamp(12px, 3vw, 16px); /* Padding for first/last tabs */
-  }
-
-  .tab-button {
-    flex-shrink: 0;
-    padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
-    font-size: clamp(13px, 3.5vw, 15px);
-  }
-
-  .product-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .you-might-like-title {
-    font-size: clamp(24px, 6.5vw, 32px);
-    margin-bottom: clamp(24px, 6vw, 40px);
-  }
-
-  .similar-products-grid {
-    grid-template-columns: repeat(auto-fit, minmax(clamp(140px, 35vw, 160px), 1fr));
-    gap: clamp(12px, 3vw, 16px);
-  }
-
-  .similar-product-name {
-    font-size: clamp(14px, 3.5vw, 16px);
-  }
-
-  /* Reviews section responsive */
-  .reviews-header {
+  .pagination {
     flex-direction: column;
-    gap: clamp(12px, 3vw, 16px);
-    align-items: stretch;
+    gap: var(--space-md);
   }
 
-  .reviews-controls {
-    flex-wrap: wrap;
-    gap: clamp(8px, 2vw, 12px);
-  }
-
-  .write-review-btn {
-    font-size: clamp(12px, 3vw, 14px);
-    padding: clamp(8px, 2vw, 10px) clamp(14px, 3.5vw, 18px);
-  }
-
-  .reviews-grid {
-    grid-template-columns: 1fr; /* Single column on mobile */
-    gap: clamp(16px, 4vw, 20px);
-  }
-
-  .review-card {
-    padding: clamp(14px, 3.5vw, 18px);
+  .products-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
   }
 }
 </style>

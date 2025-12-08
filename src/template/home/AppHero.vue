@@ -6,7 +6,7 @@
         <P class="hero-description">
           Browse through our diverse range of meticulously crafted garments, designed to bring out your individaulity and cater to your sense of style.
         </P>
-        <router-link to="/product" class="shop-now-btn">Shop Now</router-link>
+        <router-link to="/category/:slug" class="shop-now-btn">Shop Now</router-link>
 
         <div class="stats-section">
           <div class="stat-item">

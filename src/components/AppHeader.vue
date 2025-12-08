@@ -42,7 +42,7 @@
               </div>
             </div>
             <router-link to="/category" class="nav-link">On Sale</router-link>
-            <router-link to="/category" class="nav-link">New Arrivals</router-link>
+            <router-link to="/new-arrivals" class="nav-link">New Arrivals</router-link>
             <router-link to="/category" class="nav-link">Brands</router-link>
           </nav>
 

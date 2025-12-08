@@ -371,9 +371,4 @@ export default {
     font-size: var(--font-size-xl);
   }
 
-  .view-all-btn {
-    width: 100%;
-    text-align: center;
-  }
- 
 </style>

@@ -354,7 +354,7 @@ export default {
   /* Formal */
   .category-2 .category-image {
     transform: scale(1.75);
-    object-position: 75% center; 
+    object-position: 75% center;
     width: 100%;
   }
 

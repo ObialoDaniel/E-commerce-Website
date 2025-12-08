@@ -14,7 +14,7 @@
         </ol>
       </nav>
 
-      <!--Product Deatil Section-->
+      <!--Product Detail Section-->
       <section class="product-detail">
         <div class="product-gallery">
           <!--Thumbnail Images-->
@@ -64,7 +64,7 @@
           <p class="description">{{ productData.description }}</p>
 
           <!--Color Selection-->
-          <div class="option-group">
+          <div class="option-group"> <hr>
             <label class="option-label"> Select Colors</label>
             <div class="color-options">
               <button
@@ -80,7 +80,7 @@
             </div>
           </div>
           <!--Size Selection-->
-          <div class="option-group">
+          <div class="option-group"> <hr>
             <label class="option-label">Choose Size</label>
             <div class="size options">
               <button
@@ -93,7 +93,8 @@
                 {{ size }}
               </button>
             </div>
-          </div>
+          </div><hr>
+
           <!--Add to Cart Button-->
           <div class="cart-actions">
             <div class="quantity-selector">
@@ -552,8 +553,8 @@ export default {
 }
 
 .product-title {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 38px;
+  font-weight: 900;
   margin: 0;
   line-height: 1.2;
 }
@@ -620,10 +621,9 @@ export default {
 }
 
 .option-label {
-  font-weight: 600;
   color: #666;
   font-size: 14px;
-  text-transform: uppercase;
+  font-family: var(--font-secondary);
 }
 
 .color-options,
@@ -631,6 +631,7 @@ export default {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  padding: 5px;
 }
 
 .color-option {
@@ -666,7 +667,7 @@ export default {
   border-radius: 24px;
   background: #e5e5e5;
   cursor: pointer;
-  font-weight: 500;
+  /* font-weight: 500; */
   transition: all 0.2s;
   font-size: 14px;
   margin-right: 8px;
@@ -729,7 +730,7 @@ export default {
   border-radius: 32px;
   padding: 16px 32px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -1013,10 +1014,11 @@ export default {
 .you-might-like-title {
   text-align: center;
   font-size: 48px;
-  font-weight: 700;
+  font-weight: 900;
   margin-bottom: 60px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-family:(var(--font-primary));
 }
 
 .similar-products-grid {
@@ -1061,9 +1063,13 @@ export default {
   margin-bottom: 8px;
   color: #000;
 }
-
-/* Responsive */
+/* Responsive - Works from 320px to 768px */
 @media (max-width: 768px) {
+  .product-title {
+    font-size: clamp(24px, 7vw, 34px); /* Scales between 24px-34px */
+    line-height: 1.0;
+  }
+
   .product-detail {
     grid-template-columns: 1fr;
   }
@@ -1075,37 +1081,111 @@ export default {
   .thumbnails {
     flex-direction: row;
     overflow-x: auto;
+    gap: clamp(16px, 4vw, 32px); /* Scales gap */
+    padding: 0 clamp(12px, 3vw, 16px); /* Add padding for smaller screens */
   }
 
   .thumbnail {
     flex-shrink: 0;
+    width: clamp(60px, 15vw, 80px); /* Thumbnail size scales */
+  }
+
+  .description {
+    font-size: clamp(13px, 3.5vw, 14px);
+  }
+
+  .size-option {
+    padding: clamp(8px, 2vw, 10px) clamp(14px, 4vw, 18px);
+    font-size: clamp(12px, 3vw, 14px);
   }
 
   .cart-actions {
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(8px, 2.5vw, 12px);
+    margin-right: clamp(8px, 2.5vw, 12px);
   }
 
-  .product-title {
-    font-size: 24px;
+  .quantity-selector {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: clamp(100px, 25vw, 140px); /* Prevents too small */
+  }
+
+  .add-to-cart-btn {
+    flex: 1;
+    padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 24px);
+    font-size: clamp(13px, 3.5vw, 15px);
+  }
+
+  .product-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    margin: 0 clamp(-12px, -3vw, -16px); /* Extend to edges on small screens */
   }
 
   .tabs-header {
     overflow-x: auto;
     white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    width: max-content;
+    padding: 0 clamp(12px, 3vw, 16px); /* Padding for first/last tabs */
+  }
+
+  .tab-button {
+    flex-shrink: 0;
+    padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
+    font-size: clamp(13px, 3.5vw, 15px);
+  }
+
+  .product-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .you-might-like-title {
-    font-size: 32px;
-    margin-bottom: 40px;
+    font-size: clamp(24px, 6.5vw, 32px);
+    margin-bottom: clamp(24px, 6vw, 40px);
   }
 
   .similar-products-grid {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(140px, 35vw, 160px), 1fr));
+    gap: clamp(12px, 3vw, 16px);
   }
 
   .similar-product-name {
-    font-size: 16px;
+    font-size: clamp(14px, 3.5vw, 16px);
+  }
+
+  /* Reviews section responsive */
+  .reviews-header {
+    flex-direction: column;
+    gap: clamp(12px, 3vw, 16px);
+    align-items: stretch;
+  }
+
+  .reviews-controls {
+    flex-wrap: wrap;
+    gap: clamp(8px, 2vw, 12px);
+  }
+
+  .write-review-btn {
+    font-size: clamp(12px, 3vw, 14px);
+    padding: clamp(8px, 2vw, 10px) clamp(14px, 3.5vw, 18px);
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr; /* Single column on mobile */
+    gap: clamp(16px, 4vw, 20px);
+  }
+
+  .review-card {
+    padding: clamp(14px, 3.5vw, 18px);
   }
 }
 </style>

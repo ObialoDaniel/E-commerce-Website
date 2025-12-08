@@ -31,12 +31,11 @@
             <div
               v-for="category in categories"
               :key="category"
-              class="filter-item"
+              @click="toggleCategory(category)"
+              :class="{ active: selectedCategories.includes(category) }"
+              class="filter-item clickable"
             >
-              <label>
-                <input type="checkbox" :value="category" v-model="selectedCategories">
-                <span>{{ category }}</span>
-              </label>
+              <span class="filter-label">{{ category }}</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5"/>
               </svg>
@@ -49,9 +48,16 @@
           <div class="filter-section">
             <h3 class="filter-title">Price</h3>
             <div class="price-range">
-              <input type="range" min="0" max="500" v-model="priceRange" class="range-slider">
+              <input
+                type="range"
+                min="50"
+                max="200"
+                v-model="priceRange"
+                class="range-slider"
+              >
               <div class="price-labels">
-                <span>${{ priceRange }}</span>
+                 <span>${{ minPrice }}</span>
+                 <span>${{ priceRange }}</span>
               </div>
             </div>
           </div>
@@ -71,8 +77,8 @@
                 class="color-option"
                 :aria-label="color.name"
               >
-                <svg v-if="selectedColors.includes(color.name)" width="16" height="16" viewBox="0 0 16 16" fill="white">
-                  <path d="M13.5 4L6 11.5L2.5 8"/>
+                <svg v-if="selectedColors.includes(color.name)" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2.5">
+                  <path d="M3 8L6.5 11.5L13 5"/>
                 </svg>
               </button>
             </div>
@@ -104,17 +110,17 @@
             <div
               v-for="style in dressStyles"
               :key="style"
-              class="filter-item"
+              @click="toggleStyle(style)"
+              :class="{ active: selectedStyles.includes(style) }"
+              class="filter-item clickable"
             >
-              <label>
-                <input type="checkbox" :value="style" v-model="selectedStyles">
-                <span>{{ style }}</span>
-              </label>
+              <span class="filter-label">{{ style }}</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5"/>
               </svg>
             </div>
           </div>
+
 
           <button class="apply-filters-btn">Apply Filter</button>
         </aside>
@@ -211,7 +217,8 @@ export default {
       categories: ['T-shirts', 'Shorts', 'Shirts', 'Hoodie', 'Jeans'],
       selectedCategories: [],
 
-      priceRange: 250,
+      minPrice: 50,
+      priceRange: 290,
 
       colors: [
         { name: 'Green', hex: '#00C12B' },
@@ -219,9 +226,9 @@ export default {
         { name: 'Yellow', hex: '#F5DD06' },
         { name: 'Orange', hex: '#F57906' },
         { name: 'Cyan', hex: '#06CAF5' },
-        { name: 'Blue', hex: '#063AF5' },
-        { name: 'Purple', hex: '#7D06F5' },
-        { name: 'Pink', hex: '#F506A4' },
+        { name: 'Blue', hex: '#0000FF' },
+        { name: 'Purple', hex: '#800080' },
+        { name: 'Pink', hex: '#FFC0CB' },
         { name: 'White', hex: '#FFFFFF' },
         { name: 'Black', hex: '#000000' }
       ],
@@ -295,7 +302,7 @@ export default {
         {
           id: 7,
           name: 'Vertical Striped Shirt',
-          image: '/src/assets/img/polo-contrast.png',
+          image: '/src/assets/img/Vertical.png',
           rating: 5.0,
           price: 212,
           originalPrice: 232,
@@ -304,7 +311,7 @@ export default {
         {
           id: 8,
           name: 'Courage Graphic T-shirt',
-          image: '/src/assets/img/T-shirt.png',
+          image: '/src/assets/img/Courage.png',
           rating: 4.0,
           price: 145,
           originalPrice: null,
@@ -313,7 +320,7 @@ export default {
         {
           id: 9,
           name: 'Loose Fit Bermuda Shorts',
-          image: '/src/assets/img/polo-contrast.png',
+          image: '/src/assets/img/Loose.png',
           rating: 3.0,
           price: 80,
           originalPrice: null,
@@ -331,6 +338,22 @@ export default {
     }
   },
   methods: {
+    toggleCategory(category) {
+      const index = this.selectedCategories.indexOf(category)
+      if (index > -1) {
+        this.selectedCategories.splice(index, 1)
+      } else {
+        this.selectedCategories.push(category)
+      }
+    },
+    toggleStyle(style) {
+      const index = this.selectedStyles.indexOf(style)
+      if (index > -1) {
+        this.selectedStyles.splice(index, 1)
+      } else {
+        this.selectedStyles.push(style)
+      }
+    },
     toggleColor(colorName) {
       const index = this.selectedColors.indexOf(colorName)
       if (index > -1) {
@@ -428,7 +451,7 @@ export default {
 .filters-header h2 {
   font-family: var(--font-primary);
   font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   margin: 0;
   color: var(--color-text-primary);
 }
@@ -457,7 +480,7 @@ export default {
 .filter-title {
   font-family: var(--font-primary);
   font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-medium);
   margin-bottom: var(--space-md);
   color: var(--color-text-primary);
 }
@@ -467,6 +490,28 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: var(--space-sm) 0;
+  cursor: default
+}
+
+.filter-item.clickable {
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-xs);
+  margin: 0 calc(-1 * var(--space-xs));
+}
+
+.filter-item.clickable:hover {
+  background: var(--color-bg-secondary);
+}
+
+.filter-item.active {
+  background: var(--color-bg-secondary);
+}
+
+.filter-item.active .filter-label {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .filter-item label {
@@ -510,7 +555,6 @@ hr {
   border-radius: var(--radius-sm);
   background: var(--color-bg-secondary);
   outline: none;
-  -webkit-appearance: none;
 }
 
 .range-slider::-webkit-slider-thumb {
@@ -537,7 +581,7 @@ hr {
 .color-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: var(--space-md);
+  gap: var(--space-xs);
 }
 
 .color-option {
@@ -575,7 +619,7 @@ hr {
   border-radius: var(--radius-xl);
   font-family: var(--font-secondary);
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
@@ -615,23 +659,29 @@ hr {
 }
 
 .products-header {
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
 .page-title {
   font-family: var(--font-primary);
   font-size: var(--font-size-category);
-  font-weight: var(--font-weight-bold);
-  margin-bottom: var(--space-md);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-sm);
   color: var(--color-text-primary);
 }
 
 .products-info {
   display: flex;
-  justify-content: space-between;
+  white-space: nowrap;
   align-items: center;
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
+  gap: var(--space-sm);
 }
 
 .sort-controls {
@@ -695,9 +745,10 @@ hr {
 .product-name {
   font-family: var(--font-secondary);
   font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   line-height: var(--line-height-tight);
+  margin-bottom: 0;
 }
 
 .rating {
@@ -735,14 +786,14 @@ hr {
 .current-price {
   font-family: var(--font-secondary);
   font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
 }
 
 .original-price {
   font-family: var(--font-secondary);
   font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-muted);
   text-decoration: line-through;
 }

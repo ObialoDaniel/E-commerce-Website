@@ -174,6 +174,11 @@
             </router-link>
           </div>
 
+          <!--No Products Found-->
+          <div v-if="filteredProducts.length === 0" class="no-products">
+            <p>No products found matching your filters.</p>
+            <button @click="clearFilters" class="clear-filters-btn">Clear All Filters</button>
+          </div>
           <!-- Pagination -->
           <div class="pagination">
             <button class="pagination-btn prev" :disabled="currentPage === 1">
@@ -252,7 +257,11 @@ export default {
           rating: 3.5,
           price: 145,
           originalPrice: null,
-          discount: null
+          discount: null,
+          category: "T-shirts",
+          colors: ["black", "white", "gray"],
+          sizes: ["Small", "Medium", "Large", "X-Large"],
+          style: "Casual"
         },
         {
           id: 2,
@@ -261,7 +270,12 @@ export default {
           rating: 4.5,
           price: 180,
           originalPrice: null,
-          discount: null
+          discount: null,
+          category: "Shirts",
+          colors: ["blue", "black"],
+          sizes: ["Small", "Medium", "Large", "X-Large"],
+          style: "Casual"
+
         },
         {
           id: 3,
@@ -270,7 +284,11 @@ export default {
           rating: 5.0,
           price: 120,
           originalPrice: 160,
-          discount: 30
+          discount: 30,
+          category: "T-shirts",
+          colors: ["red", "blue", "green"],
+          sizes: ["Small", "Medium", "Large", "X-Large"],
+          style: "formal"
         },
         {
           id: 4,
@@ -279,7 +297,11 @@ export default {
           rating: 3.5,
           price: 240,
           originalPrice: 260,
-          discount: 20
+          discount: 20,
+          category: "Jeans",
+          colors: ["orange", "yellow", "red"],
+          sizes: ["Small", "Medium", "Large", "X-Large"],
+          style: "Casual"
         },
         {
           id: 5,
@@ -288,7 +310,11 @@ export default {
           rating: 4.5,
           price: 180,
           originalPrice: null,
-          discount: null
+          discount: null,
+          category: "Shirts",
+          colors: ["blue", "white"],
+          sizes: ["Small", "Medium", "Large", "X-Large"],
+          style: "Party"
         },
         {
           id: 6,
@@ -297,7 +323,10 @@ export default {
           rating: 4.5,
           price: 130,
           originalPrice: 160,
-          discount: 30
+          discount: 30,
+          category: "casual",
+          colors: ["white", "black"],
+          sizes: ["Small", "Medium", "Large", "X-Large"]
         },
         {
           id: 7,

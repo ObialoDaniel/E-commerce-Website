@@ -1,5 +1,6 @@
 <template>
-  <div class="cart page">
+  <div class="cart-page">
+    <AppHeader />
     <main class="container">
       <!-- Breadcrumb -->
       <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -9,394 +10,621 @@
         </ol>
       </nav>
 
-      <section class="cart-layout">
-        <!-- Left: Cart Items -->
-        <div class="cart-items">
-          <h2 class="section-title">Your Cart</h2>
+      <h1 class="page-title">YOUR CART</h1>
 
-          <div v-if="cartItems.length === 0" class="empty">
-            <p>Your cart is empty. <router-link to="/">Continue shopping</router-link></p>
+      <div class="cart-content">
+        <!-- Cart Items Section -->
+        <section class="cart-items">
+          <div v-if="cartItems.length === 0" class="empty-cart">
+            <p>Your cart is empty</p>
+            <router-link to="/category" class="continue-shopping-btn">
+              Continue Shopping
+            </router-link>
           </div>
 
-          <ul v-else class="items-list">
-            <li v-for="item in cartItems" :key="item.id" class="cart-item">
-              <img :src="item.image" alt="" class="item-thumb" />
+          <div v-else>
+            <div
+              v-for="item in cartItems"
+              :key="item.id"
+              class="cart-item"
+            >
+              <!-- Product Image -->
+              <div class="item-image">
+                <img :src="item.image" :alt="item.name">
+              </div>
 
-              <div class="item-body">
-                <div class="item-head">
-                  <h3 class="item-title">{{ item.title }}</h3>
-                  <button class="remove" @click="removeItem(item.id)" aria-label="Remove item">
-                    🗑
+              <!-- Product Info -->
+              <div class="item-details">
+                <div class="item-header">
+                  <h3 class="item-name">{{ item.name }}</h3>
+                  <button
+                    @click="removeItem(item.id)"
+                    class="remove-btn"
+                    aria-label="Remove item"
+                  >
+                   <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M17.25 3H13.5V2.25C13.5 1.65326 13.2629 1.08097 12.841 0.65901C12.419 0.237053 11.8467 0 11.25 0H6.75C6.15326 0 5.58097 0.237053 5.15901 0.65901C4.73705 1.08097 4.5 1.65326 4.5 2.25V3H0.75C0.551088 3 0.360322 3.07902 0.21967 3.21967C0.0790178 3.36032 0 3.55109 0 3.75C0 3.94891 0.0790178 4.13968 0.21967 4.28033C0.360322 4.42098 0.551088 4.5 0.75 4.5H1.5V18C1.5 18.3978 1.65804 18.7794 1.93934 19.0607C2.22064 19.342 2.60218 19.5 3 19.5H15C15.3978 19.5 15.7794 19.342 16.0607 19.0607C16.342 18.7794 16.5 18.3978 16.5 18V4.5H17.25C17.4489 4.5 17.6397 4.42098 17.7803 4.28033C17.921 4.13968 18 3.94891 18 3.75C18 3.55109 17.921 3.36032 17.7803 3.21967C17.6397 3.07902 17.4489 3 17.25 3ZM7.5 14.25C7.5 14.4489 7.42098 14.6397 7.28033 14.7803C7.13968 14.921 6.94891 15 6.75 15C6.55109 15 6.36032 14.921 6.21967 14.7803C6.07902 14.6397 6 14.4489 6 14.25V8.25C6 8.05109 6.07902 7.86032 6.21967 7.71967C6.36032 7.57902 6.55109 7.5 6.75 7.5C6.94891 7.5 7.13968 7.57902 7.28033 7.71967C7.42098 7.86032 7.5 8.05109 7.5 8.25V14.25ZM12 14.25C12 14.4489 11.921 14.6397 11.7803 14.7803C11.6397 14.921 11.4489 15 11.25 15C11.0511 15 10.8603 14.921 10.7197 14.7803C10.579 14.6397 10.5 14.4489 10.5 14.25V8.25C10.5 8.05109 10.579 7.86032 10.7197 7.71967C10.8603 7.57902 11.0511 7.5 11.25 7.5C11.4489 7.5 11.6397 7.57902 11.7803 7.71967C11.921 7.86032 12 8.05109 12 8.25V14.25ZM12 3H6V2.25C6 2.05109 6.07902 1.86032 6.21967 1.71967C6.36032 1.57902 6.55109 1.5 6.75 1.5H11.25C11.4489 1.5 11.6397 1.57902 11.7803 1.71967C11.921 1.86032 12 2.05109 12 2.25V3Z" fill="#FF3333"/>
+                    </svg>
                   </button>
                 </div>
 
-                <div class="item-meta">
-                  <span v-if="item.size">Size: {{ item.size }}</span>
-                  <span v-if="item.color">Color: {{ item.color }}</span>
+                <div class="item-attributes">
+                  <p>Size: <span>{{ item.size }}</span></p>
+                  <p>Color: <span>{{ item.color }}</span></p>
                 </div>
 
-                <div class="item-controls">
-                  <div class="qty-controls">
-                    <button @click="decrease(item.id)" class="qty-btn" :disabled="item.qty <= 1">−</button>
-                    <span class="qty">{{ item.qty }}</span>
-                    <button @click="increase(item.id)" class="qty-btn">+</button>
-                  </div>
+                <div class="item-footer">
+                  <span class="item-price">${{ item.price }}</span>
 
-                  <div class="price">
-                    <span class="item-price">\${{ formatPrice(item.price * item.qty) }}</span>
-                    <small class="unit-price">(\${{ formatPrice(item.price) }} each)</small>
+                  <!-- Quantity Controls -->
+                  <div class="quantity-controls">
+                    <button
+                      @click="decreaseQuantity(item.id)"
+                      :disabled="item.quantity <= 1"
+                      aria-label="Decrease quantity"
+                    >
+                      −
+                    </button>
+                    <span class="quantity">{{ item.quantity }}</span>
+                    <button
+                      @click="increaseQuantity(item.id)"
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
               </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Right: Order Summary -->
-        <aside class="order-summary">
-          <div class="summary-card">
-            <h3>Order Summary</h3>
-
-            <dl class="summary-lines">
-              <div class="line">
-                <dt>Subtotal</dt>
-                <dd>\${{ formatPrice(subtotal) }}</dd>
-              </div>
-
-              <div class="line">
-                <dt>Discount ({{ discountPercent }}%)</dt>
-                <dd class="negative">- \${{ formatPrice(discountAmount) }}</dd>
-              </div>
-
-              <div class="line">
-                <dt>Delivery Fee</dt>
-                <dd>\${{ formatPrice(deliveryFee) }}</dd>
-              </div>
-
-              <div class="line total">
-                <dt>Total</dt>
-                <dd>\${{ formatPrice(total) }}</dd>
-              </div>
-            </dl>
-
-            <div class="promo">
-              <input
-                v-model="promoInput"
-                placeholder="Add promo code"
-                @keyup.enter="applyPromo"
-                aria-label="Promo code"
-              />
-              <button class="btn-apply" @click="applyPromo">Apply</button>
             </div>
-
-            <button class="btn-checkout" :disabled="cartItems.length === 0" @click="checkout">
-              Go to Checkout →
-            </button>
           </div>
+        </section>
+
+        <!-- Order Summary Section -->
+        <aside class="order-summary">
+          <h2>Order Summary</h2>
+
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span class="summary-value">${{ subtotal }}</span>
+          </div>
+
+          <div class="summary-row discount">
+            <span>Discount (-20%)</span>
+            <span class="summary-value">-${{ discount }}</span>
+          </div>
+
+          <div class="summary-row">
+            <span>Delivery Fee</span>
+            <span class="summary-value">${{ deliveryFee }}</span>
+          </div>
+
+          <hr>
+
+          <div class="summary-row total">
+            <span>Total</span>
+            <span class="summary-value">${{ total }}</span>
+          </div>
+
+          <!-- Promo Code -->
+          <div class="promo-code">
+            <div class="promo-input-wrapper">
+              <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.4516 9.86063L11.1403 0.549383C10.9667 0.374635 10.7601 0.236091 10.5326 0.141785C10.305 0.0474796 10.061 -0.000710913 9.8147 7.92487e-06H1.12501C0.826639 7.92487e-06 0.540491 0.118534 0.329513 0.329513C0.118534 0.540491 7.92487e-06 0.826639 7.92487e-06 1.12501V9.8147C-0.000710913 10.061 0.0474796 10.305 0.141785 10.5326C0.236091 10.7601 0.374635 10.9667 0.549383 11.1403L9.86063 20.4516C10.2122 20.8031 10.6891 21.0005 11.1863 21.0005C11.6834 21.0005 12.1603 20.8031 12.5119 20.4516L20.4516 12.5119C20.8031 12.1603 21.0005 11.6834 21.0005 11.1863C21.0005 10.6891 20.8031 10.2122 20.4516 9.86063ZM11.1863 18.5953L2.25001 9.65626V2.25001H9.65626L18.5925 11.1863L11.1863 18.5953ZM6.75001 5.25001C6.75001 5.54668 6.66203 5.83669 6.49721 6.08336C6.33239 6.33004 6.09812 6.5223 5.82403 6.63583C5.54994 6.74936 5.24834 6.77906 4.95737 6.72119C4.6664 6.66331 4.39913 6.52045 4.18935 6.31067C3.97957 6.10089 3.83671 5.83361 3.77883 5.54264C3.72095 5.25167 3.75066 4.95007 3.86419 4.67598C3.97772 4.40189 4.16998 4.16763 4.41665 4.0028C4.66333 3.83798 4.95334 3.75001 5.25001 3.75001C5.64783 3.75001 6.02936 3.90804 6.31067 4.18935C6.59197 4.47065 6.75001 4.85218 6.75001 5.25001Z" fill="black" fill-opacity="0.4"/>
+              </svg>
+              
+              <input
+                type="text"
+                v-model="promoCode"
+                placeholder="Add promo code"
+                class="promo-input"
+              >
+            </div>
+            <button @click="applyPromo" class="apply-btn">Apply</button>
+          </div>
+
+          <!-- Checkout Button -->
+          <button @click="goToCheckout" class="checkout-btn">
+            Go to Checkout
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
         </aside>
-      </section>
+      </div>
     </main>
+    <AppFooter />
   </div>
 </template>
 
-<script setup>
-import { ref, computed, watch, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-
-const CART_KEY = 'shop_cart_v1';
-
-// Local reactive cart array
-const cartItems = ref([]);
-
-// Example pricing settings
-const discountPercent = ref(20); // site-wide discount example
-const deliveryFee = ref(15); // fixed delivery fee in USD
-
-// Promo code
-const promoInput = ref('');
-const promoApplied = ref(null); // e.g. { code: 'SAVE10', percent: 10 }
-
-// load cart from localStorage
-function loadCart() {
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    cartItems.value = raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    cartItems.value = [];
-    console.error('Failed to load cart:', e);
+<script>
+export default {
+  name: 'CartPage',
+  data() {
+    return {
+      promoCode: '',
+      deliveryFee: 15,
+      discountPercent: 20,
+      cartItems: [
+        {
+          id: 1,
+          name: 'Gradient Graphic T-shirt',
+          image: '/src/assets/img/gradient-tshirt.png',
+          size: 'Large',
+          color: 'White',
+          price: 145,
+          quantity: 1
+        },
+        {
+          id: 2,
+          name: 'Checkered Shirt',
+          image: '/src/assets/img/checkered.png',
+          size: 'Medium',
+          color: 'Red',
+          price: 180,
+          quantity: 1
+        },
+        {
+          id: 3,
+          name: 'Skinny Fit Jeans',
+          image: '/src/assets/img/Jeans.png',
+          size: 'Large',
+          color: 'Blue',
+          price: 240,
+          quantity: 1
+        }
+      ]
+    }
+  },
+  computed: {
+    subtotal() {
+      return this.cartItems.reduce((sum, item) => {
+        return sum + (item.price * item.quantity)
+      }, 0)
+    },
+    discount() {
+      return Math.round((this.subtotal * this.discountPercent) / 100)
+    },
+    total() {
+      return this.subtotal - this.discount + this.deliveryFee
+    }
+  },
+  methods: {
+    increaseQuantity(itemId) {
+      const item = this.cartItems.find(i => i.id === itemId)
+      if (item) {
+        item.quantity++
+      }
+    },
+    decreaseQuantity(itemId) {
+      const item = this.cartItems.find(i => i.id === itemId)
+      if (item && item.quantity > 1) {
+        item.quantity--
+      }
+    },
+    removeItem(itemId) {
+      const index = this.cartItems.findIndex(i => i.id === itemId)
+      if (index > -1) {
+        this.cartItems.splice(index, 1)
+      }
+    },
+    applyPromo() {
+      if (this.promoCode.trim()) {
+        // Add promo code logic here
+        alert(`Promo code "${this.promoCode}" applied!`)
+      }
+    },
+    goToCheckout() {
+      // Navigate to checkout page
+      this.$router.push('/checkout')
+    }
   }
 }
-
-// save cart to localStorage
-function saveCart() {
-  localStorage.setItem(CART_KEY, JSON.stringify(cartItems.value));
-}
-
-// example helpers to mutate cart
-function increase(id) {
-  const item = cartItems.value.find(i => i.id === id);
-  if (item) item.qty += 1;
-  saveCart();
-}
-
-function decrease(id) {
-  const item = cartItems.value.find(i => i.id === id);
-  if (item && item.qty > 1) {
-    item.qty -= 1;
-  } else if (item && item.qty === 1) {
-    // optional: confirm removal
-    removeItem(id);
-  }
-  saveCart();
-}
-
-function removeItem(id) {
-  cartItems.value = cartItems.value.filter(i => i.id !== id);
-  saveCart();
-}
-
-// computed values
-const subtotal = computed(() =>
-  cartItems.value.reduce((s, it) => s + it.price * it.qty, 0)
-);
-
-const discountAmount = computed(() => {
-  // site discount plus optional promo
-  const base = (subtotal.value * (discountPercent.value / 100));
-  if (promoApplied.value && promoApplied.value.percent) {
-    // apply promo percent on subtotal after base discount
-    const afterBase = subtotal.value - base;
-    const promoAmt = afterBase * (promoApplied.value.percent / 100);
-    return base + promoAmt;
-  }
-  return base;
-});
-
-const total = computed(() => {
-  const t = subtotal.value - discountAmount.value + deliveryFee.value;
-  return Math.max(t, 0);
-});
-
-// format
-function formatPrice(n) {
-  return Number(n).toFixed(2);
-}
-
-// promo logic (simple example)
-function applyPromo() {
-  const code = promoInput.value.trim().toUpperCase();
-  if (!code) return;
-
-  // example promo map — replace with server validation in real apps
-  const promos = {
-    SAVE10: { code: 'SAVE10', percent: 10 },
-    FREESHIP: { code: 'FREESHIP', percent: 0, freeShipping: true }
-  };
-
-  const found = promos[code] || null;
-  if (found) {
-    promoApplied.value = found;
-    // handle free shipping promo
-    if (found.freeShipping) deliveryFee.value = 0;
-    // user feedback: this example uses alert; you can show a toast
-    alert(`Promo "${found.code}" applied.`);
-  } else {
-    alert('Promo code not valid');
-    promoApplied.value = null;
-  }
-}
-
-// checkout handler
-const router = useRouter();
-function checkout() {
-  // emit or route - for now navigate to checkout route (example)
-  // You can also emit an event instead: emit('checkout', { cart: cartItems.value })
-  router.push({ name: 'Checkout' }).catch(() => {});
-}
-
-// Watch cart to persist
-watch(cartItems, saveCart, { deep: true });
-
-// On mount, load cart
-onMounted(() => {
-  loadCart();
-});
 </script>
 
 <style scoped>
+.cart-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .container {
-  max-width: 1200px;
+  max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: var(--space-lg);
+  flex: 1;
 }
 
 /* Breadcrumb */
 .breadcrumb {
-  margin-bottom: 32px;
+  margin-bottom: var(--space-xl);
 }
+
 .breadcrumb ol {
   display: flex;
-  gap: 8px;
+  gap: var(--space-sm);
   list-style: none;
   padding: 0;
   margin: 0;
-  color: #777;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
-.breadcrumb a { color: #777; text-decoration: none; }
-.breadcrumb .current { color: #111; font-weight: 600; }
+
+.breadcrumb li:not(:last-child)::after {
+  content: '>';
+  margin-left: var(--space-sm);
+}
+
+.breadcrumb a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.breadcrumb a:hover {
+  color: var(--color-text-primary);
+}
+
+.breadcrumb .current {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Page Title */
+.page-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-category);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  margin-bottom: var(--space-2xl);
+  color: var(--color-text-primary);
+}
 
 /* Layout */
-.cart-layout {
+.cart-content {
   display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 32px;
-  align-items: start;
+  grid-template-columns: 1fr 400px;
+  gap: var(--space-2xl);
 }
 
-/* Left column */
-.section-title { font-size: 28px; margin-bottom: 16px; }
-
-.items-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* Cart Items */
+.cart-items {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-xl);
+}
+
+.empty-cart {
+  text-align: center;
+  padding: var(--space-5xl) var(--space-xl);
+}
+
+.empty-cart p {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xl);
+}
+
+.continue-shopping-btn {
+  display: inline-block;
+  padding: var(--space-md) var(--space-2xl);
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  text-decoration: none;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
+  transition: opacity var(--transition-fast);
+}
+
+.continue-shopping-btn:hover {
+  opacity: 0.9;
 }
 
 .cart-item {
   display: flex;
-  gap: 16px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
-  align-items: center;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.03);
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-primary);
 }
 
-.item-thumb {
-  width: 110px;
-  height: 110px;
+.item-image {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+}
+
+.item-image img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+}
+
+.item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.item-name {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: var(--line-height-tight);
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #FF3333;
+  cursor: pointer;
+  padding: var(--space-xs);
+  transition: opacity var(--transition-fast);
+}
+
+.remove-btn:hover {
+  opacity: 0.7;
+}
+
+.item-attributes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.item-attributes p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.item-attributes span {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.item-price {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+  padding: var(--space-xs);
+  gap: var(--space-md);
+}
+
+.quantity-controls button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-controls button:hover:not(:disabled) {
+  background: var(--color-border);
+}
+
+.quantity-controls button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.quantity {
+  min-width: 32px;
+  text-align: center;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+}
+
+/* Order Summary */
+.order-summary {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  height: fit-content;
+  position: sticky;
+  top: var(--space-lg);
+}
+
+.order-summary h2 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-lg);
+  color: var(--color-text-primary);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+.summary-row.discount {
+  color: #FF3333;
+}
+
+.summary-row.total {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin-bottom: 0;
+}
+
+.summary-value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.summary-row.discount .summary-value {
+  color: #FF3333;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: var(--space-lg) 0;
+}
+
+/* Promo Code */
+.promo-code {
+  display: flex;
+  gap: var(--space-sm);
+  margin: var(--space-lg) 0;
+}
+
+.promo-input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+  padding: 0 var(--space-md);
+}
+
+.promo-input-wrapper svg {
+  color: var(--color-text-muted);
   flex-shrink: 0;
 }
 
-.item-body { flex: 1; min-width: 0; }
-
-.item-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.item-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.remove {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-/* meta */
-.item-meta {
-  color: #777;
-  font-size: 13px;
-  display: flex;
-  gap: 12px;
-  margin-top: 6px;
-}
-
-/* controls & price */
-.item-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 12px;
-}
-
-.qty-controls {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: #f4f4f4;
-  padding: 6px 8px;
-  border-radius: 8px;
-}
-
-.qty-btn {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 18px;
-  width: 28px;
-  height: 28px;
-}
-
-.qty { min-width: 22px; text-align: center; display: inline-block; }
-
-.price { text-align: right; }
-.item-price { font-weight: 700; display: block; }
-.unit-price { color: #888; font-size: 12px; }
-
-/* Right column: summary */
-.order-summary { position: relative; }
-.summary-card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.03);
-}
-
-.summary-card h3 { margin: 0 0 12px 0; }
-
-.summary-lines { margin: 0 0 16px 0; }
-.line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; }
-.line.total { font-weight: 700; border-bottom: none; padding-top: 14px; }
-
-.negative { color: #d64545; }
-
-.promo { display: flex; gap: 8px; margin-bottom: 18px; }
-.promo input {
+.promo-input {
   flex: 1;
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: 1px solid #eee;
+  border: none;
+  background: transparent;
+  padding: var(--space-md) 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.promo-input:focus {
   outline: none;
 }
-.btn-apply {
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: none;
-  background: #000;
-  color: #fff;
-  cursor: pointer;
+
+.promo-input::placeholder {
+  color: var(--color-text-muted);
 }
 
-.btn-checkout {
+.apply-btn {
+  padding: var(--space-md) var(--space-xl);
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+  white-space: nowrap;
+}
+
+.apply-btn:hover {
+  opacity: 0.9;
+}
+
+/* Checkout Button */
+.checkout-btn {
   width: 100%;
-  padding: 14px;
-  background: #000;
-  color: #fff;
-  border-radius: 999px;
+  padding: var(--space-md);
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
   border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
-  font-weight: 700;
+  transition: opacity var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
 }
 
-/* empty state */
-.empty { padding: 28px; background: #fff; border-radius: 12px; color: #444; }
+.checkout-btn:hover {
+  opacity: 0.9;
+}
 
-@media (max-width: 900px) {
-  .cart-layout {
+/* Responsive */
+@media (max-width: 1024px) {
+  .cart-content {
     grid-template-columns: 1fr;
   }
-  .order-summary { order: 2; }
+
+  .order-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--space-md);
+  }
+
+  .page-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .cart-item {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .item-image {
+    width: 100%;
+    height: 200px;
+  }
+
+  .item-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+
+  .promo-code {
+    flex-direction: column;
+  }
+
+  .apply-btn {
+    width: 100%;
+  }
 }
 </style>

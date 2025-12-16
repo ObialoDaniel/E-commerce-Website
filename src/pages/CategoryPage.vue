@@ -15,7 +15,7 @@
         <aside class="filters-sidebar">
           <div class="filters-header">
             <h2>Filters</h2>
-            <button class="filter-icon">
+            <button @click="toggleFilters" class="filter-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="4" y1="6" x2="16" y2="6"></line>
                 <line x1="4" y1="12" x2="20" y2="12"></line>
@@ -122,9 +122,22 @@
           </div>
 
 
-          <button class="apply-filters-btn">Apply Filter</button>
+          <button @click="applyFilters" class="apply-filters-btn">Apply Filter</button>
         </aside>
-
+        <!-- Mobile Filter Overlay
+        <div v-if="showFilters" @click="closeFilters" class="mobile-overlay"></div>
+        -->
+        <!-- Mobile Filter Toggle Button
+        <button @click="toggleFilters" class="mobile-filter-toggle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="6" x2="16" y2="6"></line>
+            <line x1="4" y1="12" x2="20" y2="12"></line>
+            <line x1="4" y1="18" x2="12" y2="18"></line>
+            <circle cx="18" cy="6" r="2"></circle>
+            <circle cx="8" cy="18" r="2"></circle>
+          </svg>
+          Filters
+        </button>-->
         <!-- Products Section -->
         <section class="products-section">
           <!-- Products Header -->
@@ -223,6 +236,7 @@ export default {
       selectedCategories: [],
 
       minPrice: 50,
+      maxPrice: 290,
       priceRange: 290,
 
       colors: [
@@ -248,6 +262,7 @@ export default {
       sortOption: 'popular',
       currentPage: 1,
       totalPages: 10,
+      showFilters: false,
 
       products: [
         {
@@ -259,7 +274,7 @@ export default {
           originalPrice: null,
           discount: null,
           category: "T-shirts",
-          colors: ["black", "white", "gray"],
+          colors: ["Black", "White", "gray"],
           sizes: ["Small", "Medium", "Large", "X-Large"],
           style: "Casual"
         },
@@ -272,7 +287,7 @@ export default {
           originalPrice: null,
           discount: null,
           category: "Shirts",
-          colors: ["blue", "black"],
+          colors: ["Blue", "Red"],
           sizes: ["Small", "Medium", "Large", "X-Large"],
           style: "Casual"
 
@@ -286,7 +301,7 @@ export default {
           originalPrice: 160,
           discount: 30,
           category: "T-shirts",
-          colors: ["red", "blue", "green"],
+          colors: ["Red", "Blue", "Green"],
           sizes: ["Small", "Medium", "Large", "X-Large"],
           style: "formal"
         },
@@ -299,7 +314,7 @@ export default {
           originalPrice: 260,
           discount: 20,
           category: "Jeans",
-          colors: ["orange", "yellow", "red"],
+          colors: ["Orange", "Yellow", "Red"],
           sizes: ["Small", "Medium", "Large", "X-Large"],
           style: "Casual"
         },
@@ -312,7 +327,7 @@ export default {
           originalPrice: null,
           discount: null,
           category: "Shirts",
-          colors: ["blue", "white"],
+          colors: ["Blue", "White"],
           sizes: ["Small", "Medium", "Large", "X-Large"],
           style: "Party"
         },
@@ -325,7 +340,7 @@ export default {
           originalPrice: 160,
           discount: 30,
           category: "casual",
-          colors: ["white", "black"],
+          colors: ["White", "Black"],
           sizes: ["Small", "Medium", "Large", "X-Large"]
         },
         {
@@ -335,7 +350,11 @@ export default {
           rating: 5.0,
           price: 212,
           originalPrice: 232,
-          discount: 20
+          discount: 20,
+          category: "Shirts",
+          colors: ["khaki", "navy", "black"],
+          sizes: ["Small", "Medium", "Large", "X-Large"],
+          style: "Formal"
         },
         {
           id: 8,
@@ -344,7 +363,11 @@ export default {
           rating: 4.0,
           price: 145,
           originalPrice: null,
-          discount: null
+          discount: null,
+          category: "T-shirts",
+          colors: ["Blue", "Black"],
+          sizes: ["Small", "Medium", "Large", "X-Large"],
+          style: "Casual"
         },
         {
           id: 9,
@@ -353,17 +376,59 @@ export default {
           rating: 3.0,
           price: 80,
           originalPrice: null,
-          discount: null
+          discount: null,
+          category: 'Shorts',
+          sizes: ['Medium', 'Large', 'X-Large', 'XX-Large'],
+          colors: ['Blue'],
+          style: 'Casual'
         }
       ]
     }
   },
   computed: {
     filteredProducts() {
-      return this.products
+      let filtered = [...this.products]
+      //FIlter by categories
+      if (this.selectedCategories.length > 0) {
+        filtered = filtered.filter(product =>
+          this.selectedCategories.includes(product.category)
+        )
+      }
+      //Filter by price range
+      filtered = filtered.filter(product =>
+        product.price >= this.minPrice && product.price <= this.priceRange
+      )
+      //Filter by colors
+      if (this.selectedColors.length > 0) {
+        filtered = filtered.filter(product =>
+          product.colors.some(color => this.selectedColors.includes(color))
+        )
+      }
+      //Filter by Sizes
+      if (this.selectedSizes.length > 0) {
+        filtered = filtered.filter(product =>
+          product.sizes.some(size => this.selectedSizes.includes(size))
+        )
+      }
+      //Filter by Dress Styles
+      if (this.selectedStyles.Length > 0) {
+        filtered = filtered.filter(product =>
+          this.selectedStyles.includes(product.style)
+        )
+      }
+      // Sort products
+      return this.sortProducts(filtered)
     },
+
     totalProducts() {
       return this.products.length
+    },
+
+    sliderStyle() {
+      const percentage = ((this.priceRange - this.minPrice) / (this.maxPrice - this.minPrice)) * 100
+      return {
+        background: `linear-gradient(to right, #000 0%, #000 ${percentage}%, #E5E5E5 ${percentage}%, #E5E5E5 100%)`
+      }
     }
   },
   methods: {
@@ -398,6 +463,49 @@ export default {
       } else {
         this.selectedSizes.push(size)
       }
+    },
+    sortProducts(products) {
+      const sorted = [...products]
+      switch (this.sortOption) {
+        case 'price-low':
+          return sorted.sort((a, b) => a.price - b.price)
+        case 'price-high':
+          return sorted.sort((a, b) => b.price - a.price)
+        case 'newest':
+          return sorted.reverse()
+        case 'popular':
+        default:
+          return sorted.sort((a, b) => b.rating - a.rating)
+      }
+    },
+    applyFilters() {
+      this.showFilters = false
+      console.log('Filters applied:', {
+        categories: this.selectedCategories,
+        priceRange: this.priceRange,
+        colors: this.selectedColors,
+        sizes: this.selectedSizes,
+        styles: this.selectedStyles
+      })
+    },
+    clearFilters() {
+      this.selectedCategories = []
+      this.selectedColors = []
+      this.selectedSizes = []
+      this.selectedStyles = []
+      this.priceRange = this.maxPrice
+    },
+    toggleFilters() {
+      this.showFilters = !this.showFilters
+      if (this.showFilters) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = ''
+      }
+    },
+    closeFilters() {
+      this.showFilters = false
+      document.body.style.overflow = ''
     }
   }
 }
@@ -594,6 +702,18 @@ hr {
   border-radius: var(--radius-full);
   background: var(--color-text-primary);
   cursor: pointer;
+  border: 3px solid var(--color-bg-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.range-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--color-text-primary);
+  cursor: pointer;
+  border: 3px solid var(--color-bg-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .price-labels {

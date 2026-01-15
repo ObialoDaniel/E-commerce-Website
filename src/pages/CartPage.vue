@@ -2,7 +2,6 @@
   <div class="cart-page">
     <AppHeader />
     <main class="container">
-      <!-- Breadcrumb -->
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <ol>
           <li><router-link to="/">Home</router-link></li>
@@ -13,7 +12,6 @@
       <h1 class="page-title">YOUR CART</h1>
 
       <div class="cart-content">
-        <!-- Cart Items Section -->
         <section class="cart-items">
           <div v-if="cartItems.length === 0" class="empty-cart">
             <p>Your cart is empty</p>
@@ -25,7 +23,7 @@
           <div v-else>
             <div
               v-for="item in cartItems"
-              :key="item.id"
+              :key="item.cartItemId"
               class="cart-item"
             >
               <!-- Product Image -->
@@ -38,7 +36,7 @@
                 <div class="item-header">
                   <h3 class="item-name">{{ item.name }}</h3>
                   <button
-                    @click="removeItem(item.id)"
+                    @click="handleRemoveItem(item.cartItemId)"
                     class="remove-btn"
                     aria-label="Remove item"
                   >
@@ -54,12 +52,12 @@
                 </div>
 
                 <div class="item-footer">
-                  <span class="item-price">${{ item.price }}</span>
+                  <span class="item-price">${{ formatPrice(item.price) }}</span>
 
                   <!-- Quantity Controls -->
                   <div class="quantity-controls">
                     <button
-                      @click="decreaseQuantity(item.id)"
+                      @click="decreaseQuantity(item.cartItemId)"
                       :disabled="item.quantity <= 1"
                       aria-label="Decrease quantity"
                     >
@@ -67,7 +65,7 @@
                     </button>
                     <span class="quantity">{{ item.quantity }}</span>
                     <button
-                      @click="increaseQuantity(item.id)"
+                      @click="increaseQuantity(item.cartItemId)"
                       aria-label="Increase quantity"
                     >
                       +
@@ -85,24 +83,24 @@
 
           <div class="summary-row">
             <span>Subtotal</span>
-            <span class="summary-value">${{ subtotal }}</span>
+            <span class="summary-value">${{ formatPrice(subtotal) }}</span>
           </div>
 
           <div class="summary-row discount">
             <span>Discount (-20%)</span>
-            <span class="summary-value">-${{ discount }}</span>
+            <span class="summary-value">-${{ formatPrice(discount) }}</span>
           </div>
 
           <div class="summary-row">
             <span>Delivery Fee</span>
-            <span class="summary-value">${{ deliveryFee }}</span>
+            <span class="summary-value">${{ formatPrice(deliveryFee) }}</span>
           </div>
 
           <hr>
 
           <div class="summary-row total">
             <span>Total</span>
-            <span class="summary-value">${{ total }}</span>
+            <span class="summary-value">${{ formatPrice(total) }}</span>
           </div>
 
           <!-- Promo Code -->
@@ -111,7 +109,7 @@
               <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20.4516 9.86063L11.1403 0.549383C10.9667 0.374635 10.7601 0.236091 10.5326 0.141785C10.305 0.0474796 10.061 -0.000710913 9.8147 7.92487e-06H1.12501C0.826639 7.92487e-06 0.540491 0.118534 0.329513 0.329513C0.118534 0.540491 7.92487e-06 0.826639 7.92487e-06 1.12501V9.8147C-0.000710913 10.061 0.0474796 10.305 0.141785 10.5326C0.236091 10.7601 0.374635 10.9667 0.549383 11.1403L9.86063 20.4516C10.2122 20.8031 10.6891 21.0005 11.1863 21.0005C11.6834 21.0005 12.1603 20.8031 12.5119 20.4516L20.4516 12.5119C20.8031 12.1603 21.0005 11.6834 21.0005 11.1863C21.0005 10.6891 20.8031 10.2122 20.4516 9.86063ZM11.1863 18.5953L2.25001 9.65626V2.25001H9.65626L18.5925 11.1863L11.1863 18.5953ZM6.75001 5.25001C6.75001 5.54668 6.66203 5.83669 6.49721 6.08336C6.33239 6.33004 6.09812 6.5223 5.82403 6.63583C5.54994 6.74936 5.24834 6.77906 4.95737 6.72119C4.6664 6.66331 4.39913 6.52045 4.18935 6.31067C3.97957 6.10089 3.83671 5.83361 3.77883 5.54264C3.72095 5.25167 3.75066 4.95007 3.86419 4.67598C3.97772 4.40189 4.16998 4.16763 4.41665 4.0028C4.66333 3.83798 4.95334 3.75001 5.25001 3.75001C5.64783 3.75001 6.02936 3.90804 6.31067 4.18935C6.59197 4.47065 6.75001 4.85218 6.75001 5.25001Z" fill="black" fill-opacity="0.4"/>
               </svg>
-              
+
               <input
                 type="text"
                 v-model="promoCode"
@@ -137,83 +135,71 @@
 </template>
 
 <script>
+import { useCart } from '@/composables/useCart'
+
 export default {
   name: 'CartPage',
+
+  setup() {
+    const {
+      cartItems,
+      subtotal,
+      increaseQuantity,
+      decreaseQuantity,
+      removeFromCart
+    } = useCart()
+
+    return {
+      cartItems,
+      subtotal,
+      increaseQuantity,
+      decreaseQuantity,
+      removeFromCart,
+    }
+  },
+
   data() {
     return {
       promoCode: '',
       deliveryFee: 15,
       discountPercent: 20,
-      cartItems: [
-        {
-          id: 1,
-          name: 'Gradient Graphic T-shirt',
-          image: '/src/assets/img/gradient-tshirt.png',
-          size: 'Large',
-          color: 'White',
-          price: 145,
-          quantity: 1
-        },
-        {
-          id: 2,
-          name: 'Checkered Shirt',
-          image: '/src/assets/img/checkered.png',
-          size: 'Medium',
-          color: 'Red',
-          price: 180,
-          quantity: 1
-        },
-        {
-          id: 3,
-          name: 'Skinny Fit Jeans',
-          image: '/src/assets/img/Jeans.png',
-          size: 'Large',
-          color: 'Blue',
-          price: 240,
-          quantity: 1
-        }
-      ]
     }
   },
+
   computed: {
-    subtotal() {
-      return this.cartItems.reduce((sum, item) => {
-        return sum + (item.price * item.quantity)
-      }, 0)
-    },
     discount() {
-      return Math.round((this.subtotal * this.discountPercent) / 100)
+      return ((this.subtotal * this.discountPercent) / 100)
     },
+
     total() {
       return this.subtotal - this.discount + this.deliveryFee
     }
   },
+
   methods: {
-    increaseQuantity(itemId) {
-      const item = this.cartItems.find(i => i.id === itemId)
-      if (item) {
-        item.quantity++
+    handleRemoveItem(cartItemId) {
+      if (confirm('Are you sure you want to remove this item from the cart?')) {
+        this.removeFromCart(cartItemId)
       }
     },
-    decreaseQuantity(itemId) {
-      const item = this.cartItems.find(i => i.id === itemId)
-      if (item && item.quantity > 1) {
-        item.quantity--
-      }
+
+    formatPrice(price) {
+      const numPrice = parseFloat(price) || 0
+      return numPrice.toFixed(2)
     },
-    removeItem(itemId) {
-      const index = this.cartItems.findIndex(i => i.id === itemId)
-      if (index > -1) {
-        this.cartItems.splice(index, 1)
-      }
-    },
+
     applyPromo() {
       if (this.promoCode.trim()) {
         // Add promo code logic here
         alert(`Promo code "${this.promoCode}" applied!`)
       }
     },
+
     goToCheckout() {
+      if (this.cartItems.length === 0) {
+        alert('Your cart is empty. Please add items before checkout.')
+        return
+      }
       // Navigate to checkout page
       this.$router.push('/checkout')
     }

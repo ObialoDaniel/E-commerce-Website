@@ -57,7 +57,7 @@
           <div class="price-section">
             <span class="current-price">${{ productData.price }}</span>
             <span v-if="productData.originalPrice" class="original-price">${{ productData.originalPrice }}</span>
-            <span v-if="productData.discount" class="discount"> {{ productData.discount }} %</span>
+            <span v-if="productData.discount" class="discount">-{{ productData.discount }}%</span>
           </div>
 
           <!--Description-->
@@ -70,6 +70,7 @@
               <button
                 v-for="color in productData.colors"
                 :key="color.name"
+                @click="selectedColor = color"
                 :class="{ active: selectedColor === color}"
                 :style="{ backgroundColor: color.hex }"
                 :aria-label="color.name"
@@ -102,7 +103,7 @@
               <input v-model.number="quantity" type="number" min="1" readonly />
               <button @click="increaseQuantity" aria-label="Increase quantity">+</button>
             </div>
-            <button class="add-to-cart-btn" @click="addToCart">Add to Cart</button>
+            <button class="add-to-cart-btn" @click="handleAddToCart">Add to Cart</button>
           </div>
         </div>
       </section>
@@ -238,6 +239,7 @@
 </template>
 
 <script>
+import { useCart } from '@/composables/useCart'
 import Check from "@/components/check.vue";
 
 export default {
@@ -245,8 +247,15 @@ export default {
   components: {Check},
   props: {
     id: {
-      String,
+      type: String,
       required: true
+    }
+  },
+
+  setup() {
+    const { addToCart } = useCart()
+    return {
+      addToCart
     }
   },
 
@@ -257,35 +266,35 @@ export default {
       selectedSize: 'Large',
       quantity: 1,
       activeTab: 'Rating & Reviews',
-      tabs: ['Product Details', 'Rating & Reviews', ' FAQs'],
+      tabs: ['Product Details', 'Rating & Reviews', 'FAQs'],
+      sortOption: 'latest',
 
       productData: {
-      id: this.id,
-      name: 'ONE LIFE GRAPHIC T-SHIRT',
-      rating: 4.5,
-      price: 260,
-      originalPrice: 300,
-      discount: 40,
-      description: 'This graphic t-shirt which is perfect for any occasion. Crafted from a soft and breathable fabric, it offers superior comfort and style.',
-      image: 'graphic-tee.png',
-      images: [
-        "graphic-tee1.png",
-        "graphic-tee2.png",
-        "graphic-tee3.png",
-      ],
-      colors: [
-        { name: 'Olive', hex: '#4A4A3A' },
-        { name: 'Dark Green', hex: '#2D4A3E' },
-        { name: 'Navy', hex: '#2B3A4A' },
-      ],
-      sizes: ['Small', 'Medium', 'Large', 'X-Large'],
-      reviewCount: 451,
-      category: 'T-shirts',
-      gender: 'Men',
-      categorySlug: 'men'
+        id: this.id,
+        name: 'ONE LIFE GRAPHIC T-SHIRT',
+        rating: 4.5,
+        price: 260,
+        originalPrice: 300,
+        discount: 40,
+        description: 'This graphic t-shirt which is perfect for any occasion. Crafted from a soft and breathable fabric, it offers superior comfort and style.',
+        image: 'graphic-tee.png',
+        images: [
+          "graphic-tee1.png",
+          "graphic-tee2.png",
+          "graphic-tee3.png",
+        ],
+        colors: [
+          { name: 'Olive', hex: '#4A4A3A' },
+          { name: 'Dark Green', hex: '#2D4A3E' },
+          { name: 'Navy', hex: '#2B3A4A' },
+        ],
+        sizes: ['Small', 'Medium', 'Large', 'X-Large'],
+        reviewCount: 451,
+        category: 'T-shirts',
+        gender: 'Men',
+        categorySlug: 'men'
       },
 
-      selectedSort: "latest",
       visibleCount: 4,
       reviews: [
         {
@@ -385,17 +394,17 @@ export default {
 
     sortedReviews() {
       const sorted = [...this.reviews];
-      if (this.selectedSort === "latest") return sorted.reverse();
-      if (this.selectedSort === "oldest") return sorted;
-      if (this.selectedSort === "high") return sorted.sort((a, b) => b.rating - a.rating);
-      if (this.selectedSort === "low") return sorted.sort((a, b) => a.rating - b.rating);
+      if (this.sortOption === "latest") return sorted.reverse();
+      if (this.sortOption === "oldest") return sorted;
+      if (this.sortOption === "highest") return sorted.sort((a, b) => b.rating - a.rating);
+      if (this.sortOption === "lowest") return sorted.sort((a, b) => a.rating - b.rating);
       return sorted;
     },
+
     visibleReviews() {
       return this.sortedReviews.slice(0, this.visibleCount);
     }
   },
-
 
   mounted() {
     this.selectedImage = this.productData.image
@@ -422,20 +431,48 @@ export default {
       }
     },
 
-    addToCart() {
-      const cartItem = {
-        product: this.productData,
-        color: this.selectedColor,
-        size: this.selectedSize,
-        quantity: this.quantity
+    handleAddToCart() {
+      // Validation
+      if (!this.selectedColor) {
+        alert('Please select a color')
+        return
       }
-      this.$emit('add-to-cart', cartItem)
 
-      console.log('Added to cart:', cartItem)
-      alert(`Added ${this.quantity} ${this.productData.name} to cart!`)
+      if (!this.selectedSize) {
+        alert('Please select a size')
+        return
+      }
+
+      // Prepare product data in the format the cart expects
+      const productForCart = {
+        id: this.productData.id,
+        name: this.productData.name,
+        price: this.productData.price,
+        image: this.getImagePath(this.productData.image) // Get full image path
+      }
+
+      // Add to cart using the composable
+      // Pass color NAME (string), not the entire color object
+      const result = this.addToCart(
+        productForCart,
+        this.selectedSize,
+        this.selectedColor.name, // Pass just the color name
+        this.quantity
+      )
+
+      if (result.success) {
+        // Show success message
+        alert(`${result.message}\n\nItem added:\n${this.productData.name}\nSize: ${this.selectedSize}\nColor: ${this.selectedColor.name}\nQuantity: ${this.quantity}`)
+
+        // Optionally navigate to cart page
+        // Uncomment the line below if you want to redirect to cart after adding
+        // this.$router.push('/cart')
+      } else {
+        alert('Failed to add item to cart. Please try again.')
+      }
     },
 
-    loadMore() {
+    loadMoreReviews() {
       this.visibleCount += 2;
     }
   }

@@ -20,12 +20,12 @@
           <!--Thumbnail Images-->
           <div class="thumbnails">
             <button
-              v-for="(image, index)  in productData.images"
+              v-for="(image, index) in productData.images"
               :key="index"
               @click="selectedImage = image"
-              :class="{ active : selectedImage === image}"
+              :class="{ active: selectedImage === image }"
               class="thumbnail"
-             >
+            >
               <img :src="getImagePath(image)" :alt="`${productData.name} view ${index + 1}`" />
             </button>
           </div>
@@ -53,6 +53,7 @@
             </div>
             <span class="rating-value">{{ productData.rating }}/5</span>
           </div>
+
           <!--Price-->
           <div class="price-section">
             <span class="current-price">${{ productData.price }}</span>
@@ -63,27 +64,34 @@
           <!--Description-->
           <p class="description">{{ productData.description }}</p>
 
+          <hr class="divider">
+
           <!--Color Selection-->
-          <div class="option-group"> <hr>
-            <label class="option-label"> Select Colors</label>
+          <div class="option-group">
+            <label class="option-label">Select Colors</label>
             <div class="color-options">
               <button
                 v-for="color in productData.colors"
                 :key="color.name"
                 @click="selectedColor = color"
-                :class="{ active: selectedColor === color}"
+                :class="{ active: selectedColor === color }"
                 :style="{ backgroundColor: color.hex }"
                 :aria-label="color.name"
                 class="color-option"
-                >
-                <span v-if="selectedColor === color" class="checkmark">✓</span>
-             </button>
+              >
+                <svg v-if="selectedColor === color" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2.5">
+                  <path d="M3 8L6.5 11.5L13 5"/>
+                </svg>
+              </button>
             </div>
           </div>
+
+          <hr class="divider">
+
           <!--Size Selection-->
-          <div class="option-group"> <hr>
+          <div class="option-group">
             <label class="option-label">Choose Size</label>
-            <div class="size options">
+            <div class="size-options">
               <button
                 v-for="size in productData.sizes"
                 :key="size"
@@ -94,19 +102,22 @@
                 {{ size }}
               </button>
             </div>
-          </div><hr>
+          </div>
+
+          <hr class="divider">
 
           <!--Add to Cart Button-->
           <div class="cart-actions">
             <div class="quantity-selector">
-              <button @click="decreaseQuantity" aria-label="Decrease quantity">-</button>
-              <input v-model.number="quantity" type="number" min="1" readonly />
+              <button @click="decreaseQuantity" aria-label="Decrease quantity">−</button>
+              <span class="quantity-display">{{ quantity }}</span>
               <button @click="increaseQuantity" aria-label="Increase quantity">+</button>
             </div>
             <button class="add-to-cart-btn" @click="handleAddToCart">Add to Cart</button>
           </div>
         </div>
       </section>
+
       <!--Tabs Section (Product Details, Review, FAQS)-->
       <section class="product-tabs">
         <div class="tabs-header">
@@ -120,119 +131,111 @@
             {{ tab }}
           </button>
         </div>
-        <div class="tab-current">
+
+        <div class="tab-content">
           <!--Product Details tab-->
-          <div v-if="activeTab === 'Product Details'" class="tab-content">
-            <slot name="product-details">
-              <h2>Product Details</h2>
-              <p>{{ productData.description }}</p>
-            </slot>
+          <div v-if="activeTab === 'Product Details'" class="tab-panel">
+            <h2>Product Details</h2>
+            <p>{{ productData.description }}</p>
           </div>
+
           <!--Rating & Reviews Tab-->
-          <div v-if="activeTab === 'Rating & Reviews'" class="tab-content">
-            <slot name="reviews">
-              <div class="reviews-header">
-                <h2> All Reviews <span class="review-count">({{ productData.reviewCount }})</span></h2>
-                <div class="reviews-controls">
-                  <button class="filter-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <line x1="4" y1="6" x2="16" y2="6"></line>
-                      <line x1="4" y1="12" x2="20" y2="12"></line>
-                      <line x1="4" y1="18" x2="12" y2="18"></line>
-                      <circle cx="18" cy="6" r="2"></circle>
-                      <circle cx="8" cy="18" r="2"></circle>
-                    </svg>
-                  </button>
-                  <select v-model="sortOption" class="sort-dropdown">
-                    <option value="latest">Latest</option>
-                    <option value="highest">Highest Rated</option>
-                    <option value="lowest">Lowest Rated</option>
-                  </select>
-                  <button class="write-review-btn">Write a Review</button>
-                </div>
-              </div>
-              <!-- Reviews Grid -->
-              <div class="reviews-grid">
-                <div
-                  v-for="(review, index) in visibleReviews"
-                  :key="index"
-                  class="review-card"
-                >
-                  <div class="review-top">
-                    <div class="stars">
-                       <span v-for="star in 5"
-                          :key="star" class="star"
-                          :class="{
-                            filled: star <= Math.floor(review.rating),
-                            half: star === Math.ceil(review.rating) && review.rating % 1 !== 0
-                          }">
-                         ★
-                        </span>
-                    </div>
-                    <button class="menu-btn">⋯</button>
-                  </div>
-
-                  <div class="review-author">
-                    <span class="name">{{ review.name }}</span>
-                    <Check v-if="review.verified" class="verified-icon" />
-                  </div>
-
-                  <p class="review-text">"{{ review.text }}"</p>
-                  <p class="review-date">Posted on {{ review.date }}</p>
-                </div>
-
-              </div>
-              <!-- Load more button -->
-              <div class="load-more-container" v-if="visibleCount < reviews.length">
-                <button class="load-more-btn" @click="loadMoreReviews">
-                  Load More Reviews
+          <div v-if="activeTab === 'Rating & Reviews'" class="tab-panel">
+            <div class="reviews-header">
+              <h2>All Reviews <span class="review-count">({{ productData.reviewCount }})</span></h2>
+              <div class="reviews-controls">
+                <button class="filter-btn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="4" y1="6" x2="16" y2="6"></line>
+                    <line x1="4" y1="12" x2="20" y2="12"></line>
+                    <line x1="4" y1="18" x2="12" y2="18"></line>
+                    <circle cx="18" cy="6" r="2"></circle>
+                    <circle cx="8" cy="18" r="2"></circle>
+                  </svg>
                 </button>
+                <select v-model="sortOption" class="sort-dropdown">
+                  <option value="latest">Latest</option>
+                  <option value="highest">Highest Rated</option>
+                  <option value="lowest">Lowest Rated</option>
+                </select>
+                <button class="write-review-btn">Write a Review</button>
               </div>
-            </slot>
+            </div>
+
+            <!-- Reviews Grid -->
+            <div class="reviews-grid">
+              <div
+                v-for="(review, index) in visibleReviews"
+                :key="index"
+                class="review-card"
+              >
+                <div class="review-header">
+                  <div class="stars">
+                    <span v-for="star in 5" :key="star" class="star" :class="{ filled: star <= Math.floor(review.rating) }">★</span>
+                  </div>
+                  <button class="menu-btn">⋯</button>
+                </div>
+
+                <div class="review-author">
+                  <span class="name">{{ review.name }}</span>
+                  <Check v-if="review.verified" class="verified-icon" />
+                </div>
+
+                <p class="review-text">{{ review.text }}</p>
+                <p class="review-date">Posted on {{ review.date }}</p>
+              </div>
+            </div>
+
+            <!-- Load more button -->
+            <div class="load-more-container" v-if="visibleCount < reviews.length">
+              <button class="load-more-btn" @click="loadMoreReviews">
+                Load More Reviews
+              </button>
+            </div>
           </div>
+
           <!--FAQS Tab-->
-          <div v-if="activeTab === 'FAQs'" class="tab-content">
-            <slot name="faqs">
-              <h2> Frequently Asked Questions </h2>
-            </slot>
+          <div v-if="activeTab === 'FAQs'" class="tab-panel">
+            <h2>Frequently Asked Questions</h2>
+            <p>Coming soon...</p>
           </div>
         </div>
       </section>
-      <section class="you-might-like-section">
-        <h2 class="you-might-like-title">YOU MIGHT ALSO LIKE</h2>
 
-        <div class="similar-products-container ">
-          <div class="similar-products-grid">
-            <div v-for="product in products" :key="product.id" class="similar-product-card">
-              <div class="similar-product-image">
-                <img :src="product.image" :alt="product.name">
+      <!-- You Might Also Like Section -->
+      <section class="you-might-like-section">
+        <h2 class="section-title">YOU MIGHT ALSO LIKE</h2>
+
+        <div class="similar-products-grid">
+          <router-link
+            v-for="product in filteredSuggestedProducts"
+            :key="product.id"
+            :to="`/product/${product.id}`"
+            class="similar-product-card"
+          >
+            <div class="similar-product-image">
+              <img :src="getImagePath(product.image)" :alt="product.name">
+            </div>
+
+            <div class="similar-product-info">
+              <h3 class="similar-product-name">{{ product.name }}</h3>
+
+              <div class="rating">
+                <div class="stars">
+                  <span v-for="star in 5" :key="star" class="star" :class="{ filled: star <= Math.floor(product.rating) }">★</span>
+                </div>
+                <span class="rating-value">{{ product.rating }}/5</span>
               </div>
 
-              <div class="similar-product-info">
-                <h3 class="similar-product-name">{{ product.name }}</h3>
-
-                <div class="rating">
-                  <div class="stars">
-                    <span v-for="star in 5" :key="star" class="star" :class="{
-                      filled: star <= Math.floor(product.rating),
-                      half: star === Math.ceil(product.rating) && product.rating % 1 !== 0
-                    }">
-                      ★
-                    </span>
-                  </div>
-                  <span class="rating-value">{{ product.rating }}/5</span>
-                </div>
-
-                <div class="price-section">
-                  <span class="current-price">${{ product.price }}</span>
-                  <span v-if="product.originalPrice" class="original-price">${{ product.originalPrice }}</span>
-                  <span v-if="product.discount" class="discount">-{{ product.discount }}%</span>
-                </div>
+              <div class="price-section">
+                <span class="current-price">${{ product.price }}</span>
+                <span v-if="product.originalPrice" class="original-price">${{ product.originalPrice }}</span>
+                <span v-if="product.discount" class="discount">-{{ product.discount }}%</span>
               </div>
             </div>
-          </div>
+          </router-link>
         </div>
-     </section>
+      </section>
     </main>
     <AppFooter />
   </div>
@@ -240,17 +243,12 @@
 
 <script>
 import { useCart } from '@/composables/useCart'
-import Check from "@/components/check.vue";
+import Check from "@/components/check.vue"
+import productsData from '@/data/products.json'
 
 export default {
-  name: 'CategoryPage',
-  components: {Check},
-  props: {
-    id: {
-      type: String,
-      required: true
-    }
-  },
+  name: 'ProductDetailPage',
+  components: { Check },
 
   setup() {
     const { addToCart } = useCart()
@@ -268,34 +266,15 @@ export default {
       activeTab: 'Rating & Reviews',
       tabs: ['Product Details', 'Rating & Reviews', 'FAQs'],
       sortOption: 'latest',
+      visibleCount: 6,
 
-      productData: {
-        id: this.id,
-        name: 'ONE LIFE GRAPHIC T-SHIRT',
-        rating: 4.5,
-        price: 260,
-        originalPrice: 300,
-        discount: 40,
-        description: 'This graphic t-shirt which is perfect for any occasion. Crafted from a soft and breathable fabric, it offers superior comfort and style.',
-        image: 'graphic-tee.png',
-        images: [
-          "graphic-tee1.png",
-          "graphic-tee2.png",
-          "graphic-tee3.png",
-        ],
-        colors: [
-          { name: 'Olive', hex: '#4A4A3A' },
-          { name: 'Dark Green', hex: '#2D4A3E' },
-          { name: 'Navy', hex: '#2B3A4A' },
-        ],
-        sizes: ['Small', 'Medium', 'Large', 'X-Large'],
-        reviewCount: 451,
-        category: 'T-shirts',
-        gender: 'Men',
-        categorySlug: 'men'
-      },
+      allProducts: [
+        ...productsData.newArrivals,
+        ...productsData.topSelling,
+        ...productsData.youMightAlsoLike
+      ],
 
-      visibleCount: 4,
+
       reviews: [
         {
           name: "Samantha D.",
@@ -308,7 +287,7 @@ export default {
           name: "Alex M.",
           verified: true,
           rating: 4,
-          text:"The t-shirt exceeded my expectations! The colors are vibrant and the print quality is top-notch. Being a UI/UX designer myself, I'm quite picky about aesthetics, and this t-shirt definitely gets a thumbs up from me.",
+          text: "The t-shirt exceeded my expectations! The colors are vibrant and the print quality is top-notch. Being a UI/UX designer myself, I'm quite picky about aesthetics, and this t-shirt definitely gets a thumbs up from me.",
           date: "August 15, 2023",
         },
         {
@@ -341,82 +320,106 @@ export default {
         },
       ],
 
-      products: [
-        {
-          id: 1,
-          name: "Polo with Contrast Trims",
-          image:'/src/assets/img/polo-contrast.png',
-          rating: 4.0,
-          price: 212,
-          originalPrice: 242,
-          discount: 20
-        },
-        {
-          id: 2,
-          name: "Gradient Graphic T-shirt",
-          image: '/src/assets/img/gradient-tshirt.png',
-          rating: 3.5,
-          price: 145,
-          originalPrice: null,
-          discount: null
-        },
-        {
-          id: 3,
-          name: "Polo with Tipping Details",
-          image: '/src/assets/img/polo-tipping.png',
-          rating: 4.5,
-          price: 180,
-          originalPrice: null,
-          discount: null
-        },
-        {
-          id: 4,
-          name: "Black Striped T-shirt",
-          image: '/src/assets/img/stripped-tshirt.png',
-          rating: 5.0,
-          price: 120,
-          originalPrice: 160,
-          discount: 30
-        }
-      ]
+      suggestedProducts: productsData.youMightAlsoLike
     }
   },
 
   computed: {
+    productId() {
+      return parseInt(this.$route.params.id)
+    },
+
+    productData() {
+      const product = this.allProducts.find(p => p.id === this.productId)
+
+      if (!product) {
+        console.error(`Product with ID ${this.productId} not found!`)
+        return {
+          id: this.productId,
+          name: 'Product Not Found',
+          price: 0,
+          rating: 0,
+          image: 'placeholder.png',
+          colors: [{ name: 'Black', hex: '#000000' }],
+          sizes: ['Small', 'Medium', 'Large'],
+          description: 'This product could not be found.',
+          images: ['placeholder.png'],
+          reviewCount: 0,
+          gender: 'N/A',
+          categorySlug: 'casual',
+          category: 'N/A'
+        }
+      }
+
+      return product
+    },
+
     computedBreadcrumbs() {
       return [
         { label: 'Home', path: '/' },
         { label: 'Shop', path: '/category' },
-        { label: this.productData.gender, path: `/category/${this.productData.categorySlug}` },
+        { label: this.productData.gender || 'Products', path: `/category/${this.productData.categorySlug}` },
         { label: this.productData.category, path: this.$route.path }
       ]
     },
 
     sortedReviews() {
-      const sorted = [...this.reviews];
-      if (this.sortOption === "latest") return sorted.reverse();
-      if (this.sortOption === "oldest") return sorted;
-      if (this.sortOption === "highest") return sorted.sort((a, b) => b.rating - a.rating);
-      if (this.sortOption === "lowest") return sorted.sort((a, b) => a.rating - b.rating);
-      return sorted;
+      const sorted = [...this.reviews]
+      if (this.sortOption === "latest") return sorted.reverse()
+      if (this.sortOption === "oldest") return sorted
+      if (this.sortOption === "highest") return sorted.sort((a, b) => b.rating - a.rating)
+      if (this.sortOption === "lowest") return sorted.sort((a, b) => a.rating - b.rating)
+      return sorted
     },
 
     visibleReviews() {
-      return this.sortedReviews.slice(0, this.visibleCount);
+      return this.sortedReviews.slice(0, this.visibleCount)
+    },
+
+    filteredSuggestedProducts() {
+      return this.suggestedProducts.filter(p => p.id !== this.productId)
     }
   },
 
   mounted() {
-    this.selectedImage = this.productData.image
-    this.selectedColor = this.productData.colors[0]
+    this.checkProductExists()
+
+    if (this.productData && this.productData.id !== 0) {
+      this.selectedImage = this.productData.image
+      this.selectedColor = this.productData.colors[0]
+    }
+  },
+
+  watch: {
+    '$route.params.id'(newId, oldId) {
+      if (newId !== oldId) {
+        this.checkProductExists()
+
+        if (this.productData && this.productData.id !== 0) {
+          this.selectedImage = this.productData.image
+          this.selectedColor = this.productData.colors[0]
+          this.selectedSize = 'Large'
+          this.quantity = 1
+          window.scrollTo(0, 0)
+        }
+      }
+    }
   },
 
   methods: {
+    checkProductExists() {
+      const product = this.allProducts.find(p => p.id === this.productId)
+      if (!product) {
+        console.error(`Product with ID ${this.productId} not found! Redirecting...`)
+        this.$router.push('/category')
+      }
+    },
+
     getImagePath(image) {
       try {
         return new URL(`../assets/img/${image}`, import.meta.url).href
       } catch (error) {
-        console.error('error Loading image: ${image}', error)
+        console.error(`Error loading image: ${image}`, error)
         return ''
       }
     },
@@ -432,7 +435,11 @@ export default {
     },
 
     handleAddToCart() {
-      // Validation
+      if (!this.productData || this.productData.id === 0) {
+        alert('Product data not available')
+        return
+      }
+
       if (!this.selectedColor) {
         alert('Please select a color')
         return
@@ -443,53 +450,47 @@ export default {
         return
       }
 
-      // Prepare product data in the format the cart expects
       const productForCart = {
         id: this.productData.id,
         name: this.productData.name,
         price: this.productData.price,
-        image: this.getImagePath(this.productData.image) // Get full image path
+        image: this.getImagePath(this.productData.image)
       }
 
-      // Add to cart using the composable
-      // Pass color NAME (string), not the entire color object
       const result = this.addToCart(
         productForCart,
         this.selectedSize,
-        this.selectedColor.name, // Pass just the color name
+        this.selectedColor.name,
         this.quantity
       )
 
       if (result.success) {
-        // Show success message
         alert(`${result.message}\n\nItem added:\n${this.productData.name}\nSize: ${this.selectedSize}\nColor: ${this.selectedColor.name}\nQuantity: ${this.quantity}`)
-
-        // Optionally navigate to cart page
-        // Uncomment the line below if you want to redirect to cart after adding
-        // this.$router.push('/cart')
       } else {
         alert('Failed to add item to cart. Please try again.')
       }
     },
 
     loadMoreReviews() {
-      this.visibleCount += 2;
+      this.visibleCount += 2
     }
   }
 }
 </script>
 
 <style scoped>
-.product-detail-page {
+/* Base Styles */
+.category-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #FFFFFF;
 }
 
 .container {
-  max-width: 1280px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 16px;
   flex: 1;
 }
 
@@ -505,17 +506,20 @@ export default {
   padding: 0;
   margin: 0;
   font-size: 14px;
-  color: #666;
+  color: rgba(0, 0, 0, 0.6);
+  flex-wrap: wrap;
 }
 
 .breadcrumb li:not(:last-child)::after {
-  content: '>';
+  content: '/';
   margin-left: 8px;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .breadcrumb a {
-  color: #666;
+  color: rgba(0, 0, 0, 0.6);
   text-decoration: none;
+  transition: color 0.2s;
 }
 
 .breadcrumb a:hover {
@@ -532,51 +536,67 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 }
 
 /* Product Gallery */
 .product-gallery {
   display: flex;
-  gap: 16px;
+  gap: 14px;
 }
 
 .thumbnails {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .thumbnail {
-  border: 2px solid #e5e5e5;
-  border-radius: 12px;
+  width: 152px;
+  height: 167px;
+  border: none;
+  border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  background: white;
-  padding: 0;
-  transition: border-color 0.2s;
+  background: #F0EEED;
+  padding: 8px; /* Add padding to prevent edge cutting */
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box; /* Ensure padding is included in width/height */
 }
 
-.thumbnail:hover,
-.thumbnail.active {
-  border-color: #000;
+.thumbnail:hover {
+  opacity: 0.8;
 }
+
+/* .thumbnail.active {
+  outline: 2px solid #000;
+} */
 
 .thumbnail img {
   width: 100%;
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain; /* Changed from 'cover' to 'contain' to fit entire image */
+  border-radius: 12px;
 }
+
 
 .main-image {
   flex: 1;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  background: #f5f5f5;
-  max-height: 530px;
+  background: #F0EEED;
+  height: 530px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .main-image img {
   width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -584,227 +604,251 @@ export default {
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
 .product-title {
-  font-size: 38px;
-  font-weight: 900;
+  font-size: 40px;
+  font-weight: 700;
   margin: 0;
   line-height: 1.2;
+  color: #000;
+  font-family: 'Integral CF', sans-serif;
 }
 
 .rating {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 13px;
 }
 
 .stars {
   display: flex;
-  gap: 4px;
-  color: #ddd;
-  font-size: 20px;
+  gap: 6px;
+  font-size: 22px;
+}
+
+.star {
+  color: #E0E0E0;
 }
 
 .star.filled {
-  color: #FFC107;
+  color: #FFC633;
 }
 
 .rating-value {
-  font-size: 14px;
-  color: #666;
+  font-size: 16px;
+  color: #000;
 }
 
 .price-section {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin: 6px 0;
 }
 
 .current-price {
   font-size: 32px;
   font-weight: 700;
+  color: #000;
 }
 
 .original-price {
-  font-size: 24px;
-  color: #999;
+  font-size: 32px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.4);
   text-decoration: line-through;
 }
 
 .discount {
-  background: #FFE8E8;
+  background: rgba(255, 51, 51, 0.1);
   color: #FF3333;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 62px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .description {
-  color: #666;
+  color: rgba(0, 0, 0, 0.6);
   line-height: 1.6;
-  margin: 0;
+  margin: 6px 0;
+  font-size: 16px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 10px 0;
 }
 
 /* Options */
 .option-group {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .option-label {
-  color: #666;
-  font-size: 14px;
-  font-family: var(--font-secondary);
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 16px;
+  font-weight: 400;
 }
 
-.color-options,
-.size-options {
+.color-options {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
-  padding: 5px;
 }
 
 .color-option {
-  width: 40px;
-  height: 40px;
+  width: 37px;
+  height: 37px;
   border-radius: 50%;
-  border: 2px solid #e5e5e5;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   cursor: pointer;
   position: relative;
   transition: all 0.2s;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.color-option:hover,
-.color-option.active {
-  border-color: #000;
+.color-option:hover {
   transform: scale(1.1);
 }
 
-.checkmark {
-  color: white;
-  font-size: 20px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-shadow: 0 0 2px rgba(0,0,0,0.5);
+.color-option.active {
+  outline: 1px solid #000;
+  outline-offset: 3px;
+}
+
+.size-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .size-option {
   padding: 12px 24px;
-  border: 1px solid #e5e5e5;
-  border-radius: 24px;
-  background: #e5e5e5;
+  border: none;
+  border-radius: 62px;
+  background: #F0F0F0;
   cursor: pointer;
-  /* font-weight: 500; */
+  font-weight: 400;
   transition: all 0.2s;
-  font-size: 14px;
-  margin-right: 8px;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.6);
 }
 
-.size-option:hover,
+.size-option:hover {
+  background: #E0E0E0;
+}
+
 .size-option.active {
   background: #000;
-  color: white;
-  border-color: #000;
+  color: #FFF;
 }
 
 /* Cart Actions */
 .cart-actions {
   display: flex;
-  gap: 16px;
-  margin-top: 12px;
+  gap: 20px;
+  margin-top: 10px;
 }
 
 .quantity-selector {
   display: flex;
   align-items: center;
-  background: #f5f5f5;
-  border-radius: 32px;
-  padding: 4px;
+  background: #F0F0F0;
+  border-radius: 62px;
+  padding: 16px 20px;
+  gap: 20px;
+  min-width: 170px;
 }
 
 .quantity-selector button {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
   border: none;
   background: transparent;
   cursor: pointer;
   font-size: 20px;
-  border-radius: 50%;
-  transition: background 0.2s;
+  color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  transition: opacity 0.2s;
 }
 
 .quantity-selector button:hover {
-  background: #e5e5e5;
+  opacity: 0.7;
 }
 
-.quantity-selector input {
-  width: 60px;
-  text-align: center;
-  border: none;
-  background: transparent;
-  font-weight: 600;
+.quantity-display {
+  font-weight: 500;
   font-size: 16px;
+  min-width: 30px;
+  text-align: center;
 }
 
 .add-to-cart-btn {
   flex: 1;
   background: #000;
-  color: white;
+  color: #FFF;
   border: none;
-  border-radius: 32px;
-  padding: 16px 32px;
+  border-radius: 62px;
+  padding: 16px 54px;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s;
 }
 
 .add-to-cart-btn:hover {
   background: #333;
+  transform: translateY(-1px);
 }
 
+.add-to-cart-btn:active {
+  transform: translateY(0);
+}
+
+/* Tabs Section */
 .product-tabs {
-  margin-top: 3rem;
+  margin-top: 40px;
+  margin-bottom: 64px;
 }
 
 .tabs-header {
   display: flex;
   gap: 0;
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 2rem;
-  justify-content: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 32px;
 }
 
 .tab-button {
-  padding: 1.25rem 10rem;
+  padding: 24px 0;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.25rem;
+  font-size: 20px;
   color: rgba(0, 0, 0, 0.6);
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
   font-weight: 400;
-  white-space: nowrap;
+  margin-right: 40px;
 }
 
 .tab-button:hover {
-  color: #111;
+  color: #000;
 }
 
 .tab-button.active {
-  color: #111;
+  color: #000;
   font-weight: 500;
 }
 
@@ -815,7 +859,7 @@ export default {
   left: 0;
   right: 0;
   height: 2px;
-  background-color: #111;
+  background-color: #000;
 }
 
 .tab-content {
@@ -833,35 +877,44 @@ export default {
   }
 }
 
-/* ==================== REVIEWS SECTION ==================== */
+.tab-panel h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Reviews Section */
 .reviews-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  margin-bottom: 32px;
+  gap: 20px;
 }
 
 .reviews-header h2 {
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  color: #111;
+  gap: 8px;
+  color: #000;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .review-count {
   font-weight: 400;
   color: rgba(0, 0, 0, 0.6);
-  font-size: 1.5rem;
 }
 
 .reviews-controls {
   display: flex;
-  gap: 0.75rem;
+  gap: 12px;
   align-items: center;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  margin-left: auto; /* Push controls to the right */
 }
 
 .filter-btn {
@@ -869,130 +922,97 @@ export default {
   height: 48px;
   border-radius: 50%;
   border: none;
-  background-color: #f0f0f0;
+  background-color: #F0F0F0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
   flex-shrink: 0;
 }
 
 .filter-btn:hover {
-  background-color: #e0e0e0;
+  background-color: #E0E0E0;
 }
 
-.filter-btn svg {
-  width: 20px;
-  height: 20px;
-  color: #111;
-}
-
-/* Sort Dropdown */
 .sort-dropdown {
-  padding: 0.875rem 2.5rem 0.875rem 1.25rem;
+  padding: 14px 40px 14px 20px;
   border: none;
   border-radius: 62px;
-  background-color: #f0f0f0;
-  font-size: 1rem;
-  color: #111;
+  background-color: #F0F0F0;
+  font-size: 16px;
+  color: #000;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23000000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23000000' stroke-width='1.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 1rem center;
-  transition: all 0.3s ease;
-  font-weight: 400;
-  min-width: 130px;
+  background-position: right 16px center;
+  transition: all 0.3s;
+  width: auto; /* Changed from min-width */
+  min-width: unset; /* Remove min-width constraint */
+  flex-shrink: 0;
 }
 
 .sort-dropdown:hover {
-  background-color: #e0e0e0;
+  background-color: #E0E0E0;
 }
 
-.sort-dropdown:focus {
-  outline: none;
-}
-
-/* Write Review Button */
 .write-review-btn {
-  padding: 0.875rem 3.5rem;
+  padding: 16px 54px;
   background-color: #000;
-  color: white;
+  color: #FFF;
   border: none;
   border-radius: 62px;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .write-review-btn:hover {
   background-color: #333;
-  transform: scale(1.02);
 }
 
-.write-review-btn:active {
-  transform: scale(0.98);
-}
-
+/* Reviews Grid */
 .reviews-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-  gap: 24px;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 36px;
 }
 
 .review-card {
-  border: 1px solid #eee;
-  border-radius: 16px;
-  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 28px 32px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  transition: box-shadow 0.2s;
+  gap: 12px;
+  transition: all 0.3s;
 }
 
 .review-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.review-top {
+.review-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.stars {
-  display: flex;
-  color: #ffd700;
-}
-
-.star {
-  color: #ddd;
-  font-size: 20px;
-}
-
-.star.filled {
-  color: #ffc107;
-}
-
-
-.star.half {
-  background: linear-gradient(90deg, #ffc107 50%, #ddd 50%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
 .menu-btn {
   background: none;
   border: none;
-  font-size: 20px;
-  color: #999;
+  font-size: 24px;
+  color: rgba(0, 0, 0, 0.4);
   cursor: pointer;
   transition: color 0.2s;
+  padding: 0;
+  width: 24px;
+  height: 24px;
 }
 
 .menu-btn:hover {
@@ -1002,72 +1022,79 @@ export default {
 .review-author {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-weight: 600;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 20px;
 }
 
 .verified-icon {
-  color: #4caf50;
-  width: 18px;
-  height: 18px;
+  color: #01AB31;
+  width: 24px;
+  height: 24px;
 }
 
 .review-text {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
-  color: #444;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0;
 }
 
 .review-date {
-  font-size: 13px;
-  color: #777;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 500;
+  margin: 0;
 }
 
+/* Load More */
 .load-more-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin: 2rem 0 8rem 0;
-  width: 100%;
+  margin: 24px 0;
 }
 
 .load-more-btn {
   background: none;
-  border: 2px solid #eee;
-  border-radius: 24px;
-  padding: 12px 48px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 62px;
+  padding: 16px 54px;
   font-weight: 500;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .load-more-btn:hover {
   background: #000;
-  color: #fff;
+  color: #FFF;
+  border-color: #000;
 }
 
-.you-might-like-title {
+/* You Might Also Like Section */
+.you-might-like-section {
+  margin: 64px 0;
+}
+
+.section-title {
   text-align: center;
   font-size: 48px;
-  font-weight: 900;
-  margin-bottom: 60px;
+  font-weight: 700;
+  margin-bottom: 55px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family:(var(--font-primary));
+  letter-spacing: 0;
+  font-family: 'Integral CF', sans-serif;
 }
 
 .similar-products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-  margin: 2rem 0;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
 }
 
 .similar-product-card {
-  border-radius: 16px;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.3s;
 }
 
 .similar-product-card:hover {
@@ -1078,8 +1105,9 @@ export default {
   width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
-  background: #f5f5f5;
-  border-radius: 16px;
+  background: #F0EEED;
+  border-radius: 20px;
+  margin-bottom: 16px;
 }
 
 .similar-product-image img {
@@ -1089,24 +1117,81 @@ export default {
 }
 
 .similar-product-info {
-  padding: 16px 0;
+  padding: 0;
 }
 
 .similar-product-name {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   margin-bottom: 8px;
   color: #000;
+  line-height: 1.3;
 }
-/* Responsive - Works from 320px to 768px */
-@media (max-width: 768px) {
-  .product-title {
-    font-size: clamp(24px, 7vw, 34px); /* Scales between 24px-34px */
-    line-height: 1.0;
-  }
 
+.similar-product-info .rating {
+  margin-bottom: 8px;
+}
+
+.similar-product-info .stars {
+  font-size: 18px;
+  gap: 5px;
+}
+
+.similar-product-info .rating-value {
+  font-size: 14px;
+}
+
+.similar-product-info .price-section {
+  gap: 10px;
+}
+
+.similar-product-info .current-price {
+  font-size: 24px;
+}
+
+.similar-product-info .original-price {
+  font-size: 24px;
+}
+
+.similar-product-info .discount {
+  font-size: 12px;
+  padding: 4px 12px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
   .product-detail {
     grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .similar-products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
+
+   .reviews-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .reviews-controls {
+    flex-wrap: wrap;
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .product-title {
+    font-size: 32px;
   }
 
   .product-gallery {
@@ -1116,168 +1201,76 @@ export default {
   .thumbnails {
     flex-direction: row;
     overflow-x: auto;
-    gap: clamp(16px, 4vw, 32px); /* Scales gap */
-    padding: 0 clamp(12px, 3vw, 16px); /* Add padding for smaller screens */
+    gap: 12px;
   }
 
   .thumbnail {
     flex-shrink: 0;
-    width: clamp(60px, 15vw, 80px); /* Thumbnail size scales */
+    width: 100px;
+    height: 110px;
   }
 
-  .description {
-    font-size: clamp(10px, 3.5vw, 10.8px);
-  }
-
-  .size-option {
-    padding: clamp(8px, 2vw, 10px) clamp(14px, 4vw, 18px);
-    font-size: clamp(12px, 3vw, 14px);
-    margin-right: 3px;
+  .main-image {
+    height: 400px;
   }
 
   .cart-actions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: clamp(8px, 2.5vw, 12px);
-    margin-right: clamp(8px, 2.5vw, 12px);
+    flex-direction: column;
+    gap: 16px;
   }
 
   .quantity-selector {
-    flex: 0 0 auto;
-    width: auto;
-    min-width: clamp(100px, 25vw, 140px); /* Prevents too small */
+    width: 100%;
+    justify-content: space-between;
   }
 
   .add-to-cart-btn {
-    flex: 1;
-    padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 24px);
-    font-size: clamp(13px, 3.5vw, 15px);
-  }
-
-  .product-tabs {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    margin: 0 clamp(-12px, -3vw, -16px); /* Extend to edges on small screens */
+    width: 100%;
   }
 
   .tabs-header {
     overflow-x: auto;
-    white-space: nowrap;
-    display: flex;
-    flex-direction: row;
-    gap: 0;
-    width: max-content;
-    padding: 0 clamp(12px, 3vw, 16px); /* Padding for first/last tabs */
   }
 
   .tab-button {
     flex-shrink: 0;
-    padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 20px);
-    font-size: clamp(13px, 3.5vw, 15px);
+    font-size: 16px;
+    padding: 16px 0;
+    margin-right: 24px;
   }
 
-  .product-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .you-might-like-title {
-    font-size: clamp(32px, 6.5vw, 32px);
-    margin-bottom: clamp(24px, 6vw, 40px);
-  }
-
-  .similar-products-container {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .similar-products-container::-webkit-scrollbar {
-    display: none;
+  .section-title {
+    font-size: 32px;
+    margin-bottom: 32px;
   }
 
   .similar-products-grid {
-    display: flex; /* Changed from grid */
-    flex-direction: row;
-    gap: clamp(16px, 4vw, 20px);
-    width: max-content; /* Allow content to extend */
-    padding: 0 clamp(16px, 4vw, 20px);
+    grid-template-columns: 1fr;
+    overflow-x: auto;
+    display: flex;
+    gap: 16px;
   }
 
   .similar-product-card {
-    flex-shrink: 0; /* Prevent cards from shrinking */
-   width: clamp(220px, 60vw, 280px); /* Fixed width for each card */
-    border-radius: 16px;
-  }
-
-  .similar-product-image {
-    border-radius: 12px;
-  }
-
-  .similar-product-info {
-    padding: 12px 0;
-  }
-
-  .similar-product-name {
-    font-size: clamp(15px, 4vw, 18px);
-  }
-
-  .rating {
-    margin-bottom: 8px;
-  }
-
-  .rating .stars {
-    font-size: clamp(16px, 4vw, 18px);
-  }
-
-  .rating-value {
-    font-size: clamp(12px, 3vw, 13px);
-  }
-
-  .price-section .current-price {
-    font-size: clamp(20px, 5vw, 24px);
-  }
-
-  .price-section .original-price {
-    font-size: clamp(16px, 4vw, 18px);
-  }
-
-  .price-section .discount {
-    font-size: clamp(11px, 3vw, 13px);
-    padding: 3px 8px;
-  }
-
-  /* Reviews section responsive */
-  .reviews-header {
-    flex-direction: column;
-    gap: clamp(12px, 3vw, 16px);
-    align-items: stretch;
+    flex-shrink: 0;
+    width: 280px;
   }
 
   .reviews-controls {
-    gap: clamp(8px, 2vw, 12px);
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
   }
 
   .write-review-btn {
-    font-size: clamp(12px, 3vw, 14px);
-    padding: clamp(8px, 2vw, 10px) clamp(14px, 3.5vw, 18px);
+    padding: 12px 20px;
+    font-size: 14px;
   }
 
-  .reviews-grid {
-    grid-template-columns: 1fr; /* Single column on mobile */
-    gap: clamp(16px, 4vw, 20px);
-  }
-
-  .review-card {
-    padding: clamp(14px, 3.5vw, 18px);
-  }
-  .footer {
-    padding-top: 0;
+  .sort-dropdown {
+    padding: 12px 40px 12px 16px;
+    font-size: 14px;
+    min-width: 100px;
   }
 }
 </style>

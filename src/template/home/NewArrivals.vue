@@ -85,7 +85,7 @@ export default {
       'T-shirt.png': TShirtImage,
       'T-shirts.png': TShirtImage,
       'Jeans.png': JeansImage,
-      'checkered.jpg': CheckeredImage,
+      'checkered.png': CheckeredImage,
       'Sleeve.png': SleeveImage
     }
 

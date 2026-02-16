@@ -370,6 +370,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
 }
 
 .action-btn:hover {
@@ -383,18 +384,22 @@ export default {
 
 .cart-badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #FF3333;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
+  top: -4px;
+  right: -4px;
+  background-color: #FF3333;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
   height: 20px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 0 4px;
+  border: 2px solid var(--color-bg-primary);
+  animation: scaleIn 0.2s ease-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes scaleIn {
@@ -410,7 +415,7 @@ export default {
   display: none;
 }
 
-.cart-badge {
+/* .cart-badge {
   position: absolute;
   top: -2px;
   right: -2px;
@@ -424,7 +429,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
 /* ===== MOBILE MENU ===== */
 .mobile-menu {

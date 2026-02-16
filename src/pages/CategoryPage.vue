@@ -51,7 +51,7 @@
               <input
                 type="range"
                 min="50"
-                max="200"
+                max="300"
                 v-model="priceRange"
                 class="range-slider"
               >
@@ -121,30 +121,18 @@
             </div>
           </div>
 
-
           <button @click="applyFilters" class="apply-filters-btn">Apply Filter</button>
         </aside>
-        <!-- Mobile Filter Overlay
-        <div v-if="showFilters" @click="closeFilters" class="mobile-overlay"></div>
-        -->
-        <!-- Mobile Filter Toggle Button
-        <button @click="toggleFilters" class="mobile-filter-toggle">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="4" y1="6" x2="16" y2="6"></line>
-            <line x1="4" y1="12" x2="20" y2="12"></line>
-            <line x1="4" y1="18" x2="12" y2="18"></line>
-            <circle cx="18" cy="6" r="2"></circle>
-            <circle cx="8" cy="18" r="2"></circle>
-          </svg>
-          Filters
-        </button>-->
+
         <!-- Products Section -->
         <section class="products-section">
           <!-- Products Header -->
           <div class="products-header">
             <h1 class="page-title">Casual</h1>
             <div class="products-info">
-              <span class="products-count">Showing 1-{{ filteredProducts.length }} of {{ totalProducts }} Products</span>
+              <span class="products-count">
+                Showing {{ paginationStart }}-{{ paginationEnd }} of {{ totalFilteredProducts }} Products
+              </span>
               <div class="sort-controls">
                 <label for="sort">Sort by:</label>
                 <select id="sort" v-model="sortOption" class="sort-dropdown">
@@ -160,13 +148,13 @@
           <!-- Products Grid -->
           <div class="products-grid">
             <router-link
-              v-for="product in filteredProducts"
+              v-for="product in paginatedProducts"
               :key="product.id"
               :to="`/product/${product.id}`"
               class="product-card"
             >
               <div class="product-image">
-                <img :src="product.image" :alt="product.name">
+                <img :src="getImagePath(product.image)" :alt="product.name">
               </div>
               <div class="product-info">
                 <h3 class="product-name">{{ product.name }}</h3>
@@ -188,13 +176,18 @@
           </div>
 
           <!--No Products Found-->
-          <div v-if="filteredProducts.length === 0" class="no-products">
+          <div v-if="paginatedProducts.length === 0" class="no-products">
             <p>No products found matching your filters.</p>
             <button @click="clearFilters" class="clear-filters-btn">Clear All Filters</button>
           </div>
+
           <!-- Pagination -->
-          <div class="pagination">
-            <button class="pagination-btn prev" :disabled="currentPage === 1">
+          <div class="pagination" v-if="totalPages > 1">
+            <button
+              class="pagination-btn prev"
+              :disabled="currentPage === 1"
+              @click="previousPage"
+            >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2"/>
               </svg>
@@ -203,9 +196,9 @@
 
             <div class="page-numbers">
               <button
-                v-for="page in totalPages"
+                v-for="page in visiblePages"
                 :key="page"
-                @click="currentPage = page"
+                @click="goToPage(page)"
                 :class="{ active: currentPage === page }"
                 class="page-btn"
               >
@@ -213,7 +206,11 @@
               </button>
             </div>
 
-            <button class="pagination-btn next">
+            <button
+              class="pagination-btn next"
+              :disabled="currentPage === totalPages"
+              @click="nextPage"
+            >
               Next
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2"/>
@@ -227,7 +224,9 @@
   </div>
 </template>
 
+
 <script>
+import productsData from '@/data/products.json'
 export default {
   name: 'CategoryPage',
   data() {
@@ -261,163 +260,113 @@ export default {
 
       sortOption: 'popular',
       currentPage: 1,
-      totalPages: 10,
+      itemsPerPage: 9,
       showFilters: false,
 
-      products: [
-        {
-          id: 1,
-          name: 'Gradient Graphic T-shirt',
-          image: '/src/assets/img/gradient-tshirt.png',
-          rating: 3.5,
-          price: 145,
-          originalPrice: null,
-          discount: null,
-          category: "T-shirts",
-          colors: ["Black", "White", "gray"],
-          sizes: ["Small", "Medium", "Large", "X-Large"],
-          style: "Casual"
-        },
-        {
-          id: 2,
-          name: 'Polo with Tipping Details',
-          image: '/src/assets/img/polo-tipping.png',
-          rating: 4.5,
-          price: 180,
-          originalPrice: null,
-          discount: null,
-          category: "Shirts",
-          colors: ["Blue", "Red"],
-          sizes: ["Small", "Medium", "Large", "X-Large"],
-          style: "Casual"
-
-        },
-        {
-          id: 3,
-          name: 'Black Striped T-shirt',
-          image: '/src/assets/img/stripped-tshirt.png',
-          rating: 5.0,
-          price: 120,
-          originalPrice: 160,
-          discount: 30,
-          category: "T-shirts",
-          colors: ["Red", "Blue", "Green"],
-          sizes: ["Small", "Medium", "Large", "X-Large"],
-          style: "formal"
-        },
-        {
-          id: 4,
-          name: 'Skinny Fit Jeans',
-          image: '/src/assets/img/Jeans.png',
-          rating: 3.5,
-          price: 240,
-          originalPrice: 260,
-          discount: 20,
-          category: "Jeans",
-          colors: ["Orange", "Yellow", "Red"],
-          sizes: ["Small", "Medium", "Large", "X-Large"],
-          style: "Casual"
-        },
-        {
-          id: 5,
-          name: 'Checkered Shirt',
-          image: '/src/assets/img/checkered.png',
-          rating: 4.5,
-          price: 180,
-          originalPrice: null,
-          discount: null,
-          category: "Shirts",
-          colors: ["Blue", "White"],
-          sizes: ["Small", "Medium", "Large", "X-Large"],
-          style: "Party"
-        },
-        {
-          id: 6,
-          name: 'Sleeve Striped T-shirt',
-          image: '/src/assets/img/Sleeve.png',
-          rating: 4.5,
-          price: 130,
-          originalPrice: 160,
-          discount: 30,
-          category: "casual",
-          colors: ["White", "Black"],
-          sizes: ["Small", "Medium", "Large", "X-Large"]
-        },
-        {
-          id: 7,
-          name: 'Vertical Striped Shirt',
-          image: '/src/assets/img/Vertical.png',
-          rating: 5.0,
-          price: 212,
-          originalPrice: 232,
-          discount: 20,
-          category: "Shirts",
-          colors: ["khaki", "navy", "black"],
-          sizes: ["Small", "Medium", "Large", "X-Large"],
-          style: "Formal"
-        },
-        {
-          id: 8,
-          name: 'Courage Graphic T-shirt',
-          image: '/src/assets/img/Courage.png',
-          rating: 4.0,
-          price: 145,
-          originalPrice: null,
-          discount: null,
-          category: "T-shirts",
-          colors: ["Blue", "Black"],
-          sizes: ["Small", "Medium", "Large", "X-Large"],
-          style: "Casual"
-        },
-        {
-          id: 9,
-          name: 'Loose Fit Bermuda Shorts',
-          image: '/src/assets/img/Loose.png',
-          rating: 3.0,
-          price: 80,
-          originalPrice: null,
-          discount: null,
-          category: 'Shorts',
-          sizes: ['Medium', 'Large', 'X-Large', 'XX-Large'],
-          colors: ['Blue'],
-          style: 'Casual'
-        }
-      ]
+      products: []
     }
   },
+
+  created() {
+    const baseProducts = [
+      ...productsData.newArrivals,
+      ...productsData.topSelling,
+      ...productsData.youMightAlsoLike,
+    ]
+    this.products = baseProducts
+  },
+
   computed: {
     filteredProducts() {
       let filtered = [...this.products]
-      //FIlter by categories
+
+      // Filter by categories
       if (this.selectedCategories.length > 0) {
         filtered = filtered.filter(product =>
           this.selectedCategories.includes(product.category)
         )
       }
-      //Filter by price range
+
+      // Filter by price range
       filtered = filtered.filter(product =>
         product.price >= this.minPrice && product.price <= this.priceRange
       )
-      //Filter by colors
+
+      // Filter by colors - FIXED
       if (this.selectedColors.length > 0) {
         filtered = filtered.filter(product =>
-          product.colors.some(color => this.selectedColors.includes(color))
+          product.colors.some(color => this.selectedColors.includes(color.name))  // ✅ Added .name
         )
       }
-      //Filter by Sizes
+
+      // Filter by Sizes
       if (this.selectedSizes.length > 0) {
         filtered = filtered.filter(product =>
           product.sizes.some(size => this.selectedSizes.includes(size))
         )
       }
-      //Filter by Dress Styles
-      if (this.selectedStyles.Length > 0) {
+
+      // Filter by Dress Styles - FIXED
+      if (this.selectedStyles.length > 0) {  // ✅ Changed .Length to .length
         filtered = filtered.filter(product =>
-          this.selectedStyles.includes(product.style)
+          this.selectedStyles.includes(product.category)
         )
       }
+
       // Sort products
       return this.sortProducts(filtered)
+    },
+
+    totalFilteredProducts() {
+      return this.filteredProducts.length
+    },
+
+    totalPages() {
+      return Math.ceil(this.filteredProducts.length / this.itemsPerPage)
+    },
+
+    paginatedProducts() {
+      const start = (this.currentPage - 1) * this.itemsPerPage
+      const end = start + this.itemsPerPage
+      return this.filteredProducts.slice(start, end)
+    },
+
+    paginationStart() {
+      if (this.filteredProducts.length === 0) return 0
+      return (this.currentPage - 1) * this.itemsPerPage + 1
+    },
+
+    paginationEnd() {
+      const end = this.currentPage * this.itemsPerPage
+      return Math.min(end, this.filteredProducts.length)
+    },
+
+    visiblePages() {
+      // Show max 10 page numbers at a time
+      const maxVisible = 10
+      const pages = []
+
+      if (this.totalPages <= maxVisible) {
+        // Show all pages if total is less than max
+        for (let i = 1; i <= this.totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        // Show pages around current page
+        let start = Math.max(1, this.currentPage - 4)
+        let end = Math.min(this.totalPages, start + maxVisible - 1)
+
+        // Adjust start if we're near the end
+        if (end === this.totalPages) {
+          start = Math.max(1, end - maxVisible + 1)
+        }
+
+        for (let i = start; i <= end; i++) {
+          pages.push(i)
+        }
+      }
+
+      return pages
     },
 
     totalProducts() {
@@ -431,7 +380,39 @@ export default {
       }
     }
   },
+
+    watch: {
+    // Reset to page 1 when filters change
+    selectedCategories() {
+      this.currentPage = 1
+    },
+    selectedColors() {
+      this.currentPage = 1
+    },
+    selectedSizes() {
+      this.currentPage = 1
+    },
+    selectedStyles() {
+      this.currentPage = 1
+    },
+    priceRange() {
+      this.currentPage = 1
+    },
+    sortOption() {
+      this.currentPage = 1
+    }
+  },
+
   methods: {
+   getImagePath(image) {
+      try {
+        return new URL(`../assets/img/${image}`, import.meta.url).href
+      } catch (error) {
+        console.error(`Error loading image: ${image}`, error)
+        return ''
+      }
+    },
+
     toggleCategory(category) {
       const index = this.selectedCategories.indexOf(category)
       if (index > -1) {
@@ -440,6 +421,7 @@ export default {
         this.selectedCategories.push(category)
       }
     },
+
     toggleStyle(style) {
       const index = this.selectedStyles.indexOf(style)
       if (index > -1) {
@@ -506,7 +488,46 @@ export default {
     closeFilters() {
       this.showFilters = false
       document.body.style.overflow = ''
-    }
+    },
+
+    goToPage(page) {
+      if (page >= 1 && page <= this.totalPages) {
+        this.currentPage = page
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    },
+
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    },
+
+    // duplicateProductsForTesting(products, targetCount) {
+    //   const duplicated = []
+    //   let idCounter = 1000 // Start with high ID to avoid conflicts
+
+    //   while (duplicated.length < targetCount) {
+    //     products.forEach(product => {
+    //       if (duplicated.length < targetCount) {
+    //         duplicated.push({
+    //           ...product,
+    //           id: idCounter++
+    //         })
+    //       }
+    //     })
+    //   }
+
+    //   return duplicated
+    // }
   }
 }
 </script>

@@ -9,8 +9,17 @@
       "rating": 4.5,
       "image": "T-shirt.png",
       "category": "casual",
-      "colors": ["black", "white", "gray"],
-      "sizes": ["S", "M", "L", "XL"]
+      "colors": [
+        { "name": "Black", "hex": "#000000" },
+        { "name": "White", "hex": "#FFFFFF" },
+        { "name": "Gray", "hex": "#808080" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "This classic t-shirt with tape details is perfect for any casual occasion. Crafted from soft and breathable fabric for superior comfort.",
+      "images": ["T-shirt.png", "T-shirt.png", "T-shirt.png"],
+      "reviewCount": 250,
+      "gender": "Men",
+      "categorySlug": "casual"
     },
     {
       "id": 2,
@@ -21,8 +30,16 @@
       "rating": 3.5,
       "image": "Jeans.png",
       "category": "casual",
-      "colors": ["blue", "black"],
-      "sizes": ["S", "M", "L", "XL"]
+      "colors": [
+        { "name": "Blue", "hex": "#4169E1" },
+        { "name": "Black", "hex": "#000000" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Comfortable skinny fit jeans with stretch fabric for maximum mobility and style.",
+      "images": ["Jeans.png", "Jeans.png", "Jeans.png"],
+      "reviewCount": 320,
+      "gender": "Men",
+      "categorySlug": "casual"
     },
     {
       "id": 3,
@@ -31,10 +48,19 @@
       "originalPrice": null,
       "discount": null,
       "rating": 4.5,
-      "image": "checkered.jpg",
+      "image": "checkered.png",
       "category": "formal",
-      "colors": ["red", "blue", "green"],
-      "sizes": ["S", "M", "L", "XL"]
+      "colors": [
+        { "name": "Red", "hex": "#FF0000" },
+        { "name": "Blue", "hex": "#0000FF" },
+        { "name": "Green", "hex": "#00FF00" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Classic checkered shirt perfect for formal and semi-formal occasions.",
+      "images": ["checkered.png", "checkered.png", "checkered.png"],
+      "reviewCount": 180,
+      "gender": "Men",
+      "categorySlug": "formal"
     },
     {
       "id": 4,
@@ -45,10 +71,18 @@
       "rating": 4.5,
       "image": "Sleeve.png",
       "category": "casual",
-      "colors": ["orange", "yellow", "red"],
-      "sizes": ["S", "M", "L", "XL"]
+      "colors": [
+        { "name": "Orange", "hex": "#FFA500" },
+        { "name": "Yellow", "hex": "#FFD700" },
+        { "name": "Red", "hex": "#FF0000" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Trendy sleeve striped t-shirt with a comfortable fit for everyday wear.",
+      "images": ["Sleeve.png", "Sleeve.png", "Sleeve.png"],
+      "reviewCount": 190,
+      "gender": "Men",
+      "categorySlug": "casual"
     }
-    
   ],
   "topSelling": [
     {
@@ -60,8 +94,16 @@
       "rating": 5.0,
       "image": "Vertical.png",
       "category": "formal",
-      "colors": ["blue", "white"],
-      "sizes": ["S", "M", "L", "XL"]
+      "colors": [
+        { "name": "Blue", "hex": "#0000FF" },
+        { "name": "White", "hex": "#FFFFFF" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Elegant vertical striped shirt for professional and formal settings.",
+      "images": ["Vertical.png", "Vertical.png", "Vertical.png"],
+      "reviewCount": 340,
+      "gender": "Men",
+      "categorySlug": "formal"
     },
     {
       "id": 6,
@@ -72,8 +114,16 @@
       "rating": 4.0,
       "image": "Courage.png",
       "category": "casual",
-      "colors": ["white", "black"],
-      "sizes": ["S", "M", "L", "XL"]
+      "colors": [
+        { "name": "White", "hex": "#FFFFFF" },
+        { "name": "Black", "hex": "#000000" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Bold graphic t-shirt with inspiring courage print for casual wear.",
+      "images": ["Courage.png", "Courage.png", "Courage.png"],
+      "reviewCount": 215,
+      "gender": "Men",
+      "categorySlug": "casual"
     },
     {
       "id": 7,
@@ -84,8 +134,17 @@
       "rating": 3.0,
       "image": "Loose.png",
       "category": "casual",
-      "colors": ["khaki", "navy", "black"],
-      "sizes": ["S", "M", "L", "XL"]
+      "colors": [
+        { "name": "Khaki", "hex": "#C3B091" },
+        { "name": "Navy", "hex": "#000080" },
+        { "name": "Black", "hex": "#000000" }
+      ],
+      "sizes": ["Medium", "Large", "X-Large", "XX-Large"],
+      "description": "Comfortable loose fit bermuda shorts perfect for summer and casual outings.",
+      "images": ["Loose.png", "Loose.png", "Loose.png"],
+      "reviewCount": 175,
+      "gender": "Men",
+      "categorySlug": "casual"
     },
     {
       "id": 8,
@@ -96,8 +155,98 @@
       "rating": 4.5,
       "image": "Faded.png",
       "category": "casual",
-      "colors": ["blue", "black"],
-      "sizes": ["S", "M", "L", "XL"]
+      "colors": [
+        { "name": "Blue", "hex": "#4169E1" },
+        { "name": "Black", "hex": "#000000" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Stylish faded skinny jeans with a modern fit and comfortable stretch.",
+      "images": ["Faded.png", "Faded.png", "Faded.png"],
+      "reviewCount": 290,
+      "gender": "Men",
+      "categorySlug": "casual"
+    }
+  ],
+  "youMightAlsoLike": [
+    {
+      "id": 9,
+      "name": "Polo with Contrast Trims",
+      "price": 212,
+      "originalPrice": 242,
+      "discount": 20,
+      "rating": 4.0,
+      "image": "polo-contrast.png",
+      "category": "casual",
+      "colors": [
+        { "name": "Red", "hex": "#FF0000" },
+        { "name": "Blue", "hex": "#0000FF" },
+        { "name": "White", "hex": "#FFFFFF" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Stylish polo shirt with contrast trims for a modern look.",
+      "images": ["polo-contrast.png", "polo-contrast.png", "polo-contrast.png"],
+      "reviewCount": 195,
+      "gender": "Men",
+      "categorySlug": "casual"
+    },
+    {
+      "id": 10,
+      "name": "Gradient Graphic T-shirt",
+      "price": 145,
+      "rating": 3.5,
+      "image": "gradient-tshirt.png",
+      "category": "casual",
+      "colors": [
+        { "name": "Pink", "hex": "#FFC0CB" },
+        { "name": "Purple", "hex": "#800080" },
+        { "name": "Blue", "hex": "#0000FF" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Eye-catching gradient graphic t-shirt perfect for casual outings.",
+      "images": ["gradient-tshirt.png", "gradient-tshirt.png", "gradient-tshirt.png"],
+      "reviewCount": 168,
+      "gender": "Men",
+      "categorySlug": "casual"
+    },
+    {
+      "id": 11,
+      "name": "Polo with Tipping Details",
+      "price": 180,
+      "rating": 4.5,
+      "image": "polo-tipping.png",
+      "category": "casual",
+      "colors": [
+        { "name": "Blue", "hex": "#0000FF" },
+        { "name": "Red", "hex": "#FF0000" },
+        { "name": "Green", "hex": "#00FF00" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Classic polo with elegant tipping details for smart casual wear.",
+      "images": ["polo-tipping.png", "polo-tipping.png", "polo-tipping.png"],
+      "reviewCount": 230,
+      "gender": "Men",
+      "categorySlug": "casual"
+    },
+    {
+      "id": 12,
+      "name": "Black Striped T-shirt",
+      "price": 120,
+      "originalPrice": 160,
+      "discount": 30,
+      "rating": 5.0,
+      "image": "stripped-tshirt.png",
+      "category": "casual",
+      "colors": [
+        { "name": "Black", "hex": "#000000" },
+        { "name": "White", "hex": "#FFFFFF" },
+        { "name": "Gray", "hex": "#808080" }
+      ],
+      "sizes": ["Small", "Medium", "Large", "X-Large"],
+      "description": "Classic black striped t-shirt with timeless style.",
+      "images": ["stripped-tshirt.png", "stripped-tshirt.png", "stripped-tshirt.png"],
+      "reviewCount": 451,
+      "gender": "Men",
+      "categorySlug": "casual"
     }
   ],
   "browseByCategory": [
@@ -122,4 +271,4 @@
       "image": "Gym.png"
     }
   ]
-} 
+}

@@ -1,3 +1,6 @@
+eader · VUE
+Copy
+
 <template>
   <header class="header">
     <!-- Promo Banner -->
@@ -22,9 +25,7 @@
           </button>
 
           <!-- Logo -->
-          <router-link to="/" class="logo">
-            SHOP.CO
-          </router-link>
+          <router-link to="/" class="logo">SHOP.CO</router-link>
 
           <!-- Desktop Navigation -->
           <nav class="nav-desktop">
@@ -47,7 +48,7 @@
           </nav>
 
           <!-- Search Bar -->
-          <div class="search-bar">
+          <div class="search-bar" ref="searchBarRef">
             <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M17.5 17.5L13.875 13.875M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
@@ -57,7 +58,49 @@
               placeholder="Search for products..."
               v-model="searchQuery"
               @keyup.enter="handleSearch"
+              @focus="showDropdown"
+              @blur="hideDropdown"
+            />
+            <!-- Clear button -->
+            <button
+              v-if="searchQuery.length > 0"
+              class="search-clear-btn"
+              @mousedown.prevent="clearSearch"
+              aria-label="Clear search"
             >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+
+            <!-- Suggestions Dropdown -->
+            <div v-if="isDropdownVisible && suggestions.length > 0" class="search-dropdown">
+              <ul class="search-suggestions">
+                <li
+                  v-for="product in suggestions"
+                  :key="product.id"
+                  class="search-suggestion-item"
+                  @mousedown.prevent="selectSuggestion(product)"
+                >
+                  <svg class="suggestion-icon" width="16" height="16" viewBox="0 0 20 20" fill="none">
+                    <path d="M17.5 17.5L13.875 13.875M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <!-- Highlight matching part of the name -->
+                  <span v-html="highlightMatch(product.name)"></span>
+                </li>
+              </ul>
+              <div class="search-dropdown-footer" @mousedown.prevent="handleSearch">
+                <span>See all results for <strong>"{{ searchQuery }}"</strong></span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- No results state -->
+            <div v-if="isDropdownVisible && searchQuery.length >= 2 && suggestions.length === 0" class="search-dropdown">
+              <p class="search-no-results">No products found for "<strong>{{ searchQuery }}</strong>"</p>
+            </div>
           </div>
 
           <!-- Header Actions -->
@@ -122,34 +165,59 @@
 
 <script>
 import { useCart } from '@/composables/useCart'
+import { useSearch } from '@/composables/useSearch'
+
 export default {
   name: 'AppHeader',
 
   setup() {
     const { cartItemCount } = useCart()
+    const { searchQuery, suggestions, isDropdownVisible, showDropdown, hideDropdown, clearSearch } = useSearch()
 
     return {
-      cartItemCount
+      cartItemCount,
+      searchQuery,
+      suggestions,
+      isDropdownVisible,
+      showDropdown,
+      hideDropdown,
+      clearSearch
     }
   },
 
   data() {
     return {
-      searchQuery: '',
       mobileMenuOpen: false,
       activeDropdown: null,
       mobileDropdownOpen: null,
-      cartCount: 0
     }
   },
+
   methods: {
+    handleSearch() {
+      if (this.searchQuery.trim()) {
+        this.isDropdownVisible = false
+        this.$router.push({ path: '/category', query: { q: this.searchQuery.trim() } })
+      }
+    },
+
+    selectSuggestion(product) {
+      this.searchQuery = product.name
+      this.isDropdownVisible = false
+      this.$router.push({ path: '/category', query: { q: product.name } })
+    },
+
+    // Wraps the matched portion of the product name in a <mark> tag
+    highlightMatch(name) {
+      const query = this.searchQuery.trim()
+      if (!query) return name
+      const regex = new RegExp(`(${query})`, 'gi')
+      return name.replace(regex, '<mark class="search-highlight">$1</mark>')
+    },
+
     toggleMobileMenu() {
       this.mobileMenuOpen = !this.mobileMenuOpen
-      if (this.mobileMenuOpen) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = ''
-      }
+      document.body.style.overflow = this.mobileMenuOpen ? 'hidden' : ''
     },
     toggleDropdown(dropdown) {
       this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown
@@ -158,16 +226,11 @@ export default {
       this.mobileDropdownOpen = this.mobileDropdownOpen === dropdown ? null : dropdown
     },
     toggleSearch() {
-      // Implement mobile search toggle
+      // mobile search toggle — implement as needed
     },
-    handleSearch() {
-      if (this.searchQuery.trim()) {
-        this.$router.push({ name: 'Search', query: { q: this.searchQuery } })
-      }
-    }
   },
+
   mounted() {
-    // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.dropdown')) {
         this.activeDropdown = null
@@ -322,12 +385,98 @@ export default {
   align-items: center;
 }
 
+.search-clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #888;
+  padding: 2px;
+}
+.search-clear-btn:hover {
+  color: #111;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.search-suggestions {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.search-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background 0.15s;
+}
+.search-suggestion-item:hover {
+  background: #f5f5f5;
+}
+
 .search-icon {
   position: absolute;
   left: var(--space-md);
   color: var(--color-text-muted);
   pointer-events: none;
   z-index: 1;
+}
+
+
+.search-highlight {
+  background: none;
+  font-weight: 700;
+  color: #111;
+}
+
+.search-dropdown-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid #f0f0f0;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.search-dropdown-footer:hover {
+  background: #f5f5f5;
+}
+.search-dropdown-footer strong {
+  color: #111;
+}
+
+.search-no-results {
+  padding: 16px;
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+  margin: 0;
+}
+.search-no-results strong {
+  color: #333;
 }
 
 .search-input {
@@ -415,21 +564,6 @@ export default {
   display: none;
 }
 
-/* .cart-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  background-color: var(--color-error);
-  color: white;
-  font-size: 10px;
-  font-weight: var(--font-weight-bold);
-  width: 18px;
-  height: 18px;
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-} */
 
 /* ===== MOBILE MENU ===== */
 .mobile-menu {

@@ -6,7 +6,7 @@
       <nav class="breadcrumb" aria-label="Breadcrumb">
         <ol>
           <li><router-link to="/">Home</router-link></li>
-          <li><span class="current">Casual</span></li>
+          <li><span class="current">{{ searchQuery ? `Search: "${searchQuery}"` : 'Casual' }}</span></li>
         </ol>
       </nav>
 
@@ -128,7 +128,9 @@
         <section class="products-section">
           <!-- Products Header -->
           <div class="products-header">
-            <h1 class="page-title">Casual</h1>
+            <h1 class="page-title">
+              {{ searchQuery ? `Results for "${searchQuery}"` : 'Casual' }}
+            </h1>
             <div class="products-info">
               <span class="products-count">
                 Showing {{ paginationStart }}-{{ paginationEnd }} of {{ totalFilteredProducts }} Products
@@ -175,9 +177,11 @@
             </router-link>
           </div>
 
-          <!--No Products Found-->
+          <!-- No Products Found -->
           <div v-if="paginatedProducts.length === 0" class="no-products">
-            <p>No products found matching your filters.</p>
+            <p>
+              {{ searchQuery ? `No products found for "${searchQuery}".` : 'No products found matching your filters.' }}
+            </p>
             <button @click="clearFilters" class="clear-filters-btn">Clear All Filters</button>
           </div>
 
@@ -227,8 +231,10 @@
 
 <script>
 import productsData from '@/data/products.json'
+
 export default {
   name: 'CategoryPage',
+
   data() {
     return {
       categories: ['T-shirts', 'Shorts', 'Shirts', 'Hoodie', 'Jeans'],
@@ -263,22 +269,35 @@ export default {
       itemsPerPage: 9,
       showFilters: false,
 
+      // Search query read from the URL (?q=...)
+      searchQuery: '',
+
       products: []
     }
   },
 
   created() {
-    const baseProducts = [
+    this.products = [
       ...productsData.newArrivals,
       ...productsData.topSelling,
       ...productsData.youMightAlsoLike,
     ]
-    this.products = baseProducts
+
+    // Pick up any search query that was in the URL when the page loaded
+    this.searchQuery = this.$route.query.q || ''
   },
 
   computed: {
     filteredProducts() {
       let filtered = [...this.products]
+
+      // ✅ Search filter — applied first, before sidebar filters
+      if (this.searchQuery.trim()) {
+        const q = this.searchQuery.trim().toLowerCase()
+        filtered = filtered.filter(product =>
+          product.name.toLowerCase().includes(q)
+        )
+      }
 
       // Filter by categories
       if (this.selectedCategories.length > 0) {
@@ -292,28 +311,27 @@ export default {
         product.price >= this.minPrice && product.price <= this.priceRange
       )
 
-      // Filter by colors - FIXED
+      // Filter by colors
       if (this.selectedColors.length > 0) {
         filtered = filtered.filter(product =>
-          product.colors.some(color => this.selectedColors.includes(color.name))  // ✅ Added .name
+          product.colors.some(color => this.selectedColors.includes(color.name))
         )
       }
 
-      // Filter by Sizes
+      // Filter by sizes
       if (this.selectedSizes.length > 0) {
         filtered = filtered.filter(product =>
           product.sizes.some(size => this.selectedSizes.includes(size))
         )
       }
 
-      // Filter by Dress Styles - FIXED
-      if (this.selectedStyles.length > 0) {  // ✅ Changed .Length to .length
+      // Filter by dress styles
+      if (this.selectedStyles.length > 0) {
         filtered = filtered.filter(product =>
           this.selectedStyles.includes(product.category)
         )
       }
 
-      // Sort products
       return this.sortProducts(filtered)
     },
 
@@ -337,33 +355,20 @@ export default {
     },
 
     paginationEnd() {
-      const end = this.currentPage * this.itemsPerPage
-      return Math.min(end, this.filteredProducts.length)
+      return Math.min(this.currentPage * this.itemsPerPage, this.filteredProducts.length)
     },
 
     visiblePages() {
-      // Show max 10 page numbers at a time
       const maxVisible = 10
       const pages = []
 
       if (this.totalPages <= maxVisible) {
-        // Show all pages if total is less than max
-        for (let i = 1; i <= this.totalPages; i++) {
-          pages.push(i)
-        }
+        for (let i = 1; i <= this.totalPages; i++) pages.push(i)
       } else {
-        // Show pages around current page
         let start = Math.max(1, this.currentPage - 4)
         let end = Math.min(this.totalPages, start + maxVisible - 1)
-
-        // Adjust start if we're near the end
-        if (end === this.totalPages) {
-          start = Math.max(1, end - maxVisible + 1)
-        }
-
-        for (let i = start; i <= end; i++) {
-          pages.push(i)
-        }
+        if (end === this.totalPages) start = Math.max(1, end - maxVisible + 1)
+        for (let i = start; i <= end; i++) pages.push(i)
       }
 
       return pages
@@ -381,30 +386,25 @@ export default {
     }
   },
 
-    watch: {
-    // Reset to page 1 when filters change
-    selectedCategories() {
+  watch: {
+    // ✅ When the URL query changes (e.g. user searches again from header),
+    // update the local searchQuery and reset to page 1
+    '$route.query.q'(newQuery) {
+      this.searchQuery = newQuery || ''
       this.currentPage = 1
     },
-    selectedColors() {
-      this.currentPage = 1
-    },
-    selectedSizes() {
-      this.currentPage = 1
-    },
-    selectedStyles() {
-      this.currentPage = 1
-    },
-    priceRange() {
-      this.currentPage = 1
-    },
-    sortOption() {
-      this.currentPage = 1
-    }
+
+    selectedCategories() { this.currentPage = 1 },
+    selectedColors()     { this.currentPage = 1 },
+    selectedSizes()      { this.currentPage = 1 },
+    selectedStyles()     { this.currentPage = 1 },
+    priceRange()         { this.currentPage = 1 },
+    sortOption()         { this.currentPage = 1 },
+    searchQuery()        { this.currentPage = 1 },
   },
 
   methods: {
-   getImagePath(image) {
+    getImagePath(image) {
       try {
         return new URL(`../assets/img/${image}`, import.meta.url).href
       } catch (error) {
@@ -415,76 +415,55 @@ export default {
 
     toggleCategory(category) {
       const index = this.selectedCategories.indexOf(category)
-      if (index > -1) {
-        this.selectedCategories.splice(index, 1)
-      } else {
-        this.selectedCategories.push(category)
-      }
+      index > -1 ? this.selectedCategories.splice(index, 1) : this.selectedCategories.push(category)
     },
 
     toggleStyle(style) {
       const index = this.selectedStyles.indexOf(style)
-      if (index > -1) {
-        this.selectedStyles.splice(index, 1)
-      } else {
-        this.selectedStyles.push(style)
-      }
+      index > -1 ? this.selectedStyles.splice(index, 1) : this.selectedStyles.push(style)
     },
+
     toggleColor(colorName) {
       const index = this.selectedColors.indexOf(colorName)
-      if (index > -1) {
-        this.selectedColors.splice(index, 1)
-      } else {
-        this.selectedColors.push(colorName)
-      }
+      index > -1 ? this.selectedColors.splice(index, 1) : this.selectedColors.push(colorName)
     },
+
     toggleSize(size) {
       const index = this.selectedSizes.indexOf(size)
-      if (index > -1) {
-        this.selectedSizes.splice(index, 1)
-      } else {
-        this.selectedSizes.push(size)
-      }
+      index > -1 ? this.selectedSizes.splice(index, 1) : this.selectedSizes.push(size)
     },
+
     sortProducts(products) {
       const sorted = [...products]
       switch (this.sortOption) {
-        case 'price-low':
-          return sorted.sort((a, b) => a.price - b.price)
-        case 'price-high':
-          return sorted.sort((a, b) => b.price - a.price)
-        case 'newest':
-          return sorted.reverse()
+        case 'price-low':  return sorted.sort((a, b) => a.price - b.price)
+        case 'price-high': return sorted.sort((a, b) => b.price - a.price)
+        case 'newest':     return sorted.reverse()
         case 'popular':
-        default:
-          return sorted.sort((a, b) => b.rating - a.rating)
+        default:           return sorted.sort((a, b) => b.rating - a.rating)
       }
     },
+
     applyFilters() {
       this.showFilters = false
-      console.log('Filters applied:', {
-        categories: this.selectedCategories,
-        priceRange: this.priceRange,
-        colors: this.selectedColors,
-        sizes: this.selectedSizes,
-        styles: this.selectedStyles
-      })
     },
+
     clearFilters() {
       this.selectedCategories = []
       this.selectedColors = []
       this.selectedSizes = []
       this.selectedStyles = []
       this.priceRange = this.maxPrice
+      // Also clear the search query and remove it from the URL
+      this.searchQuery = ''
+      this.$router.replace({ query: {} })
     },
+
     toggleFilters() {
       this.showFilters = !this.showFilters
-      if (this.showFilters) {
-        document.body.style.overflow = 'hidden'
-      } else {
-        document.body.style.overflow = ''
-      }
+      document.body.style.overflow = this.showFilters ? 'hidden' : ''
     },
+
     closeFilters() {
       this.showFilters = false
       document.body.style.overflow = ''
@@ -510,24 +489,6 @@ export default {
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     },
-
-    // duplicateProductsForTesting(products, targetCount) {
-    //   const duplicated = []
-    //   let idCounter = 1000 // Start with high ID to avoid conflicts
-
-    //   while (duplicated.length < targetCount) {
-    //     products.forEach(product => {
-    //       if (duplicated.length < targetCount) {
-    //         duplicated.push({
-    //           ...product,
-    //           id: idCounter++
-    //         })
-    //       }
-    //     })
-    //   }
-
-    //   return duplicated
-    // }
   }
 }
 </script>
@@ -976,6 +937,25 @@ hr {
   font-family: var(--font-secondary);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
+}
+
+/* No products */
+.no-products {
+  text-align: center;
+  padding: var(--space-3xl) 0;
+  color: var(--color-text-secondary);
+}
+
+.clear-filters-btn {
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-xl);
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
 }
 
 /* Pagination */

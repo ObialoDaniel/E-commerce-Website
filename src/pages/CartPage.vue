@@ -313,11 +313,12 @@ export default {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   background: var(--color-bg-primary);
+  border-bottom: var(--space-md);
 }
 
 .item-image {
   width: 120px;
-  height: 120px;
+  height: 140px;
   flex-shrink: 0;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -326,7 +327,7 @@ export default {
 
 .item-image img {
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: cover;
 }
 
@@ -368,7 +369,8 @@ export default {
 .item-attributes {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--space-md);
+  margin: var(--space-sm) 0;
 }
 
 .item-attributes p {
@@ -573,6 +575,7 @@ hr {
 @media (max-width: 1024px) {
   .cart-content {
     grid-template-columns: 1fr;
+    gap: var(--space-xl)
   }
 
   .order-summary {
@@ -611,6 +614,132 @@ hr {
 
   .apply-btn {
     width: 100%;
+  }
+}
+
+/* Mobile Responsive - 320px */
+@media (max-width: 320px) {
+  .container {
+    padding: 12px 8px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 16px;
+  }
+
+  .breadcrumb ol {
+    font-size: 11px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  .cart-item {
+    padding: 12px;
+    gap: 10px;
+    flex-direction: row;
+  }
+
+  .item-attributes {
+    flex-direction: row;
+    gap: 16px;
+    margin: 4px 0 8px 0;
+  }
+
+  .item-attributes p {
+    font-size: 11px;
+    margin: 0;
+    display: flex;
+    gap: 4px;
+  }
+
+  .item-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .item-name {
+    font-size: 14px;
+  }
+
+  .item-meta p {
+    font-size: 11px;
+  }
+
+  .item-price {
+    font-size: 16px;
+  }
+
+  .item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+  .quantity-controls {
+    padding: 5px 10px;
+    gap: 10px;
+  }
+
+  .quantity-controls button {
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+  }
+
+  .quantity {
+    font-size: 12px;
+    min-width: 16px;
+  }
+
+  .order-summary {
+    padding: 14px;
+  }
+
+  .order-summary h2 {
+    font-size: 17px;
+    margin-bottom: 14px;
+  }
+
+  .summary-row {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .summary-row.total {
+    font-size: 15px;
+  }
+
+  hr {
+    margin: 12px 0;
+  }
+
+  .promo-code {
+    gap: 8px;
+    margin: 14px 0;
+  }
+
+  .promo-input-wrapper {
+    padding: 0 12px;
+  }
+
+  .promo-input {
+    font-size: 11px;
+    padding: 10px 0;
+  }
+
+  .apply-btn {
+    font-size: 11px;
+    padding: 10px 16px;
+  }
+
+  .checkout-btn {
+    font-size: 12px;
+    padding: 11px 16px;
+    gap: 8px;
   }
 }
 </style>

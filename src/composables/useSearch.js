@@ -1,8 +1,7 @@
-// src/composables/useSearch.js
 import { ref, computed } from 'vue'
 import data from '@/data/products.json'
 
-// Flatten all product arrays into one, ignoring non-product keys like browseByCategory
+// Flatten all product arrays into one for easier searching
 const allProducts = [
   ...data.newArrivals,
   ...data.topSelling,
@@ -19,7 +18,7 @@ export function useSearch() {
 
     return allProducts
       .filter(product => product.name.toLowerCase().includes(query))
-      .slice(0, 6) // max 6 suggestions
+      .slice(0, 6)
   })
 
   function showDropdown() {
@@ -27,7 +26,6 @@ export function useSearch() {
   }
 
   function hideDropdown() {
-    // small delay so click on suggestion registers before blur closes it
     setTimeout(() => {
       isDropdownVisible.value = false
     }, 150)

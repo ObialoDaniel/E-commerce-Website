@@ -241,8 +241,8 @@ export default {
       selectedCategories: [],
 
       minPrice: 50,
-      maxPrice: 290,
-      priceRange: 290,
+      maxPrice: 300,
+      priceRange: 300,
 
       colors: [
         { name: 'Green', hex: '#00C12B' },
@@ -269,7 +269,7 @@ export default {
       itemsPerPage: 9,
       showFilters: false,
 
-      // Search query read from the URL (?q=...)
+
       searchQuery: '',
 
       products: []
@@ -283,7 +283,6 @@ export default {
       ...productsData.youMightAlsoLike,
     ]
 
-    // Pick up any search query that was in the URL when the page loaded
     this.searchQuery = this.$route.query.q || ''
   },
 
@@ -291,7 +290,6 @@ export default {
     filteredProducts() {
       let filtered = [...this.products]
 
-      // ✅ Search filter — applied first, before sidebar filters
       if (this.searchQuery.trim()) {
         const q = this.searchQuery.trim().toLowerCase()
         filtered = filtered.filter(product =>
@@ -387,8 +385,6 @@ export default {
   },
 
   watch: {
-    // ✅ When the URL query changes (e.g. user searches again from header),
-    // update the local searchQuery and reset to page 1
     '$route.query.q'(newQuery) {
       this.searchQuery = newQuery || ''
       this.currentPage = 1
@@ -454,7 +450,6 @@ export default {
       this.selectedSizes = []
       this.selectedStyles = []
       this.priceRange = this.maxPrice
-      // Also clear the search query and remove it from the URL
       this.searchQuery = ''
       this.$router.replace({ query: {} })
     },

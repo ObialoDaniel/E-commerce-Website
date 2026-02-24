@@ -2,7 +2,7 @@
 @font-face {
   font-family: 'Integral CF';
   src:
-    url('@/assets/fonts/IntegralCF-Bold.woff2');
+    url('../fonts/IntegralCF-Bold.woff2');
   font-weight: 700; /* Bold */
   font-style: normal;
   font-display: swap;
@@ -11,7 +11,7 @@
 @font-face {
   font-family: 'Satoshi';
   src:
-    url('@/assets/fonts/Satoshi-Regular.woff2');
+    url('../assets/fonts/Satoshi-Regular.woff2');
   font-weight: 400; /* Regular */
   font-style: normal;
   font-display: swap;
@@ -20,7 +20,7 @@
 @font-face {
   font-family: 'Satoshi';
   src:
-    url('@/assets/fonts/Satoshi-Medium.woff2');
+    url('../assets/fonts/Satoshi-Medium.woff2');
   font-weight: 500; /* Medium */
   font-style: normal;
   font-display: swap;
@@ -28,7 +28,7 @@
 
 @font-face {
   font-family: 'Satoshi';
-  src: url('@/assets/fonts/Satoshi-Bold.woff2');
+  src: url('../assets/fonts/Satoshi-Bold.woff2');
   font-weight: 700; /* Bold */
   font-style: normal;
   font-display: swap;

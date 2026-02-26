@@ -37,7 +37,7 @@ Copy
                 </svg>
               </button>
               <div v-if="activeDropdown === 'shop'" class="dropdown-menu">
-                <router-link to="/category/men" class="dropdown-item">Men</router-link>
+                <router-link to="/#" class="dropdown-item">Men</router-link>
                 <router-link to="/category/women" class="dropdown-item">Women</router-link>
                 <router-link to="/category/kids" class="dropdown-item">Kids</router-link>
               </div>

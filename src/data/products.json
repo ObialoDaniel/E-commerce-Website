@@ -9,6 +9,7 @@
       "rating": 4.5,
       "image": "T-shirt.png",
       "category": "casual",
+      "type": "T-shirts",
       "colors": [
         { "name": "Black", "hex": "#000000" },
         { "name": "White", "hex": "#FFFFFF" },
@@ -30,6 +31,7 @@
       "rating": 3.5,
       "image": "Jeans.png",
       "category": "casual",
+      "type": "Jeans",
       "colors": [
         { "name": "Blue", "hex": "#4169E1" },
         { "name": "Black", "hex": "#000000" }
@@ -50,6 +52,7 @@
       "rating": 4.5,
       "image": "checkered.png",
       "category": "formal",
+      "type": "Shirts",
       "colors": [
         { "name": "Red", "hex": "#FF0000" },
         { "name": "Blue", "hex": "#0000FF" },
@@ -71,6 +74,7 @@
       "rating": 4.5,
       "image": "Sleeve.png",
       "category": "casual",
+      "type": "T-shirts",
       "colors": [
         { "name": "Orange", "hex": "#FFA500" },
         { "name": "Yellow", "hex": "#FFD700" },
@@ -94,6 +98,7 @@
       "rating": 5.0,
       "image": "Vertical.png",
       "category": "formal",
+      "type": "Shirts",
       "colors": [
         { "name": "Blue", "hex": "#0000FF" },
         { "name": "White", "hex": "#FFFFFF" }
@@ -114,6 +119,7 @@
       "rating": 4.0,
       "image": "Courage.png",
       "category": "casual",
+      "type": "T-shirts",
       "colors": [
         { "name": "White", "hex": "#FFFFFF" },
         { "name": "Black", "hex": "#000000" }
@@ -134,6 +140,7 @@
       "rating": 3.0,
       "image": "Loose.png",
       "category": "casual",
+      "type": "Shorts",
       "colors": [
         { "name": "Khaki", "hex": "#C3B091" },
         { "name": "Navy", "hex": "#000080" },
@@ -155,6 +162,7 @@
       "rating": 4.5,
       "image": "Faded.png",
       "category": "casual",
+      "type": "Jeans",
       "colors": [
         { "name": "Blue", "hex": "#4169E1" },
         { "name": "Black", "hex": "#000000" }
@@ -177,6 +185,7 @@
       "rating": 4.0,
       "image": "polo-contrast.png",
       "category": "casual",
+      "type": "T-shirts",
       "colors": [
         { "name": "Red", "hex": "#FF0000" },
         { "name": "Blue", "hex": "#0000FF" },
@@ -196,6 +205,7 @@
       "rating": 3.5,
       "image": "gradient-tshirt.png",
       "category": "casual",
+      "type": "T-shirts",
       "colors": [
         { "name": "Pink", "hex": "#FFC0CB" },
         { "name": "Purple", "hex": "#800080" },
@@ -215,6 +225,7 @@
       "rating": 4.5,
       "image": "polo-tipping.png",
       "category": "casual",
+      "type": "T-shirts",
       "colors": [
         { "name": "Blue", "hex": "#0000FF" },
         { "name": "Red", "hex": "#FF0000" },
@@ -236,6 +247,7 @@
       "rating": 5.0,
       "image": "stripped-tshirt.png",
       "category": "casual",
+      "type": "T-shirts",
       "colors": [
         { "name": "Black", "hex": "#000000" },
         { "name": "White", "hex": "#FFFFFF" },

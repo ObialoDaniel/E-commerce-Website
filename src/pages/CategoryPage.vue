@@ -554,7 +554,7 @@ export default {
 
 /* Overlay transitions */
 .overlay-fade-enter-active,
-.overlay-fade-leave-active { transition: opacity 0.25s ease; }
+.overlay-fade-leave-active { transition: opacity 0.5s ease; }
 .overlay-fade-enter-from,
 .overlay-fade-leave-to { opacity: 0; }
 

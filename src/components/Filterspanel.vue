@@ -231,7 +231,7 @@ export default {
 .scissor-svg .line-1,
 .scissor-svg .line-2 {
   transform-origin: center;
-  transition: transform 1.0s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Hover — blades open */

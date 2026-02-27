@@ -3,9 +3,10 @@
     <!-- Header -->
     <div class="filters-header">
       <h2>Filters</h2>
-      <button v-if="showCloseBtn" @click="$emit('close')" class="close-btn" aria-label="Close filters">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <path d="M18 6L6 18M6 6l12 12"/>
+     <button v-if="showCloseBtn" @click="$emit('close')" class="close-btn" aria-label="Close filters">
+        <svg class="scissor-svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <line class="line-1" x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line class="line-2" x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </button>
       <button v-else class="filter-icon" aria-label="Filters">
@@ -220,17 +221,34 @@ export default {
   background: var(--color-bg-secondary);
   border: none;
   border-radius: var(--radius-full);
-  width: 36px;
-  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: var(--color-text-primary);
-  transition: background var(--transition-fast);
 }
-.close-btn:hover { background: var(--color-border); }
 
+.scissor-svg .line-1,
+.scissor-svg .line-2 {
+  transform-origin: center;
+  transition: transform 1.0s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Hover — blades open */
+.close-btn:hover .line-1 {
+  transform: rotate(-20deg);
+}
+.close-btn:hover .line-2 {
+  transform: rotate(20deg);
+}
+
+/* Click — blades snap shut */
+.close-btn:active .line-1 {
+  transform: rotate(20deg);
+}
+.close-btn:active .line-2 {
+  transform: rotate(-20deg);
+}
 .filter-icon {
   background: var(--color-bg-secondary);
   border: none;

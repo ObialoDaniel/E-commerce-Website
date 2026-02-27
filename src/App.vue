@@ -21,15 +21,22 @@ export default {
 }
 </script>
 
+<style>
+/* Remove scoped so html/body styles actually apply */
+html, body {
+  overflow-x: clip;
+  margin: 0;
+  padding: 0;
+}
+</style>
+
 <style scoped>
 #app {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  /* Remove flex — this is what breaks sticky */
 }
 
 .main-content {
-  flex: 1;
   width: 100%;
 }
 </style>

@@ -4,7 +4,7 @@ import CategoryPage from '@/pages/CategoryPage.vue'
 import ProductDetailPage from '@/pages/ProductDetailPage.vue'
 import CartPage from '@/pages/CartPage.vue'
 import NewArrivals from '@/template/home/NewArrivals.vue'
-
+import ContactPage from '@/pages/ContactPage.vue'
 
 
 const routes = [
@@ -61,6 +61,15 @@ const routes = [
     component: NewArrivals,
     meta: {
       title: 'SHOP.CO - New Arrivals',
+    }
+  },
+
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: ContactPage,
+    meta: {
+      title: 'SHOP.CO - Contact Us',
     }
   }
 ]

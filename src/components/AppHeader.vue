@@ -1,6 +1,3 @@
-eader · VUE
-Copy
-
 <template>
   <header class="header">
     <!-- Promo Banner -->
@@ -38,13 +35,14 @@ Copy
               </button>
               <div v-if="activeDropdown === 'shop'" class="dropdown-menu">
                 <router-link to="/#" class="dropdown-item">Men</router-link>
-                <router-link to="/category/women" class="dropdown-item">Women</router-link>
-                <router-link to="/category/kids" class="dropdown-item">Kids</router-link>
+                <router-link to="/#" class="dropdown-item">Women</router-link>
+                <router-link to="/#" class="dropdown-item">Kids</router-link>
               </div>
             </div>
-            <router-link to="/category" class="nav-link">On Sale</router-link>
+            <router-link to="/top-selling" class="nav-link">On Sale</router-link>
             <router-link to="/new-arrivals" class="nav-link">New Arrivals</router-link>
-            <router-link to="/category" class="nav-link">Brands</router-link>
+            <router-link to="/#" class="nav-link">Brands</router-link>
+            <router-link to="/contact" class="nav-link">Contact Us</router-link>
           </nav>
 
           <!-- Search Bar -->
@@ -148,14 +146,15 @@ Copy
                 </svg>
               </button>
               <div v-if="mobileDropdownOpen === 'shop'" class="mobile-dropdown">
-                <router-link to="/category/men" class="mobile-dropdown-item" @click="toggleMobileMenu">Men</router-link>
-                <router-link to="/category/women" class="mobile-dropdown-item" @click="toggleMobileMenu">Women</router-link>
-                <router-link to="/category/kids" class="mobile-dropdown-item" @click="toggleMobileMenu">Kids</router-link>
+                <router-link to="/#" class="mobile-dropdown-item" @click="toggleMobileMenu">Men</router-link>
+                <router-link to="/#" class="mobile-dropdown-item" @click="toggleMobileMenu">Women</router-link>
+                <router-link to="/#" class="mobile-dropdown-item" @click="toggleMobileMenu">Kids</router-link>
               </div>
             </div>
-            <router-link to="/category" class="mobile-nav-link" @click="toggleMobileMenu">On Sale</router-link>
-            <router-link to="/category" class="mobile-nav-link" @click="toggleMobileMenu">New Arrivals</router-link>
-            <router-link to="/category" class="mobile-nav-link" @click="toggleMobileMenu">Brands</router-link>
+            <router-link to="/top-selling" class="mobile-nav-link" @click="toggleMobileMenu">On Sale</router-link>
+            <router-link to="/new-arrivals" class="mobile-nav-link" @click="toggleMobileMenu">New Arrivals</router-link>
+            <router-link to="/#" class="mobile-nav-link" @click="toggleMobileMenu">Brands</router-link>
+            <router-link to="/contact" class="mobile-nav-link" @click="toggleMobileMenu">Contact Us</router-link>
           </nav>
         </div>
       </div>
@@ -274,15 +273,13 @@ export default {
 .header {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: var(--z-sticky);
 }
 
 .header-main {
   background-color: var(--color-bg-primary);
   padding: var(--space-lg) 0;
   border-bottom: 1px solid var(--color-border);
-  top: 0;
-  z-index: var(--z-sticky);
 }
 
 .header-content {

@@ -330,16 +330,7 @@ export default {
   }
 }
 
-/* ===== MOBILE SWIPER (320px - 425px) ===== */
 @media (min-width: 320px) and (max-width: 425px) {
-  .new-arrivals-section {
-    padding: 40px 0;
-  }
-
-  .new-arrivals-container {
-    padding: 0;
-  }
-
   .section-title {
     font-size: 32px;
     margin-bottom: 32px;
@@ -362,7 +353,7 @@ export default {
     /* Hide scrollbar */
     scrollbar-width: none;
     -ms-overflow-style: none;
-
+    animation: autoScroll 15s linear infinite;
   }
 
   .products-grid::-webkit-scrollbar {

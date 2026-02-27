@@ -1,6 +1,6 @@
 <template>
-  <section class="new-arrivals-section">
-    <div class="new-arrivals-container">
+  <section class="top-selling-section">
+    <div class="top-selling-container">
       <h2 class="section-title">TOP SELLING</h2>
 
       <div class="products-grid">
@@ -102,12 +102,12 @@ export default {
 </script>
 
 <style scoped>
-.new-arrivals-section {
+.top-selling-section {
   padding: var(--space-5xl) 0;
   background-color: var(--color-bg-primary);
 }
 
-.new-arrivals-container {
+.top-selling-container {
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: 0 var(--container-padding);
@@ -238,6 +238,7 @@ export default {
   border-radius: var(--radius-full);
 }
 
+
 .view-all-container {
   display: flex;
   justify-content: center;
@@ -293,7 +294,7 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .new-arrivals-section {
+  .top-selling-section {
     padding: var(--space-3xl) 0;
   }
 
@@ -329,7 +330,13 @@ export default {
   }
 }
 
-@media (max-width: 480px) {
+@media (min-width: 320px) and (max-width: 425px) {
+  .section-title {
+    font-size: 32px;
+    margin-bottom: 32px;
+    padding: 0px;
+  }
+
   .products-grid {
     display: flex;
     flex-wrap: nowrap;
@@ -365,10 +372,20 @@ export default {
     margin-bottom: 12px;
   }
 
-  }
-
   .section-title {
     font-size: var(--font-size-3xl);
   }
 
+  .view-all-container {
+    padding: 0 16px;
+    margin-top: 0;
+  }
+
+  .view-all-btn {
+    width: 100%;
+    text-align: center;
+    padding: 16px;
+    border-radius: 62px;
+  }
+}
 </style>

@@ -422,6 +422,9 @@ export default {
 }
 
 @media (min-width: 320px) and (max-width: 425px) {
+  .footer {
+    padding-top: 36px;
+  }
   /* Fix container layout */
   .newsletter-section {
     position: relative;

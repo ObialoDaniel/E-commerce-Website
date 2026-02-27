@@ -171,7 +171,7 @@ export default {
 /* Mobile */
 @media (max-width: 768px) {
   .hero-section {
-    padding: 20px 16px 0;
+    padding: 20px 16px;
     min-height: auto;
   }
 
@@ -271,9 +271,9 @@ export default {
   }
 
  .shop-now-btn {
-    width: 80%;
+    width: 100%;
     text-align: center;
-    padding: 16px 30px;
+    padding: 16px 20px;
     border-radius: 62px;
     margin-bottom: 24px;
   }

@@ -553,13 +553,13 @@ export default {
 }
 
 /* Overlay transitions */
-.overlay-fade-enter-active,
+.overlay-fade-enter-active { transition: opacity 0.25s ease; }
 .overlay-fade-leave-active { transition: opacity 0.5s ease; }
 .overlay-fade-enter-from,
 .overlay-fade-leave-to { opacity: 0; }
 
-.slide-up-enter-active,
-.slide-up-leave-active { transition: transform 0.3s ease; }
+.slide-up-enter-active { transition: transform 0.5s ease; }
+.slide-up-leave-active { transition: transform 0.8s ease; }
 .slide-up-enter-from,
 .slide-up-leave-to { transform: translateY(100%); }
 

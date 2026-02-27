@@ -558,7 +558,7 @@ export default {
 .overlay-fade-enter-from,
 .overlay-fade-leave-to { opacity: 0; }
 
-.slide-up-enter-active { transition: transform 0.5s ease; }
+.slide-up-enter-active { transition: transform 0.6s ease; }
 .slide-up-leave-active { transition: transform 0.8s ease; }
 .slide-up-enter-from,
 .slide-up-leave-to { transform: translateY(100%); }

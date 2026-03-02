@@ -5,6 +5,7 @@ import ProductDetailPage from '@/pages/ProductDetailPage.vue'
 import CartPage from '@/pages/CartPage.vue'
 import NewArrivals from '@/template/home/NewArrivals.vue'
 import ContactPage from '@/pages/ContactPage.vue'
+import TopSelling from '@/template/home/TopSelling.vue'
 
 
 const routes = [
@@ -52,6 +53,15 @@ const routes = [
     component: CartPage,
     meta: {
       title: 'SHOP.CO - Your Cart',
+    }
+  },
+
+  {
+    path: '/top-selling',
+    name: 'TopSelling',
+    component: TopSelling,
+    meta: {
+      title: 'SHOP.CO - Top Selling',
     }
   },
 

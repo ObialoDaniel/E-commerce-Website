@@ -124,6 +124,41 @@
       </div>
     </div>
 
+    <!-- Mobile Search Bar -->
+    <transition name="search-slide">
+      <div v-if="mobileSearchOpen" class="mobile-search-bar">
+        <div class="container">
+          <div class="search-bar mobile-search-inner">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M17.5 17.5L13.875 13.875M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search for products..."
+              v-model="searchQuery"
+              @keyup.enter="handleSearch"
+              @focus="showDropdown"
+              @blur="hideDropdown"
+            />
+            <button v-if="searchQuery.length > 0" class="search-clear-btn" @mousedown.prevent="clearSearch">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <!-- Suggestions -->
+            <div v-if="isDropdownVisible && suggestions.length > 0" class="search-dropdown">
+              <ul class="search-suggestions">
+                <li v-for="product in suggestions" :key="product.id" class="search-suggestion-item" @mousedown.prevent="selectSuggestion(product)">
+                  <span v-html="highlightMatch(product.name)"></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <!-- Mobile Menu -->
     <transition name="slide">
       <div v-if="mobileMenuOpen" class="mobile-menu">
@@ -189,6 +224,7 @@ export default {
       mobileMenuOpen: false,
       activeDropdown: null,
       mobileDropdownOpen: null,
+      mobileSearchOpen: false,
     }
   },
 
@@ -206,7 +242,6 @@ export default {
       this.$router.push({ path: '/category', query: { q: product.name } })
     },
 
-    // Wraps the matched portion of the product name in a <mark> tag
     highlightMatch(name) {
       const query = this.searchQuery.trim()
       if (!query) return name
@@ -225,7 +260,7 @@ export default {
       this.mobileDropdownOpen = this.mobileDropdownOpen === dropdown ? null : dropdown
     },
     toggleSearch() {
-      // mobile search toggle — implement as needed
+      this.mobileSearchOpen = !this.mobileSearchOpen
     },
   },
 
@@ -495,6 +530,27 @@ export default {
 .search-input:focus {
   outline: 2px solid var(--color-text-primary);
   outline-offset: 2px;
+}
+
+.mobile-search-bar {
+  background: var(--color-bg-primary);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mobile-search-inner {
+  max-width: 100%;
+}
+
+.search-slide-enter-active,
+.search-slide-leave-active {
+  transition: all 0.25s ease;
+}
+
+.search-slide-enter-from,
+.search-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 
 /* ===== HEADER ACTIONS ===== */

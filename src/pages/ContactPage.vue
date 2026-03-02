@@ -117,7 +117,7 @@
               <h2 class="form-title">Send Us a Message</h2>
               <p class="form-subtitle">Fill in the form below and we'll respond promptly.</p>
 
-              <form action="https://formsubmit.co/el/yirugi" method="POST" class="form" novalidate @submit="handleSubmit">
+              <form action="https://formsubmit.co/obialodaniel16@gmail.com" method="POST" class="form" novalidate @submit="handleSubmit">
                 <input type="hidden" name="_subject" value="New message from SHOP.CO Contact Form">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_next" value="https://e-commerce-website-seven-sepia.vercel.app/contact">

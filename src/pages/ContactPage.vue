@@ -118,7 +118,10 @@
               <p class="form-subtitle">Fill in the form below and we'll respond promptly.</p>
 
               <form action="https://formsubmit.co/el/yirugi" method="POST" class="form" novalidate @submit="handleSubmit">
-                <!-- Name row -->
+                <input type="hidden" name="_subject" value="New message from SHOP.CO Contact Form">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_next" value="https://e-commerce-website-seven-sepia.vercel.app/contact">
+                <input type="hidden" name="_template" value="table">
                 <div class="form-row">
                   <div class="form-group" :class="{ error: errors.firstName }">
                     <label class="form-label">First Name</label>
@@ -179,6 +182,7 @@
                     <select
                       v-model="form.subject"
                       class="form-input form-select"
+                      name="subject"
                       @blur="validateField('subject')"
                     >
                       <option value="" disabled>Select a subject</option>
@@ -201,6 +205,7 @@
                   <textarea
                     v-model="form.message"
                     class="form-input form-textarea"
+                    name="message"
                     placeholder="Tell us how we can help you..."
                     rows="5"
                     @blur="validateField('message')"

@@ -264,12 +264,9 @@ export default {
       return name.replace(regex, '<mark class="search-highlight">$1</mark>')
     },
 
-    toggleMobileMenu() {
-      if (this.mobileMenuOpen) {
-        setTimeout(() => {
-          this.mobileMenuOpen = false
-          document.body.style.overflow = ''
-        }, 400)
+   toggleMobileMenu() {
+    if (this.mobileMenuOpen) {
+        this.handleClose()
       } else {
         this.mobileMenuOpen = true
         document.body.style.overflow = 'hidden'
@@ -613,19 +610,12 @@ export default {
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.close-btn:hover .line-1 {
-  transform: rotate(-20deg);
-}
-.close-btn:hover .line-2 {
-  transform: rotate(20deg);
-}
 
-.close-btn:active .line-1 {
-  transform: rotate(20deg);
-}
-.close-btn:active .line-2 {
-  transform: rotate(-20deg);
-}
+.close-btn:hover .line-1 { transform: rotate(-20deg); }
+.close-btn:hover .line-2 { transform: rotate(20deg); }
+
+.scissor-svg.snipping .line-1 { transform: rotate(20deg); }
+.scissor-svg.snipping .line-2 { transform: rotate(-20deg); }
 
 /* ===== HEADER ACTIONS ===== */
 .header-actions {

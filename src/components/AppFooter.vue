@@ -63,10 +63,10 @@
           <div class="footer-col">
             <h4 class="footer-title">COMPANY</h4>
             <ul class="footer-links">
-              <li><router-link to="/about">About</router-link></li>
-              <li><router-link to="/features">Features</router-link></li>
-              <li><router-link to="/works">Works</router-link></li>
-              <li><router-link to="/career">Career</router-link></li>
+              <li><router-link to="/#">About</router-link></li>
+              <li><router-link to="/#">Features</router-link></li>
+              <li><router-link to="/#">Works</router-link></li>
+              <li><router-link to="/#">Career</router-link></li>
             </ul>
           </div>
 
@@ -74,9 +74,9 @@
           <div class="footer-col">
             <h4 class="footer-title">HELP</h4>
             <ul class="footer-links">
-              <li><router-link to="/support">Customer Support</router-link></li>
-              <li><router-link to="/delivery">Delivery Details</router-link></li>
-              <li><router-link to="/terms">Terms & Conditions</router-link></li>
+              <li><router-link to="/#">Customer Support</router-link></li>
+              <li><router-link to="/#">Delivery Details</router-link></li>
+              <li><router-link to="/term">Terms & Conditions</router-link></li>
               <li><router-link to="/privacy">Privacy Policy</router-link></li>
             </ul>
           </div>
@@ -85,10 +85,10 @@
           <div class="footer-col">
             <h4 class="footer-title">FAQ</h4>
             <ul class="footer-links">
-              <li><router-link to="/account">Account</router-link></li>
-              <li><router-link to="/orders">Manage Deliveries</router-link></li>
-              <li><router-link to="/orders">Orders</router-link></li>
-              <li><router-link to="/payments">Payments</router-link></li>
+              <li><router-link to="/#">Account</router-link></li>
+              <li><router-link to="/#">Manage Deliveries</router-link></li>
+              <li><router-link to="/cart">Orders</router-link></li>
+              <li><router-link to="/#">Payments</router-link></li>
             </ul>
           </div>
 

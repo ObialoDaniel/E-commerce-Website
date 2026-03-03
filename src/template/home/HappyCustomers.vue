@@ -4,76 +4,91 @@
       <div class="testimonials-header">
         <h1 class="testimonials-title">OUR HAPPY CUSTOMERS</h1>
         <div class="nav-arrows">
-          <button class="nav-arrow nav-arrow-left" aria-label="Previous testimonial">
+          <button class="nav-arrow nav-arrow-left" @click="prev" :disabled="!canGoPrev" aria-label="Previous testimonial">
             <arrowLeft />
           </button>
-          <button class="nav-arrow nav-arrow-right" aria-label="Next testimonial">
+          <button class="nav-arrow nav-arrow-right" @click="next" :disabled="!canGoNext" aria-label="Next testimonial">
             <arrowRight />
           </button>
         </div>
       </div>
 
       <div class="testimonials-grid">
-        <div class="testimonial-card">
+        <div class="testimonial-card" v-for="item in visible" :key="item.id">
           <div class="stars">
             <star v-for="star in 5" :key="star" />
           </div>
-
           <div class="reviewer-info">
-            <h3 class="reviewer-name">Sarah M.</h3>
+            <h3 class="reviewer-name">{{ item.name }}</h3>
             <div class="verified">
               <checkIcon />
             </div>
           </div>
-
-          <p class="review-text">
-            "I'm blown away by the quality and style of the clothes I received from Shop.co. From casual wear to elegant dresses, every piece I've bought has exceeded my expectations."
-          </p>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">
-            <star v-for="star in 5" :key="star" />
-          </div>
-
-          <div class="reviewer-info">
-            <h3 class="reviewer-name">Alex K.</h3>
-            <div class="verified">
-              <checkIcon />
-            </div>
-          </div>
-
-          <p class="review-text">
-            "Finding clothes that align with my personal style used to be a challenge until I discovered Shop.co. The range of options they offer is truly remarkable, catering to a variety of tastes and occasions."
-          </p>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">
-            <star v-for="star in 5" :key="star" />
-          </div>
-
-          <div class="reviewer-info">
-            <h3 class="reviewer-name">James L.</h3>
-            <div class="verified">
-              <checkIcon />
-            </div>
-          </div>
-
-          <p class="review-text">
-            "As someone who's always on the lookout for unique fashion pieces, I'm thrilled to have stumbled upon Shop.co. The selection of clothes is not only diverse but also on-point with the latest trends."
-          </p>
+          <p class="review-text">{{ item.text }}</p>
         </div>
       </div>
+
     </div>
   </section>
 </template>
 
 <script setup>
-import checkIcon from '@/components/check.vue';
-import star from '@/components/star.vue';
-import arrowLeft from '@/components/arrowLeft.vue';
-import arrowRight from '@/components/arrowRight.vue';
+import { ref, computed } from 'vue'
+import checkIcon from '@/components/check.vue'
+import star from '@/components/star.vue'
+import arrowLeft from '@/components/arrowLeft.vue'
+import arrowRight from '@/components/arrowRight.vue'
+
+const testimonials = [
+  {
+    id: 1,
+    name: 'Sarah M.',
+    text: "I'm blown away by the quality and style of the clothes I received from Shop.co. From casual wear to elegant dresses, every piece I've bought has exceeded my expectations."
+  },
+  {
+    id: 2,
+    name: 'Alex K.',
+    text: "Finding clothes that align with my personal style used to be a challenge until I discovered Shop.co. The range of options they offer is truly remarkable, catering to a variety of tastes and occasions."
+  },
+  {
+    id: 3,
+    name: 'James L.',
+    text: "As someone who's always on the lookout for unique fashion pieces, I'm thrilled to have stumbled upon Shop.co. The selection of clothes is not only diverse but also on-point with the latest trends."
+  },
+  {
+    id: 4,
+    name: 'Mia T.',
+    text: "Shop.co has completely transformed my wardrobe. The quality is outstanding and the prices are unbeatable. I recommend it to everyone I know."
+  },
+  {
+    id: 5,
+    name: 'David R.',
+    text: "Exceptional service and beautiful clothes. My orders always arrive on time and the packaging is lovely. Will definitely keep shopping here."
+  },
+  {
+    id: 6,
+    name: 'Priya S.',
+    text: "I love how easy it is to find exactly what I'm looking for on Shop.co. The filters are great and the product descriptions are accurate."
+  },
+]
+
+const currentIndex = ref(0)
+const itemsPerPage = 3
+
+const visible = computed(() =>
+  testimonials.slice(currentIndex.value, currentIndex.value + itemsPerPage)
+)
+
+const canGoPrev = computed(() => currentIndex.value > 0)
+const canGoNext = computed(() => currentIndex.value + itemsPerPage < testimonials.length)
+
+function prev() {
+  if (canGoPrev.value) currentIndex.value--
+}
+
+function next() {
+  if (canGoNext.value) currentIndex.value++
+}
 </script>
 
 <style scoped>
@@ -132,6 +147,12 @@ import arrowRight from '@/components/arrowRight.vue';
 .nav-arrow svg {
   width: 24px;
   height: 24px;
+}
+
+.nav-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .testimonials-grid {
@@ -242,7 +263,7 @@ import arrowRight from '@/components/arrowRight.vue';
   }
 
   .testimonials-container {
-    padding: 0 16px; 
+    padding: 0 16px;
   }
 
   .testimonials-header {
@@ -257,7 +278,7 @@ import arrowRight from '@/components/arrowRight.vue';
     line-height: 1.15;
     margin: 0;
   }
-  
+
   .testimonials-grid {
     display: flex;
     overflow-x: auto;
@@ -277,7 +298,7 @@ import arrowRight from '@/components/arrowRight.vue';
   }
 
   .testimonial-card {
-    min-width: 280px; 
+    min-width: 280px;
     max-width: 280px;
 
     scroll-snap-align: start;

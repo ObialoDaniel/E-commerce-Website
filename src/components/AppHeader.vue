@@ -104,7 +104,10 @@
           <!-- Header Actions -->
           <div class="header-actions">
             <button class="action-btn search-mobile" @click="toggleSearch" aria-label="Search">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <svg v-if="mobileSearchOpen" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               </svg>
             </button>
@@ -128,11 +131,12 @@
     <transition name="search-slide">
       <div v-if="mobileSearchOpen" class="mobile-search-bar">
         <div class="container">
-          <div class="search-bar mobile-search-inner">
+          <div class="mobile-search-inner">
             <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M17.5 17.5L13.875 13.875M15.8333 9.16667C15.8333 12.8486 12.8486 15.8333 9.16667 15.8333C5.48477 15.8333 2.5 12.8486 2.5 9.16667C2.5 5.48477 5.48477 2.5 9.16667 2.5C12.8486 2.5 15.8333 5.48477 15.8333 9.16667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
             <input
+              ref="mobileSearchInput"
               type="text"
               class="search-input"
               placeholder="Search for products..."
@@ -166,11 +170,12 @@
         <div class="mobile-menu-content">
           <div class="mobile-menu-header">
             <span class="logo">SHOP.CO</span>
-            <button class="close-btn" @click="toggleMobileMenu">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </button>
+          <button class="close-btn" @click="handleClose">
+            <svg class="scissor-svg" :class="{ snipping: isClosing }" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <line class="line-1" x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line class="line-2" x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
           </div>
           <nav class="mobile-nav">
             <div class="mobile-nav-item">
@@ -212,6 +217,7 @@ export default {
       cartItemCount,
       searchQuery,
       suggestions,
+      isClosing: false,
       isDropdownVisible,
       showDropdown,
       hideDropdown,
@@ -236,6 +242,15 @@ export default {
       }
     },
 
+    handleClose() {
+      this.isClosing = true
+      setTimeout(() => {
+        this.mobileMenuOpen = false
+        this.isClosing = false
+        document.body.style.overflow = ''
+      }, 400)
+    },
+
     selectSuggestion(product) {
       this.searchQuery = product.name
       this.isDropdownVisible = false
@@ -250,9 +265,17 @@ export default {
     },
 
     toggleMobileMenu() {
-      this.mobileMenuOpen = !this.mobileMenuOpen
-      document.body.style.overflow = this.mobileMenuOpen ? 'hidden' : ''
+      if (this.mobileMenuOpen) {
+        setTimeout(() => {
+          this.mobileMenuOpen = false
+          document.body.style.overflow = ''
+        }, 400)
+      } else {
+        this.mobileMenuOpen = true
+        document.body.style.overflow = 'hidden'
+      }
     },
+
     toggleDropdown(dropdown) {
       this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown
     },
@@ -261,6 +284,11 @@ export default {
     },
     toggleSearch() {
       this.mobileSearchOpen = !this.mobileSearchOpen
+      if (this.mobileSearchOpen) {
+        this.$nextTick(() => {
+          this.$refs.mobileSearchInput.focus()
+        })
+      }
     },
   },
 
@@ -534,12 +562,38 @@ export default {
 
 .mobile-search-bar {
   background: var(--color-bg-primary);
-  padding: 12px 0;
-  border-bottom: 1px solid var(--color-border);
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--color-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .mobile-search-inner {
-  max-width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.mobile-search-inner .search-input {
+  width: 100%;
+  padding: 14px var(--space-md) 14px 48px;
+  background-color: var(--color-bg-secondary);
+  border: 2px solid var(--color-text-primary);
+  border-radius: var(--radius-full);
+  font-size: 16px;
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  outline: none;
+}
+
+.mobile-search-inner .search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  pointer-events: none;
+  color: var(--color-text-muted);
 }
 
 .search-slide-enter-active,
@@ -551,6 +605,26 @@ export default {
 .search-slide-leave-to {
   opacity: 0;
   transform: translateY(-8px);
+}
+
+.scissor-svg .line-1,
+.scissor-svg .line-2 {
+  transform-origin: center;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.close-btn:hover .line-1 {
+  transform: rotate(-20deg);
+}
+.close-btn:hover .line-2 {
+  transform: rotate(20deg);
+}
+
+.close-btn:active .line-1 {
+  transform: rotate(20deg);
+}
+.close-btn:active .line-2 {
+  transform: rotate(-20deg);
 }
 
 /* ===== HEADER ACTIONS ===== */
@@ -724,9 +798,18 @@ export default {
 }
 
 /* ===== TRANSITIONS ===== */
-.slide-enter-active,
-.slide-leave-active {
-  transition: all var(--transition-normal);
+.slide-enter-active .mobile-menu-content {
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.slide-leave-active .mobile-menu-content {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-enter-active .mobile-menu-overlay {
+  transition: opacity 0.25s ease;
+}
+.slide-leave-active .mobile-menu-overlay {
+  transition: opacity 0.4s ease;
 }
 
 .slide-enter-from .mobile-menu-content {
@@ -752,10 +835,6 @@ export default {
     display: block;
   }
 
-  .search-bar {
-    display: none;
-  }
-
   .search-mobile {
     display: flex;
   }
@@ -763,6 +842,11 @@ export default {
   .header-content {
     gap: var(--space-md);
   }
+
+  .search-bar {
+    display: none;
+  }
+
 }
 
 @media (max-width: 768px) {
@@ -796,4 +880,6 @@ export default {
     width: 85%;
   }
 }
+
 </style>
+

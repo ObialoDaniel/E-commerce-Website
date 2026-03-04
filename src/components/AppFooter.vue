@@ -34,24 +34,24 @@
               We have clothes that suits your style and which you're proud to wear. From women to men.
             </p>
             <div class="social-links">
-              <a href="#" class="social-link" aria-label="Twitter">
+              <a href="https://x.com/Danyycodes" class="social-link" aria-label="Twitter">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
                 </svg>
               </a>
-              <a href="#" class="social-link" aria-label="Facebook">
+              <a href="https://www.facebook.com/danielobialo" class="social-link" aria-label="Facebook">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
                 </svg>
               </a>
-              <a href="#" class="social-link" aria-label="Instagram">
+              <a href="https://www.instagram.com/danny_devp" class="social-link" aria-label="Instagram">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                   <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
                 </svg>
               </a>
-              <a href="#" class="social-link" aria-label="GitHub">
+              <a href="https://github.com/ObialoDaniel" class="social-link" aria-label="GitHub">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
                 </svg>
@@ -65,8 +65,6 @@
             <ul class="footer-links">
               <li><router-link to="/#">About</router-link></li>
               <li><router-link to="/#">Features</router-link></li>
-              <li><router-link to="/#">Works</router-link></li>
-              <li><router-link to="/#">Career</router-link></li>
             </ul>
           </div>
 
@@ -74,9 +72,7 @@
           <div class="footer-col">
             <h4 class="footer-title">HELP</h4>
             <ul class="footer-links">
-              <li><router-link to="/#">Customer Support</router-link></li>
-              <li><router-link to="/#">Delivery Details</router-link></li>
-              <li><router-link to="/term">Terms & Conditions</router-link></li>
+              <li><router-link to="/terms">Terms & Conditions</router-link></li>
               <li><router-link to="/privacy">Privacy Policy</router-link></li>
             </ul>
           </div>
@@ -86,7 +82,6 @@
             <h4 class="footer-title">FAQ</h4>
             <ul class="footer-links">
               <li><router-link to="/#">Account</router-link></li>
-              <li><router-link to="/#">Manage Deliveries</router-link></li>
               <li><router-link to="/cart">Orders</router-link></li>
               <li><router-link to="/#">Payments</router-link></li>
             </ul>
@@ -96,24 +91,33 @@
           <div class="footer-col">
             <h4 class="footer-title">RESOURCES</h4>
             <ul class="footer-links">
-              <li><a href="#">Free eBooks</a></li>
-              <li><a href="#">Development Tutorial</a></li>
-              <li><a href="#">How to - Blog</a></li>
-              <li><a href="#">Youtube Playlist</a></li>
+              <li><a href="https://www.krishtechnolabs.com/ebook/a-success-guide-for-fashion-ecommerce-brands/">Free eBooks</a></li>
+              <li><a href="https://creators.google/en-us/content-creation-guides/">How to - Blog</a></li>
+              <li><a href="https://www.youtube.com/@obialodaniel7408">Youtube Playlist</a></li>
             </ul>
           </div>
         </div>
 
         <!-- Footer Bottom -->
         <div class="footer-bottom">
-          <p class="copyright">Shop.co © 2000-2023, All Rights Reserved</p>
-         <div class="payment-methods">
-             <VisaIcon class="payment-icon" />
-              <masterCardIcon class="payment-icon" />
-              <payPalIcon class="payment-icon" />
-              <applePayIcon class="payment-icon" />
-              <googlePayIcon class="payment-icon" />
-          </div>
+          <p class="copyright">Shop.co © 2000-{{ new Date().getFullYear() }}, All Rights Reserved</p>
+        <div class="payment-methods">
+          <a href="https://visa.com" target="_blank" rel="noopener noreferrer" aria-label="Visa">
+            <VisaIcon class="payment-icon" />
+          </a>
+          <a href="https://mastercard.com" target="_blank" rel="noopener noreferrer" aria-label="Mastercard">
+            <masterCardIcon class="payment-icon" />
+          </a>
+          <a href="https://paypal.com" target="_blank" rel="noopener noreferrer" aria-label="PayPal">
+            <payPalIcon class="payment-icon" />
+          </a>
+          <a href="https://apple.com/apple-pay" target="_blank" rel="noopener noreferrer" aria-label="Apple Pay">
+            <applePayIcon class="payment-icon" />
+          </a>
+          <a href="https://pay.google.com" target="_blank" rel="noopener noreferrer" aria-label="Google Pay">
+            <googlePayIcon class="payment-icon" />
+          </a>
+        </div>
         </div>
       </div>
     </div>
@@ -422,8 +426,11 @@ export default {
 }
 
 @media (min-width: 320px) and (max-width: 425px) {
+  .footer-logo {
+    padding-top: var(--space-md);
+  }
   .footer {
-    padding-top: 36px;
+    padding-top: 40px;
   }
   /* Fix container layout */
   .newsletter-section {
@@ -447,6 +454,7 @@ export default {
   .newsletter-title {
     font-size: 1.6rem;
     line-height: 1.2;
+    letter-spacing: -0.1em;
     max-width: 100%;
     margin-bottom: 0;
   }

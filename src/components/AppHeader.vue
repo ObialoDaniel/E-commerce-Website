@@ -5,7 +5,7 @@
       <div class="container">
         <p class="promo-text">
           Sign up and get 20% off to your first order.
-          <a href="#" class="promo-link">Sign Up Now</a>
+          <a href="/SignUp" class="promo-link">Sign Up Now</a>
         </p>
       </div>
     </div>
@@ -42,6 +42,7 @@
             <router-link to="/top-selling" class="nav-link">On Sale</router-link>
             <router-link to="/new-arrivals" class="nav-link">New Arrivals</router-link>
             <router-link to="/#" class="nav-link">Brands</router-link>
+            <router-link to="/category" class="nav-link">Category</router-link>
             <router-link to="/contact" class="nav-link">Contact Us</router-link>
           </nav>
 

@@ -81,7 +81,22 @@ const routes = [
     meta: {
       title: 'SHOP.CO - Contact Us',
     }
-  }
+  },
+
+  { path: '/terms',
+    name: 'Terms',
+    component: () => import('@/pages/TermsPage.vue')
+  },
+
+  { path: '/privacy',
+    name: 'PrivacyPolicy',
+    component: () => import('@/pages/PrivacyPolicyPage.vue')
+  },
+
+  { path: '/SignUp',
+    name: 'SignUp',
+    component: () => import('@/pages/SignUpPage.vue') }
+
 ]
 
 const router = createRouter({

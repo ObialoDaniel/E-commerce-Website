@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <AppHeader />
+    <AppHeader v-if = "showLayout" />
     <main class="main-content">
       <router-view />
     </main>
-    <AppFooter />
+    <AppFooter v-if="showLayout"/>
   </div>
 </template>
 
@@ -17,12 +17,18 @@ export default {
   components: {
     AppHeader,
     AppFooter
+  },
+  computed: {
+    showLayout() {
+      const noLayoutRoutes = ['SignUp', 'Login']
+      return !noLayoutRoutes.includes(this.$route.name)
+    }
   }
+
 }
 </script>
 
 <style>
-/* Remove scoped so html/body styles actually apply */
 html, body {
   overflow-x: clip;
   margin: 0;
@@ -33,7 +39,6 @@ html, body {
 <style scoped>
 #app {
   min-height: 100vh;
-  /* Remove flex — this is what breaks sticky */
 }
 
 .main-content {

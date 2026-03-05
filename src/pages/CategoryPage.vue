@@ -463,6 +463,7 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
 }
 
 .container {
@@ -470,6 +471,8 @@ export default {
   margin: 0 auto;
   padding: var(--space-lg);
   flex: 1;
+  overflow: visible;
+  width: 100%;
 }
 
 /* Breadcrumb */
@@ -493,6 +496,7 @@ export default {
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: var(--space-xl);
+  align-items: start;
 }
 
 /* Desktop sidebar */
@@ -500,7 +504,10 @@ export default {
   display: block;
   height: fit-content;
   position: sticky;
-  top: var(--space-lg);
+  top: 90px;
+  align-self: start;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
 }
 
 /* Mobile filter trigger button */

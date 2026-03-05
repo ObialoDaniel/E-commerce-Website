@@ -41,7 +41,7 @@
             </div>
             <router-link to="/top-selling" class="nav-link">On Sale</router-link>
             <router-link to="/new-arrivals" class="nav-link">New Arrivals</router-link>
-            <router-link to="/#" class="nav-link">Brands</router-link>
+            <router-link to="/#brands" class="nav-link">Brands</router-link>
             <router-link to="/category" class="nav-link">Category</router-link>
             <router-link to="/contact" class="nav-link">Contact Us</router-link>
           </nav>
@@ -194,7 +194,7 @@
             </div>
             <router-link to="/top-selling" class="mobile-nav-link" @click="toggleMobileMenu">On Sale</router-link>
             <router-link to="/new-arrivals" class="mobile-nav-link" @click="toggleMobileMenu">New Arrivals</router-link>
-            <router-link to="/#" class="mobile-nav-link" @click="toggleMobileMenu">Brands</router-link>
+            <router-link to="/#brands" class="mobile-nav-link" @click="toggleMobileMenu">Brands</router-link>
             <router-link to="/contact" class="mobile-nav-link" @click="toggleMobileMenu">Contact Us</router-link>
           </nav>
         </div>

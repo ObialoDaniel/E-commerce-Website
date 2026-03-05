@@ -26,7 +26,12 @@
 
       <div class="image-container">
         <div class="hero-image">
-          <img src="@/assets/img/Hero-Image.jpg" alt="Fashion Model" class="model-image">
+          <img src="@/assets/img/Hero-Image.jpg"
+          alt="Fashion Model"
+          class="model-image"
+          fetchpriority="high"
+          loading="eager"
+        />
         </div>
       </div>
 

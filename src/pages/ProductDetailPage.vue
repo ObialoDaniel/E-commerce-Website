@@ -245,6 +245,7 @@
 import { useCart } from '@/composables/useCart'
 import Check from "@/components/check.vue"
 import productsData from '@/data/products.json'
+import { useToast } from '@/composables/useToast'
 
 export default {
   name: 'ProductDetailPage',
@@ -435,18 +436,20 @@ export default {
     },
 
     handleAddToCart() {
+      const { error } = useToast()
+
       if (!this.productData || this.productData.id === 0) {
-        alert('Product data not available')
+        error('Product data not available.')
         return
       }
 
       if (!this.selectedColor) {
-        alert('Please select a color')
+        error('Please select a color.')
         return
       }
 
       if (!this.selectedSize) {
-        alert('Please select a size')
+        error('Please select a size.')
         return
       }
 
@@ -464,10 +467,8 @@ export default {
         this.quantity
       )
 
-      if (result.success) {
-        alert(`${result.message}\n\nItem added:\n${this.productData.name}\nSize: ${this.selectedSize}\nColor: ${this.selectedColor.name}\nQuantity: ${this.quantity}`)
-      } else {
-        alert('Failed to add item to cart. Please try again.')
+      if (!result.success) {
+        error('Failed to add item to cart. Please try again.')
       }
     },
 

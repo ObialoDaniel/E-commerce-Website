@@ -8,20 +8,12 @@
         </P>
         <router-link to="/category/:slug" class="shop-now-btn">Shop Now</router-link>
 
-        <div class="stats-section">
-          <div class="stat-item">
-            <div class="stat-number">200+</div>
-            <div class="stat-label">International Brands</div>
+       <div class="stats-section" ref="statsSection">
+          <div v-for="(stat, index) in stats" :key="index" class="stat-item">
+            <div class="stat-number">{{ formatNumber(stat.current) }}{{ stat.current === stat.target ? stat.suffix : '' }}</div>
+            <div class="stat-label">{{ stat.label }}</div>
           </div>
-          <div class="stat-item">
-            <div class="stat-number">2,000+</div>
-            <div class="stat-label">High-Quality Products</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">30,000+</div>
-            <div class="stat-label">Happy Customers</div>
-          </div>
-        </div>
+       </div>
       </div>
 
       <div class="image-container">
@@ -47,12 +39,66 @@
 // import LargeDiamond from '@/components/largeDiamond.vue';
 // import SmallDiamond from '@/components/smallDiamond.vue';
 
+
 export default {
   name: 'AppHero',
-  // components:{
+    // components:{
   //  SmallDiamond,
   //  LargeDiamond
-  // }
+  // },
+
+  data() {
+    return {
+      stats: [
+        { target: 200,   suffix: '+', label: 'International Brands',  current: 0 },
+        { target: 2000,  suffix: '+', label: 'High-Quality Products', current: 0 },
+        { target: 30000, suffix: '+', label: 'Happy Customers',       current: 0 },
+      ],
+      hasAnimated: false,
+    }
+  },
+
+  mounted() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !this.hasAnimated) {
+          this.hasAnimated = true
+          this.animateStats()
+        }
+      },
+      { threshold: 0.3 }
+    )
+    observer.observe(this.$refs.statsSection)
+    this.observer = observer
+  },
+
+  beforeUnmount() {
+    if (this.observer) this.observer.disconnect()
+  },
+
+  methods: {
+    animateStats() {
+      this.stats.forEach((stat) => {
+        const duration = 2000
+        const steps = 60
+        const increment = stat.target / steps
+        let count = 0
+        const timer = setInterval(() => {
+          count += increment
+          if (count >= stat.target) {
+            stat.current = stat.target
+            clearInterval(timer)
+          } else {
+            stat.current = Math.floor(count)
+          }
+        }, duration / steps)
+      })
+    },
+
+    formatNumber(num) {
+      return num >= 1000 ? (num / 1000).toFixed(0) + ',000' : num.toString()
+    }
+  }
 }
 </script>
 
@@ -205,10 +251,11 @@ export default {
     line-height: 1.5;
   }
 
-  .shop-now-btn {
-    width: 100%;
+ .shop-now-btn {
+    display: inline-block;
+    width: auto;
     text-align: center;
-    padding: 16px 20px;
+    padding: 16px 48px;
     border-radius: 62px;
     margin-bottom: 24px;
   }
@@ -275,12 +322,10 @@ export default {
     height: 400px;
   }
 
- .shop-now-btn {
-    width: 100%;
-    text-align: center;
-    padding: 16px 20px;
-    border-radius: 62px;
-    margin-bottom: 24px;
+  .shop-now-btn {
+    display: inline-block;
+    width: 90%;
+    padding: 14px 40px;
   }
 }
 

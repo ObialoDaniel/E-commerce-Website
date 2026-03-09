@@ -95,8 +95,36 @@ const routes = [
 
   { path: '/SignUp',
     name: 'SignUp',
-    component: () => import('@/pages/SignUpPage.vue') }
+    component: () => import('@/pages/SignUpPage.vue')
+  },
 
+  {
+    path: '/checkout',
+    name: 'Checkout',
+    component: () => import('@/pages/CheckoutPage.vue')
+  },
+
+ { path: '/order-confirmation',
+   name: 'OrderConfirmation',
+   component: () => import('@/pages/OrderconfirmationPage.vue')
+  },
+
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/pages/LoginPage.vue')
+  },
+
+  {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: () => import('@/pages/ForgotpasswordPage.vue')
+  },
+
+  { path: '/account',
+    name: 'Account',
+    component: () => import('@/pages/AccountPage.vue')
+  }
 ]
 
 const router = createRouter({

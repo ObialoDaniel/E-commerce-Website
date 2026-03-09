@@ -5,22 +5,24 @@
       <router-view />
     </main>
     <AppFooter v-if="showLayout"/>
+    <ToastContainer />
   </div>
 </template>
 
 <script>
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
-
+import ToastContainer from './components/ToastContainer.vue';
 export default {
   name: 'App',
   components: {
     AppHeader,
-    AppFooter
+    AppFooter,
+    ToastContainer
   },
   computed: {
     showLayout() {
-      const noLayoutRoutes = ['SignUp', 'Login']
+      const noLayoutRoutes = ['SignUp', 'Login', 'Checkout', 'OrderConfirmation'];
       return !noLayoutRoutes.includes(this.$route.name)
     }
   }

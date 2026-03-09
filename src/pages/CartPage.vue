@@ -136,18 +136,14 @@
 
 <script>
 import { useCart } from '@/composables/useCart'
+import { useToast } from '@/composables/useToast'
 
 export default {
   name: 'CartPage',
 
   setup() {
-    const {
-      cartItems,
-      subtotal,
-      increaseQuantity,
-      decreaseQuantity,
-      removeFromCart
-    } = useCart()
+    const { cartItems, subtotal, increaseQuantity, decreaseQuantity, removeFromCart } = useCart()
+    const { success, error } = useToast()
 
     return {
       cartItems,
@@ -155,6 +151,8 @@ export default {
       increaseQuantity,
       decreaseQuantity,
       removeFromCart,
+      success,
+      error
     }
   },
 
@@ -178,9 +176,7 @@ export default {
 
   methods: {
     handleRemoveItem(cartItemId) {
-      if (confirm('Are you sure you want to remove this item from the cart?')) {
-        this.removeFromCart(cartItemId)
-      }
+      this.removeFromCart(cartItemId)
     },
 
     formatPrice(price) {
@@ -189,18 +185,20 @@ export default {
     },
 
     applyPromo() {
+      const { success, error } = useToast()
       if (this.promoCode.trim()) {
-        // Add promo code logic here
-        alert(`Promo code "${this.promoCode}" applied!`)
+        success(`Promo code "${this.promoCode}" applied!`)
+      } else {
+        error('Please enter a promo code.')
       }
     },
 
     goToCheckout() {
+      const { error } = useToast()
       if (this.cartItems.length === 0) {
-        alert('Your cart is empty. Please add items before checkout.')
+        error('Your cart is empty. Please add items before checkout.')
         return
       }
-      // Navigate to checkout page
       this.$router.push('/checkout')
     }
   }

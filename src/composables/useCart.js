@@ -1,5 +1,5 @@
-// composables/useCart.js - Fixed version with proper data handling
 import { reactive, computed } from 'vue'
+import { useToast } from '@/composables/useToast'
 
 // Global cart state - shared across all components
 const cartState = reactive({
@@ -56,6 +56,7 @@ export function useCart() {
 
   // Add item to cart
   const addToCart = (product, size, color, quantity = 1) => {
+  const { success } = useToast()
     try {
       // Validate inputs
       if (!product || !product.id) {
@@ -92,7 +93,7 @@ export function useCart() {
 
       // Save to localStorage
       saveCartToStorage()
-
+      success(`${product.name} added to cart!`)
       return {
         success: true,
         message: `${product.name} added to cart!`
@@ -108,11 +109,13 @@ export function useCart() {
 
   // Remove item from cart
   const removeFromCart = (cartItemId) => {
+    const { error } = useToast()
     try {
       const index = cartState.items.findIndex(item => item.cartItemId === cartItemId)
       if (index > -1) {
         cartState.items.splice(index, 1)
         saveCartToStorage()
+        error('Item removed from cart')
       }
     } catch (error) {
       console.error('Error removing from cart:', error)

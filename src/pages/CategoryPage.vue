@@ -102,8 +102,12 @@
             </div>
           </div>
 
+          <!-- Skeleton -->
+          <div v-if="isLoading" class="products-grid">
+            <Productcardskeleton v-for="n in 9" :key="n" />
+          </div>
           <!-- Products Grid -->
-          <div class="products-grid">
+          <div v-else class="products-grid">
             <router-link
               v-for="product in paginatedProducts"
               :key="product.id"
@@ -131,7 +135,7 @@
           </div>
 
           <!-- No Products Found -->
-          <div v-if="paginatedProducts.length === 0" class="no-products">
+          <div v-if="paginatedProducts.length === 0 && !isLoading" class="no-products">
             <p>
               {{ searchQuery ? `No products found for "${searchQuery}".` : 'No products match your selected filters.' }}
             </p>
@@ -172,13 +176,15 @@
 <script>
 import productsData from '@/data/products.json'
 import FiltersPanel from '@/components/Filterspanel.vue'
+import Productcardskeleton from '@/components/Productcardskeleton.vue';
 
 export default {
   name: 'CategoryPage',
-  components: { FiltersPanel },
+  components: { FiltersPanel, Productcardskeleton },
 
   data() {
     return {
+      isLoading: true,
       // ── Filter options ──
       categories: ['T-shirts', 'Shorts', 'Shirts', 'Hoodie', 'Jeans'],
       minPrice: 50,
@@ -244,6 +250,10 @@ export default {
   mounted() {
     this.checkMobile()
     window.addEventListener('resize', this.checkMobile)
+
+    setTimeout(() => {
+      this.isLoading = false
+    }, 1500)
   },
 
   beforeUnmount() {

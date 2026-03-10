@@ -2,7 +2,9 @@
   <section class="new-arrivals-section">
     <div class="new-arrivals-container">
       <h2 class="section-title">NEW ARRIVALS</h2>
-
+        <div v-if="isLoading" class="products-grid">
+          <ProductCardSkeleton v-for="n in 8" :key="n" />
+        </div>
       <div class="products-grid">
         <router-link
           v-for="product in products"
@@ -71,11 +73,16 @@ import TShirtImage from '@/assets/img/T-shirt.png'
 import JeansImage from '@/assets/img/Jeans.png'
 import CheckeredImage from '@/assets/img/checkered.png'
 import SleeveImage from '@/assets/img/Sleeve.png'
+import ProductCardSkeleton from '@/components/Productcardskeleton.vue'
 
 export default {
   name: 'NewArrivals',
+  components: {
+    ProductCardSkeleton
+  },
   data() {
     return {
+      isLoading: true,
       products: [],
       starsImage: starsImage
     }
@@ -97,7 +104,9 @@ export default {
       }
     })
 
-    console.log('Products with images:', this.products)
+    setTimeout(() => {
+      this.isLoading = false
+    }, 1500)
   }
 }
 </script>

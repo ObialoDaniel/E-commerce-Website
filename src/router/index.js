@@ -124,6 +124,11 @@ const routes = [
   { path: '/account',
     name: 'Account',
     component: () => import('@/pages/AccountPage.vue')
+  },
+
+  { path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/pages/NotFoundPage.vue')
   }
 ]
 

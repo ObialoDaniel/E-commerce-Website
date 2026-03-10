@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     showLayout() {
-      const noLayoutRoutes = ['SignUp', 'Login', 'Checkout', 'OrderConfirmation'];
+      const noLayoutRoutes = ['SignUp', 'Login', 'Checkout', 'OrderConfirmation', 'NotFound'];
       return !noLayoutRoutes.includes(this.$route.name)
     }
   }

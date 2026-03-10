@@ -27,7 +27,7 @@ export default{
     NewArrivals,
     TopSelling,
     BrowseByStyle,
-    HappyCustomers
+    HappyCustomers,
   }
 }
 </script>

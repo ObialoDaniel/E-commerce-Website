@@ -205,8 +205,11 @@
       <!-- You Might Also Like Section -->
       <section class="you-might-like-section">
         <h2 class="section-title">YOU MIGHT ALSO LIKE</h2>
-
-        <div class="similar-products-grid">
+        <!-- Skeleton -->
+        <div v-if="isLoading" class="products-grid">
+          <Productcardskeleton v-for="n in 9" :key="n" />
+        </div>
+        <div v-else class="similar-products-grid">
           <router-link
             v-for="product in filteredSuggestedProducts"
             :key="product.id"
@@ -246,10 +249,11 @@ import { useCart } from '@/composables/useCart'
 import Check from "@/components/check.vue"
 import productsData from '@/data/products.json'
 import { useToast } from '@/composables/useToast'
+import Productcardskeleton from '@/components/Productcardskeleton.vue'
 
 export default {
   name: 'ProductDetailPage',
-  components: { Check },
+  components: { Check, Productcardskeleton },
 
   setup() {
     const { addToCart } = useCart()
@@ -260,6 +264,7 @@ export default {
 
   data() {
     return {
+      isLoading: true,
       selectedImage: '',
       selectedColor: null,
       selectedSize: 'Large',
@@ -389,6 +394,10 @@ export default {
       this.selectedImage = this.productData.image
       this.selectedColor = this.productData.colors[0]
     }
+
+    setTimeout(() => {
+      this.isLoading = false
+    }, 1500)
   },
 
   watch: {

@@ -2,8 +2,11 @@
   <section class="top-selling-section">
     <div class="top-selling-container">
       <h2 class="section-title">TOP SELLING</h2>
-
-      <div class="products-grid">
+      <!-- Skeleton -->
+      <div v-if="isLoading" class="products-grid">
+        <ProductCardSkeleton v-for="n in 4" :key="n" />
+      </div>
+      <div v-else class="products-grid">
         <router-link
           v-for="product in products"
           :key="product.id"
@@ -71,11 +74,16 @@ import VerticalImage from '@/assets/img/Vertical.png'
 import CourageImage from '@/assets/img/Courage.png'
 import LooseImage from '@/assets/img/Loose.png'
 import FadedImage from '@/assets/img/Faded.png'
+import ProductCardSkeleton from '@/components/Productcardskeleton.vue'
 
 export default {
-  name: 'NewArrivals',
+  name: 'TopSelling',
+  components: {
+    ProductCardSkeleton
+  },
   data() {
     return {
+      isLoading: true,
       products: [],
       starsImage: starsImage
     }
@@ -95,8 +103,9 @@ export default {
         imageUrl: imageMap[filename] || starsImage
       }
     })
-
-    console.log('Products with images:', this.products)
+    setTimeout(() => {
+      this.isLoading = false
+    }, 1500)
   }
 }
 </script>

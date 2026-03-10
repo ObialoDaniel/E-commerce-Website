@@ -11,14 +11,40 @@
 
       <h1 class="page-title">YOUR CART</h1>
 
-      <div class="cart-content">
+      <div class="cart-content" :class="{ 'cart-empty': cartItems.length === 0 }">
         <section class="cart-items">
           <div v-if="cartItems.length === 0" class="empty-cart">
-            <p>Your cart is empty</p>
-            <router-link to="/category" class="continue-shopping-btn">
-              Continue Shopping
-            </router-link>
-          </div>
+            <!-- Animated Bag Illustration -->
+            <div class="empty-cart-illustration">
+              <div class="bag-wrap">
+                <svg class="bag-icon" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 01-8 0"/>
+                </svg>
+                <div class="bag-dot dot-1"></div>
+                <div class="bag-dot dot-2"></div>
+                <div class="bag-dot dot-3"></div>
+              </div>
+            </div>
+
+            <h2 class="empty-cart-title">Your cart is empty</h2>
+            <p class="empty-cart-subtitle">Looks like you haven't added anything yet. Start shopping and find something you love!</p>
+
+            <div class="empty-cart-actions">
+              <router-link to="/category" class="btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 01-8 0"/>
+                </svg>
+                Continue Shopping
+              </router-link>
+              <router-link to="/" class="btn-secondary">
+                Go to Homepage
+              </router-link>
+            </div>
+        </div>
 
           <div v-else>
             <div
@@ -78,7 +104,7 @@
         </section>
 
         <!-- Order Summary Section -->
-        <aside class="order-summary">
+        <aside v-if="cartItems.length > 0" class="order-summary">
           <h2>Order Summary</h2>
 
           <div class="summary-row">
@@ -278,30 +304,129 @@ export default {
   gap: var(--space-xl);
 }
 
+/* Empty Cart */
 .empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
   text-align: center;
-  padding: var(--space-5xl) var(--space-xl);
 }
 
-.empty-cart p {
-  font-size: var(--font-size-xl);
+.empty-cart-illustration {
+  margin-bottom: 32px;
+}
+
+.bag-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bag-icon {
+  color: var(--color-text-primary);
+  animation: bagFloat 3s ease-in-out infinite;
+}
+
+@keyframes bagFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+.bag-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-text-primary);
+  opacity: 0;
+  animation: dotPop 3s ease-in-out infinite;
+}
+
+.dot-1 {
+  width: 8px; height: 8px;
+  top: 10px; right: 10px;
+  animation-delay: 0.3s;
+}
+.dot-2 {
+  width: 6px; height: 6px;
+  top: 20px; left: 8px;
+  animation-delay: 0.6s;
+}
+.dot-3 {
+  width: 10px; height: 10px;
+  bottom: 16px; right: 6px;
+  animation-delay: 0.9s;
+}
+
+@keyframes dotPop {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  40%, 60%  { opacity: 0.3; transform: scale(1); }
+}
+
+.empty-cart-title {
+  font-family: var(--font-primary);
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0 0 12px;
+}
+
+.empty-cart-subtitle {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-xl);
+  line-height: 1.6;
+  max-width: 380px;
+  margin: 0 auto 32px;
 }
 
-.continue-shopping-btn {
-  display: inline-block;
-  padding: var(--space-md) var(--space-2xl);
+.empty-cart-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
   background: var(--color-text-primary);
   color: var(--color-bg-primary);
-  text-decoration: none;
   border-radius: var(--radius-full);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
-  transition: opacity var(--transition-fast);
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
+.btn-primary:hover { opacity: 0.88; }
 
-.continue-shopping-btn:hover {
-  opacity: 0.9;
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--color-text-primary); }
+
+
+@media (max-width: 480px) {
+  .empty-cart { padding: 60px 16px; }
+  .empty-cart-actions { flex-direction: column; width: 100%; }
+  .btn-primary, .btn-secondary { justify-content: center; }
 }
 
 .cart-item {
@@ -312,6 +437,13 @@ export default {
   border-radius: var(--radius-xl);
   background: var(--color-bg-primary);
   border-bottom: var(--space-md);
+}
+
+.cart-content.cart-empty {
+  grid-template-columns: 1fr;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .item-image {

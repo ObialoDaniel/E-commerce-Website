@@ -27,7 +27,14 @@
 
           <!-- Message -->
           <span class="toast-message">{{ toast.message }}</span>
-
+          <!-- Undo Action -->
+          <button
+            v-if="toast.action"
+            class="toast-action"
+            @click="toast.action.handler(); removeToast(toast.id)"
+          >
+            {{ toast.action.label }}
+          </button>
           <!-- Progress bar -->
           <div class="toast-progress" :class="toast.type"></div>
         </div>
@@ -42,8 +49,8 @@ import { useToast } from '@/composables/useToast'
 export default {
   name: 'ToastContainer',
   setup() {
-    const { toasts } = useToast()
-    return { toasts }
+    const { toasts, removeToast } = useToast()
+    return { toasts,removeToast }
   }
 }
 </script>
@@ -76,6 +83,23 @@ export default {
   border: 1px solid var(--color-border);
 }
 
+.toast-action {
+  background: none;
+  border: none;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  text-decoration: underline;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.toast-action:hover { opacity: 0.7; }
 /* Types */
 .toast.success { border-left: 4px solid #00b341; }
 .toast.error   { border-left: 4px solid #ff3333; }

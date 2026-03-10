@@ -7,9 +7,9 @@ const state = reactive({
 let nextId = 0
 
 export function useToast() {
-  function addToast({ message, type = 'success', duration = 3500 }) {
+  function addToast({ message, type = 'success', duration = 3500, action = null }) {
     const id = ++nextId
-    state.toasts.push({ id, message, type, visible: true })
+    state.toasts.push({ id, message, type, visible: true, action })
 
     setTimeout(() => {
       removeToast(id)

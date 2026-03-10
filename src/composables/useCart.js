@@ -109,17 +109,33 @@ export function useCart() {
 
   // Remove item from cart
   const removeFromCart = (cartItemId) => {
-    const { error } = useToast()
-    try {
-      const index = cartState.items.findIndex(item => item.cartItemId === cartItemId)
-      if (index > -1) {
-        cartState.items.splice(index, 1)
-        saveCartToStorage()
-        error('Item removed from cart')
+    const { addToast } = useToast()
+
+    const index = cartState.items.findIndex(item => item.cartItemId === cartItemId)
+    if (index === -1) return
+
+    // Store the item before removing
+    const removedItem = { ...cartState.items[index] }
+    const removedIndex = index
+
+    // Remove immediately from UI
+    cartState.items.splice(index, 1)
+    saveCartToStorage()
+
+    // Show undo toast
+    addToast({
+      message: 'Item removed from cart',
+      type: 'info',
+      duration: 6000,
+      action: {
+        label: 'Undo',
+        handler: () => {
+          // Re-insert at original position
+          cartState.items.splice(removedIndex, 0, removedItem)
+          saveCartToStorage()
+        }
       }
-    } catch (error) {
-      console.error('Error removing from cart:', error)
-    }
+    })
   }
 
   // Increase quantity
